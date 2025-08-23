@@ -1,0 +1,34 @@
+{
+  "name": "@milkshakecollective/bot-somebot-bot",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MilkshakeCollective/bot-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MilkshakeCollective/bot-template/issues"
+  },
+  "homepage": "https://github.com/MilkshakeCollective/bot-template#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.27",
+    "prisma": "^5.11.0",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@chatsift/pino-rotate-file": "^0.3.0",
+    "@prisma/client": "^5.11.0",
+    "axios": "^1.6.8",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "nanoid": "^5.0.6",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1",
+    "prisma-error-enum": "^0.1.3"
+  }
+}

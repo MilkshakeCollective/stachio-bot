@@ -1,0 +1,21 @@
+{
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2023"],
+		"module": "ES2022",
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"importHelpers": true,
+		"pretty": true,
+		"noEmitOnError": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": false,
+		"strictNullChecks": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true
+	}
+}
