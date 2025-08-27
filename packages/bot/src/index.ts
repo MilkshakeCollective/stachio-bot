@@ -6,10 +6,20 @@ import { loadCommands } from './handlers/commands.js';
 import { loadEvents } from './handlers/events.js';
 import { logger } from './components/exports.js';
 
+// USING PRISMA ACCELERATE
+import { PrismaClient } from '@prisma/client';
+import { withAccelerate } from '@prisma/extension-accelerate';
+const prisma = new PrismaClient().$extends(withAccelerate());
+
+// NOT USING PRISMA ACCELERATE
+// import { PrismaClient } from '@prisma/client';
+// const prisma = new PrismaClient();
+
 export class MilkshakeClient extends Client {
 	public events: Collection<string, EventInterface> = new Collection();
 	public commands: Collection<string, CommandInterface> = new Collection();
 	public context: Collection<string, CommandInterface> = new Collection();
+	public prisma: typeof prisma;
 	public config: ConfigInterface;
 	constructor() {
 		super({
@@ -48,6 +58,7 @@ export class MilkshakeClient extends Client {
 			],
 			makeCache: Options.cacheWithLimits({ MessageManager: 100 }),
 		});
+		this.prisma = prisma;
 		this.config = config;
 	}
 
