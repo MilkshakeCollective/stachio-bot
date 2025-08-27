@@ -1,7 +1,6 @@
 import { MilkshakeClient } from '../../../index.js';
 import { CommandInterface } from '../../../types';
 import {
-	ApplicationIntegrationType,
 	ChatInputCommandInteraction,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
