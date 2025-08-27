@@ -3,10 +3,77 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "mysql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model GuildSettings {
-  guildId String @id
+  guildId   String           @id
+  language  String           @default("EN")
+  flagged   FlaggedSettings?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Users {
+  id            Int           @id @default(autoincrement())
+  userId        String        @unique
+  last_username String?
+  last_avatar   String?
+  status        FlaggedStatus @default(FLAGGED)
+  reason        String?
+  evidence      Json
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  appeals       Appeal[]
+}
+
+enum FlaggedStatus {
+  APPEALED
+  FLAGGED
+  PERM_FLAGGED
+  AUTO_FLAGGED
+}
+
+model Appeal {
+  id                Int          @id @default(autoincrement())
+  userId            String
+  status            AppealStatus @default(PENDING)
+  reason            String?
+  moderatorResponse String       @default("Awaiting Response")
+  moderator         String       @default("Awaiting Response")
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  user Users @relation(fields: [userId], references: [userId])
+}
+
+enum AppealStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+model FlaggedSettings {
+  id           Int           @id @default(autoincrement())
+  guildId      String        @unique
+  actionOnFlag FlaggedAction @default(KICK)
+  actionOnPerm FlaggedAction @default(KICK)
+  actionOnAuto FlaggedAction @default(KICK)
+  roleId       String?
+  logChannelId String?
+  enabled      Boolean       @default(true)
+
+  guild GuildSettings @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum FlaggedAction {
+  WARN
+  KICK
+  BAN
+  ROLE
 }
