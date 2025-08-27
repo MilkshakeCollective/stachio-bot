@@ -9,7 +9,7 @@ import {
 
 const command: CommandInterface = {
 	cooldown: 500,
-	isDeveloperOnly: false,
+	isDeveloperOnly: true,
 	data: new ContextMenuCommandBuilder()
 		.setName('Send Message')
 		.setType(ApplicationCommandType.Message)
