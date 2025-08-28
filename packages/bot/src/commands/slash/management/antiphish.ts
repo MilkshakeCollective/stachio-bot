@@ -70,7 +70,8 @@ const command: CommandInterface = {
 				.addRoleOption((opt) => opt.setName('role').setDescription('Role to remove'))
 				.addUserOption((opt) => opt.setName('user').setDescription('User to remove'))
 				.addChannelOption((opt) => opt.setName('channel').setDescription('Channel to remove')),
-		),
+		)
+		.addSubcommand((sub) => sub.setName('toggle').setDescription('Enable or disable Anti-Phish')),
 
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		const guildId = interaction.guildId!;
@@ -78,7 +79,7 @@ const command: CommandInterface = {
 
 		await interaction.deferReply({ flags: ['Ephemeral'] });
 
-		let settings = await client.prisma.antiPhishSettings.findUnique({ where: { guildId } });
+		let settings = await client.prisma.antiPhishingConfig.findUnique({ where: { guildId } });
 
 		// Helper to safely convert Prisma JSON arrays to string[]
 		const toStringArray = (value: unknown): string[] =>
@@ -102,12 +103,12 @@ const command: CommandInterface = {
 			];
 
 			if (settings) {
-				await client.prisma.antiPhishSettings.update({
+				await client.prisma.antiPhishingConfig.update({
 					where: { guildId },
 					data: { ignoredRoles: updatedRoles, ignoredUsers: updatedUsers, ignoredChannels: updatedChannels },
 				});
 			} else {
-				await client.prisma.antiPhishSettings.create({
+				await client.prisma.antiPhishingConfig.create({
 					data: {
 						guildId,
 						ignoredRoles: updatedRoles,
@@ -179,7 +180,7 @@ const command: CommandInterface = {
 			if (sub === 'add' && !current.includes(id)) current.push(id);
 			if (sub === 'remove') current = current.filter((i) => i !== id);
 
-			await client.prisma.antiPhishSettings.update({
+			await client.prisma.antiPhishingConfig.update({
 				where: { guildId },
 				data:
 					type === 'role'
@@ -191,6 +192,18 @@ const command: CommandInterface = {
 
 			return interaction.editReply({
 				content: `\`✅\` Successfully ${sub === 'add' ? 'added' : 'removed'} ${type}.`,
+			});
+		}
+
+		if (sub === 'toggle') {
+			const newState = !settings!.enabled;
+			await client.prisma.antiPhishingConfig.update({
+				where: { guildId },
+				data: { enabled: newState },
+			});
+
+			return interaction.editReply({
+				content: `\`✅\` Anti-Phish has been **${newState ? 'enabled' : 'disabled'}**.`,
 			});
 		}
 	},
