@@ -1,5 +1,5 @@
 import { Client, Collection, GatewayIntentBits, Options, Partials } from 'discord.js';
-import { ConfigInterface, config } from './config.js';
+import { ConfigInterface, config } from './config/config.js';
 import { EventInterface, CommandInterface } from './types.js';
 import { loadCrashHandler } from './handlers/crash.js';
 import { loadCommands } from './handlers/commands.js';
@@ -49,10 +49,10 @@ export class MilkshakeClient extends Client {
 			partials: [
 				Partials.Channel,
 				Partials.GuildMember,
-				Partials.GuildScheduledEvent,
+				// Partials.GuildScheduledEvent,
 				Partials.Message,
 				Partials.Reaction,
-				Partials.SoundboardSound,
+				// Partials.SoundboardSound,
 				Partials.ThreadMember,
 				Partials.User,
 			],
