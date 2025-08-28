@@ -41,7 +41,6 @@ const event: EventInterface = {
 				await logChannel.send({ embeds: [embed] });
 			}
 
-			// Reply to user
 			await interaction.editReply({
 				content: '`✅` Your appeal has been submitted. Staff will review it soon.',
 			});
