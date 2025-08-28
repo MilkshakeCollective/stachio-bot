@@ -16,12 +16,12 @@ const event: EventInterface = {
 			logger.error(`(SLASH) Command not found: ${interaction.commandName}`);
 			return interaction.reply({
 				embeds: [new EmbedBuilder().setColor('Red').setDescription(`Failed to process this command`)],
-				ephemeral: true,
+				flags: ['Ephemeral'],
 			});
 		}
 
 		const now = Date.now();
-		const cooldownAmount = (command.cooldown ?? 3) * 1000; // Default to 3 seconds if no cooldown is set
+		const cooldownAmount = (command.cooldown ?? 3) * 1000;
 
 		if (!cooldowns.has(command.data.name)) {
 			cooldowns.set(command.data.name, new Map());
@@ -41,12 +41,11 @@ const event: EventInterface = {
 							.setColor('Red')
 							.setDescription(`Please wait **${time}** more second(s) before using this command again.`),
 					],
-					ephemeral: true,
+					flags: ['Ephemeral'],
 				});
 			}
 		}
 
-		// Set the cooldown for the user
 		timestamps.set(interaction.user.id, now);
 		setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
@@ -56,7 +55,7 @@ const event: EventInterface = {
 			logger.error(error);
 			return interaction.reply({
 				embeds: [new EmbedBuilder().setColor('Red').setDescription(`Failed to execute \`${command.data.name}\``)],
-				ephemeral: true,
+				flags: ['Ephemeral'],
 			});
 		}
 	},
