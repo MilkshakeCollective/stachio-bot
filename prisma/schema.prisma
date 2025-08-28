@@ -8,28 +8,30 @@ datasource db {
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
-model GuildSettings {
-  guildId   String           @id
-  language  String           @default("EN")
-  flagged   FlaggedSettings?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+model GuildConfig {
+  guildId      String              @id
+  language     String              @default("EN")
+  watchdog     WatchdogConfig?
+  AntiPhishing AntiPhishingConfig?
+  verification VerificationConfig?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 }
 
 model Users {
-  id            Int           @id @default(autoincrement())
-  userId        String        @unique
+  id            Int            @id @default(autoincrement())
+  userId        String         @unique
   last_username String?
   last_avatar   String?
-  status        FlaggedStatus @default(FLAGGED)
+  status        WatchdogStatus @default(FLAGGED)
   reason        String?
   evidence      Json
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   appeals       Appeal[]
 }
 
-enum FlaggedStatus {
+enum WatchdogStatus {
   APPEALED
   FLAGGED
   PERM_FLAGGED
@@ -55,36 +57,83 @@ enum AppealStatus {
   DENIED
 }
 
-model FlaggedSettings {
-  id           Int           @id @default(autoincrement())
-  guildId      String        @unique
-  actionOnFlag FlaggedAction @default(KICK)
-  actionOnPerm FlaggedAction @default(KICK)
-  actionOnAuto FlaggedAction @default(ROLE)
+model WatchdogConfig {
+  id           Int            @id @default(autoincrement())
+  guildId      String         @unique
+  enabled      Boolean        @default(true)
+  
+  actionOnFlag WatchdogAction @default(KICK)
+  actionOnPerm WatchdogAction @default(KICK)
+  actionOnAuto WatchdogAction @default(ROLE)
   roleId       String?
   logChannelId String?
-  enabled      Boolean       @default(true)
 
-  guild GuildSettings @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  guild GuildConfig @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-enum FlaggedAction {
+enum WatchdogAction {
   WARN
   KICK
   BAN
   ROLE
 }
 
-model AntiPhishSettings {
-  id              Int      @id @default(autoincrement())
-  guildId         String   @unique
-  enabled         Boolean  @default(true)
+model AntiPhishingConfig {
+  id              Int     @id @default(autoincrement())
+  guildId         String  @unique
+  enabled         Boolean @default(true)
+
   ignoredRoles    Json
   ignoredUsers    Json
   ignoredChannels Json
-  updatedAt       DateTime @updatedAt
-  createdAt       DateTime @default(now())
+
+  guild GuildConfig @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model VerificationConfig {
+  id      String  @id @default(uuid())
+  guildId String  @unique
+  enabled Boolean @default(true)
+
+  kickOnFail     Boolean @default(true)
+  maxAttempts    Int     @default(3)
+  timeoutSeconds Int     @default(43200) // 12 hours
+
+  logsChannelId String
+  channelId     String
+  messageId     String?
+
+  verifiedRoleIds Json
+
+  emojiCategory String @default("colors")
+  emojis        Json
+  correctEmoji  String @default("")
+
+  dmOnSuccess Boolean @default(true)
+  dmOnFailure Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  guild    GuildConfig           @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
+  attempts VerificationAttempt[]
+}
+
+model VerificationAttempt {
+  id                   String              @id @default(uuid())
+  guildId              String
+  userId               String
+  attempts             Int                 @default(0)
+  verified             Boolean             @default(false)
+  lastTriedAt          DateTime            @default(now())
+  VerificationConfig   VerificationConfig? @relation(fields: [verificationConfigId], references: [id])
+  verificationConfigId String?
+
+  @@unique([guildId, userId])
 }
