@@ -10,7 +10,6 @@ const event: EventInterface = {
 	execute: async (client: MilkshakeClient) => {
 		logger.info('Client Ready.');
 
-		// Set bot presence
 		client.user?.setPresence({
 			activities: [
 				{
@@ -30,7 +29,6 @@ const event: EventInterface = {
 			}
 		}
 
-		// Cleanup old denied appeals older than 14 days
 		const cleanupOldAppeals = async () => {
 			const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
 
@@ -44,8 +42,25 @@ const event: EventInterface = {
 			logger.info('✅ Old denied appeals cleaned up');
 		};
 
-		// Run cleanup once a day
-		setInterval(cleanupOldAppeals, 24 * 60 * 60 * 1000);
+		const cleanupOldAttempts = async () => {
+			const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+			await client.prisma.verificationAttempt.deleteMany({
+				where: {
+					lastTriedAt: { lt: twentyFourHoursAgo },
+				},
+			});
+
+			logger.info('✅ Old verification attempts cleaned up');
+		};
+
+		setInterval(
+			() => {
+				cleanupOldAppeals();
+				cleanupOldAttempts();
+			},
+			24 * 60 * 60 * 1000,
+		);
 
 		// Schedule weekly watchdog report every Friday at 00:00
 		// CRON: '0 0 * * 5' for production, '* * * * *' for testing
