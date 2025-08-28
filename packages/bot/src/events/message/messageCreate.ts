@@ -14,7 +14,6 @@ const keywordPatterns: RegExp[] = [
 	/\b(disc[o0]rd|dlscord|díscord|d1scord)\b/i,
 ];
 
-// Whitelisted safe domains
 const allowedDomains = [
 	'discord.com',
 	'discordapp.com',
@@ -26,7 +25,6 @@ const allowedDomains = [
 	'youtu.be',
 ];
 
-// Regex for detecting *any* links
 const urlRegex = /(https?:\/\/[^\s]+)/gi;
 
 function isAllowedDomain(domain: string): boolean {
@@ -38,11 +36,9 @@ function isAllowedDomain(domain: string): boolean {
 }
 
 function isSuspicious(content: string): boolean {
-	// Extract all URLs from the message
 	const urls = content.match(urlRegex) || [];
-	const textOnly = content.replace(urlRegex, ''); // remove URLs for keyword check
+	const textOnly = content.replace(urlRegex, '');
 
-	// First check URLs against whitelist
 	for (const url of urls) {
 		try {
 			const domain = new URL(url).hostname.replace(/^www\./, '').toLowerCase();
@@ -58,7 +54,6 @@ function isSuspicious(content: string): boolean {
 		}
 	}
 
-	// Now check keywords only in text outside URLs
 	if (keywordPatterns.some((r) => r.test(textOnly))) {
 		logger.debug(`[AntiPhish] Keyword match in content: "${textOnly}"`);
 		return true;
@@ -70,24 +65,18 @@ function isSuspicious(content: string): boolean {
 async function shouldIgnore(client: MilkshakeClient, message: Message): Promise<boolean> {
 	if (!message.guild) return true;
 
-	const settings = await client.prisma.antiPhishSettings.findUnique({
+	const settings = await client.prisma.antiPhishingConfig.findUnique({
 		where: { guildId: message.guild.id },
 	});
 
 	if (!settings || !settings.enabled) return true;
 
-	// Safely cast JSON fields into string arrays
 	const ignoredRoles = Array.isArray(settings.ignoredRoles) ? settings.ignoredRoles : [];
 	const ignoredUsers = Array.isArray(settings.ignoredUsers) ? settings.ignoredUsers : [];
 	const ignoredChannels = Array.isArray(settings.ignoredChannels) ? settings.ignoredChannels : [];
 
-	// Ignore specific users
 	if (ignoredUsers.includes(message.author.id)) return true;
-
-	// Ignore specific channels
 	if (ignoredChannels.includes(message.channel.id)) return true;
-
-	// Ignore roles
 	const member = message.member as GuildMember;
 	if (member && member.roles.cache.some((r) => ignoredRoles.includes(r.id))) return true;
 
@@ -132,7 +121,6 @@ const event: EventInterface = {
 
 				logger.warn(`🚨 Deleted suspicious message from ${message.author.tag}: ${content} | Reason: ${reason}`);
 
-				// Log in database
 				await client.prisma.users.upsert({
 					where: { userId: message.author.id },
 					update: {
