@@ -21,7 +21,7 @@ const event: EventInterface = {
 		}
 
 		const now = Date.now();
-		const cooldownAmount = (command.cooldown ?? 3) * 1000; // Default to 3 seconds if no cooldown is set
+		const cooldownAmount = (command.cooldown ?? 3) * 1000;
 
 		if (!cooldowns.has(command.data.name)) {
 			cooldowns.set(command.data.name, new Map());
@@ -46,7 +46,6 @@ const event: EventInterface = {
 			}
 		}
 
-		// Set the cooldown for the user
 		timestamps.set(interaction.user.id, now);
 		setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
