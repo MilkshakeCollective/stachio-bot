@@ -342,7 +342,7 @@ const command: CommandInterface = {
 						return interaction.editReply(`\`❌\` Guild with ID \`${guildId}\` could not be found.`);
 					}
 
-					const flaggedSettings = await client.prisma.flaggedSettings.findUnique({ where: { guildId: guild.id } });
+					const flaggedSettings = await client.prisma.watchdogConfig.findUnique({ where: { guildId: guild.id } });
 					if (!flaggedSettings || !flaggedSettings.enabled)
 						return interaction.editReply('`⚠️` Flagged system is disabled for this guild.');
 
