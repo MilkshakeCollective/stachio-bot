@@ -12,10 +12,13 @@ const event: EventInterface = {
 				where: { userId: member.user.id },
 			});
 			if (!flaggedUser) {
-				return logger.info(`[WATCHDOG] ${member.user.tag} (${member.id}) is not flagged`);
+				return logger.info({
+					labels: { event: 'guildMemberAdd' },
+					message: `[WATCHDOG] ${member.user.tag} (${member.id}) is not flagged`,
+				});
 			}
 
-			const flaggedSettings = await client.prisma.flaggedSettings.findUnique({
+			const flaggedSettings = await client.prisma.watchdogConfig.findUnique({
 				where: { guildId: member.guild.id },
 			});
 			if (!flaggedSettings || !flaggedSettings.enabled) return;
@@ -29,7 +32,7 @@ const event: EventInterface = {
 
 			await actionUser(member, client, action, flaggedUser, flaggedSettings);
 		} catch (err) {
-			logger.error(`[WATCHDOG ACTION ERROR]`, err);
+			logger.error({ labels: { event: 'guildMemberAdd' }, message: `[WATCHDOG ACTION ERROR]`, err });
 		}
 	},
 };
