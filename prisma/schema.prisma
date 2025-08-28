@@ -60,7 +60,7 @@ model FlaggedSettings {
   guildId      String        @unique
   actionOnFlag FlaggedAction @default(KICK)
   actionOnPerm FlaggedAction @default(KICK)
-  actionOnAuto FlaggedAction @default(KICK)
+  actionOnAuto FlaggedAction @default(ROLE)
   roleId       String?
   logChannelId String?
   enabled      Boolean       @default(true)
@@ -76,4 +76,15 @@ enum FlaggedAction {
   KICK
   BAN
   ROLE
+}
+
+model AntiPhishSettings {
+  id              Int      @id @default(autoincrement())
+  guildId         String   @unique
+  enabled         Boolean  @default(true)
+  ignoredRoles    Json
+  ignoredUsers    Json
+  ignoredChannels Json
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
 }
