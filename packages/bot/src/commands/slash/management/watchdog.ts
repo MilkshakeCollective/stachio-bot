@@ -8,6 +8,10 @@ import {
 	EmbedBuilder,
 } from 'discord.js';
 
+type WatchdogAction = 'WARN' | 'KICK' | 'BAN' | 'ROLE';
+
+const ACTIONS: WatchdogAction[] = ['WARN', 'KICK', 'BAN', 'ROLE'];
+
 const command: CommandInterface = {
 	cooldown: 5,
 	isDeveloperOnly: false,
@@ -27,76 +31,52 @@ const command: CommandInterface = {
 						.setRequired(true),
 				)
 				.addRoleOption((opt) =>
-					opt.setName('flagged_role').setDescription('Role to assign when a user is flagged').setRequired(false),
+					opt.setName('flagged_role').setDescription('Role to assign when flagged').setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
 						.setName('action_on_flag')
-						.setDescription('What action to take when a user is flagged')
-						.addChoices(
-							{ name: 'Warn', value: 'WARN' },
-							{ name: 'Kick', value: 'KICK' },
-							{ name: 'Ban', value: 'BAN' },
-							{ name: 'Role', value: 'ROLE' },
-						)
+						.setDescription('Action when a user is flagged')
+						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
 						.setName('action_on_perm')
-						.setDescription('What action to take when a user is permanently flagged')
-						.addChoices(
-							{ name: 'Warn', value: 'WARN' },
-							{ name: 'Kick', value: 'KICK' },
-							{ name: 'Ban', value: 'BAN' },
-							{ name: 'Role', value: 'ROLE' },
-						)
+						.setDescription('Action when a user is permanently flagged')
+						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
 						.setName('action_on_auto')
-						.setDescription('What action to take when a user is automatically flagged')
-						.addChoices(
-							{ name: 'Warn', value: 'WARN' },
-							{ name: 'Kick', value: 'KICK' },
-							{ name: 'Ban', value: 'BAN' },
-							{ name: 'Role', value: 'ROLE' },
-						)
+						.setDescription('Action when a user is automatically flagged')
+						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				),
 		)
-		.addSubcommand((sub) => sub.setName('status').setDescription('View the current Watchdog settings')),
+		.addSubcommand((sub) => sub.setName('status').setDescription('View current Watchdog settings')),
 
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		const guildId = interaction.guildId!;
+		const sub = interaction.options.getSubcommand();
 
-		if (interaction.options.getSubcommand() === 'setup') {
-			await interaction.deferReply({ flags: ['Ephemeral'] });
+		await interaction.deferReply({ flags: ["Ephemeral"] });
 
+		const settings = await client.prisma.flaggedSettings.findUnique({ where: { guildId } });
+
+		if (sub === 'setup') {
 			const logChannel = interaction.options.getChannel('log_channel')?.id ?? null;
 			const roleId = interaction.options.getRole('flagged_role')?.id ?? null;
-			const actionOnFlag = (interaction.options.getString('action_on_flag') ?? 'KICK') as any;
-			const actionOnPerm = (interaction.options.getString('action_on_perm') ?? 'KICK') as any;
-			const actionOnAuto = (interaction.options.getString('action_on_auto') ?? 'KICK') as any;
+
+			const actionOnFlag = (interaction.options.getString('action_on_flag') ?? 'KICK') as WatchdogAction;
+			const actionOnPerm = (interaction.options.getString('action_on_perm') ?? 'KICK') as WatchdogAction;
+			const actionOnAuto = (interaction.options.getString('action_on_auto') ?? 'KICK') as WatchdogAction;
 
 			await client.prisma.flaggedSettings.upsert({
 				where: { guildId },
-				update: {
-					logChannelId: logChannel,
-					roleId,
-					actionOnFlag,
-					actionOnPerm,
-					actionOnAuto,
-				},
-				create: {
-					guildId,
-					logChannelId: logChannel,
-					roleId,
-					actionOnFlag,
-					actionOnPerm,
-					actionOnAuto,
-				},
+				update: { logChannelId: logChannel, roleId, actionOnFlag, actionOnPerm, actionOnAuto, enabled: true },
+				create: { guildId, logChannelId: logChannel, roleId, actionOnFlag, actionOnPerm, actionOnAuto, enabled: true },
 			});
 
 			const embed = new EmbedBuilder()
@@ -118,17 +98,9 @@ const command: CommandInterface = {
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-		if (interaction.options.getSubcommand() === 'status') {
-			await interaction.deferReply({ flags: 'Ephemeral' });
-
-			const settings = await client.prisma.flaggedSettings.findUnique({
-				where: { guildId },
-			});
-
+		if (sub === 'status') {
 			if (!settings) {
-				return interaction.editReply({
-					content: '`⚠️` No Watchdog settings found. Run `/watchdog setup` first.',
-				});
+				return interaction.editReply({ content: '`⚠️` No Watchdog settings found. Run `/watchdog setup` first.' });
 			}
 
 			const embed = new EmbedBuilder()
