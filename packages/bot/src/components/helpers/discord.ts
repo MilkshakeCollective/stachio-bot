@@ -8,7 +8,7 @@ import { Snowflake } from 'discord.js';
  */
 export async function installGuild(client: MilkshakeClient, guildId: string, language: string = 'EN') {
 	try {
-		const existing = await client.prisma.guildSettings.findUnique({
+		const existing = await client.prisma.guildConfig.findUnique({
 			where: { guildId },
 		});
 
@@ -18,7 +18,7 @@ export async function installGuild(client: MilkshakeClient, guildId: string, lan
 		}
 
 		// Create new guild settings
-		const newGuild = await client.prisma.guildSettings.create({
+		const newGuild = await client.prisma.guildConfig.create({
 			data: {
 				guildId,
 				language,
@@ -39,7 +39,7 @@ export async function installGuild(client: MilkshakeClient, guildId: string, lan
  */
 export async function uninstallGuild(client: MilkshakeClient, guildId: string) {
 	try {
-		const existing = await client.prisma.guildSettings.findUnique({
+		const existing = await client.prisma.guildConfig.findUnique({
 			where: { guildId },
 		});
 
@@ -48,7 +48,7 @@ export async function uninstallGuild(client: MilkshakeClient, guildId: string) {
 			return null;
 		}
 
-		await client.prisma.guildSettings.delete({
+		await client.prisma.guildConfig.delete({
 			where: { guildId },
 		});
 
