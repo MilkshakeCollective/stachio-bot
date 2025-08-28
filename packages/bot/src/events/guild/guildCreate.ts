@@ -15,23 +15,23 @@ const event: EventInterface = {
 		}
 
 		const welcomeMessage = [
-			`👋 Hello **${guild.name}**!`,
-			' ',
-			`Thanks for adding Online Safety Bot!`,
+			`👋 Hey **${guild.name}**!`,
 			'',
-			'🔗 Useful links:',
-			'* Invite: <https://discord.com/oauth2/authorize?client_id=1374870746006032414>',
-			'* Support: https://discord.com/invite/wSAkewmzAM',
-			'* Support Us: <https://ko-fi.com/duckodas>',
-			' ',
-			'Need help? Join our support server!',
+			`Thanks for inviting **Online Safety Bot** 🚨`,
+			'We\'ll help keep your community safe and positive ✅',
+			'',
+			'🔗 **Quick Links**',
+			'• [Invite the Bot](<https://discord.com/oauth2/authorize?client_id=1374870746006032414>)',
+			'• [Support Server](https://discord.com/invite/wSAkewmzAM)',
+			'• [Support Us](<https://ko-fi.com/duckodas>)',
+			'',
+			'💡 Need help? Join our support server anytime!',
 		].join('\n');
 
-		// Find first channel where bot can send messages
 		const channel = guild.channels.cache
 			.filter(
 				(c) =>
-					(c.type === 0 || c.type === 5 || c.type === 10) && // TextChannel, NewsChannel, ThreadChannel
+					(c.type === 0 || c.type === 5 || c.type === 10) &&
 					c.permissionsFor(guild.members.me!).has(['SendMessages', 'ViewChannel']),
 			)
 			.first() as TextChannel | undefined;
