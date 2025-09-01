@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
@@ -115,8 +115,6 @@ const command: CommandInterface = {
 		),
 
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
-		await interaction.deferReply({ flags: ['Ephemeral'] });
-
 		const subcommandGroup = interaction.options.getSubcommandGroup(false);
 		const subcommand = interaction.options.getSubcommand();
 
@@ -131,7 +129,7 @@ const command: CommandInterface = {
 				case 'setup': {
 					const embed = new EmbedBuilder()
 						.setTitle('🚨 Flagged User Appeal')
-						.setColor('Red')
+						.setColor(client.config.colors.primary)
 						.setAuthor({ name: 'Watchdog System', iconURL: interaction.guild?.iconURL() ?? undefined })
 						.setDescription(
 							[
@@ -167,17 +165,17 @@ const command: CommandInterface = {
 					const button = new ButtonBuilder()
 						.setCustomId('startAppeal')
 						.setLabel('📨 Submit Appeal')
-						.setStyle(ButtonStyle.Danger);
+						.setStyle(ButtonStyle.Secondary);
 
 					const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 					const channel = interaction.channel as TextChannel;
 					await channel.send({ embeds: [embed], components: [row] });
 
-					return interaction.editReply('`✅` Appeal setup message sent successfully!');
+					return interaction.reply({ content: '`✅` Appeal setup message sent successfully!', ephemeral: true });
 				}
 
 				case 'manage': {
-					if (!user) return interaction.editReply('`⚠️` No user specified.');
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', ephemeral: true });
 
 					const action = interaction.options.getString('action', true) as 'APPROVE' | 'DENY';
 					const modReason = reason ?? '';
@@ -185,7 +183,8 @@ const command: CommandInterface = {
 					const appeal = await client.prisma.appeal.findFirst({
 						where: { userId: user.id, status: 'PENDING' },
 					});
-					if (!appeal) return interaction.editReply(`\`⚠️\` No pending appeal found for ${user.tag}.`);
+					if (!appeal)
+						return interaction.reply({ content: `\`⚠️\` No pending appeal found for ${user.tag}.`, ephemeral: true });
 
 					await client.prisma.appeal.update({
 						where: { id: appeal.id },
@@ -205,27 +204,27 @@ const command: CommandInterface = {
 
 					const appealEmbed = new EmbedBuilder()
 						.setTitle(`📣 Your appeal has been ${action === 'APPROVE' ? 'approved' : 'denied'}`)
-						.setColor(action === 'APPROVE' ? 'Green' : 'Red')
+						.setColor(action === 'APPROVE' ? client.config.colors.success : client.config.colors.error)
 						.setDescription(modReason ? `**Reason:** ${modReason}` : '')
 						.setFooter({ text: 'This is an automated system message. Please do not reply here directly.' })
 						.setTimestamp();
 
-					// DM the user but do not block the reply if it fails
 					user.send({ embeds: [appealEmbed] }).catch(() => {});
 
-					// Only editReply once here
-					return interaction.editReply(
-						`\`✅\` Appeal for ${user.tag} has been ${action === 'APPROVE' ? 'approved' : 'denied'}.`,
-					);
+					return interaction.reply({
+						content: `\`✅\` Appeal for ${user.tag} has been ${action === 'APPROVE' ? 'approved' : 'denied'}.`,
+						ephemeral: true,
+					});
 				}
 			}
 		} else {
 			switch (subcommand) {
 				case 'add': {
-					if (!user) return interaction.editReply('`⚠️` No user specified.');
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', flags: ['Ephemeral'] });
 
 					const existing = await client.prisma.users.findUnique({ where: { userId: user.id } });
-					if (existing) return interaction.editReply(`\`⚠️\` ${user.tag} is already flagged.`);
+					if (existing)
+						return interaction.reply({ content: `\`⚠️\` ${user.tag} is already flagged.`, flags: ['Ephemeral'] });
 
 					await client.prisma.users.create({
 						data: {
@@ -238,7 +237,10 @@ const command: CommandInterface = {
 						},
 					});
 
-					return interaction.editReply(`\`✅\` ${user.tag} has been flagged as **${status}**.`);
+					return interaction.reply({
+						content: `\`✅\` ${user.tag} has been flagged as **${status}**.`,
+						flags: ['Ephemeral'],
+					});
 				}
 
 				case 'add-multiple': {
@@ -276,19 +278,21 @@ const command: CommandInterface = {
 						flaggedCount++;
 					}
 
-					return interaction.editReply(
-						[
+					return interaction.reply({
+						content: [
 							`\`✅\` Flagged **${flaggedCount}** users as ${status}.`,
 							alreadyFlagged.length ? `\`⚠️\` Skipped already flagged users: ${alreadyFlagged.join(', ')}` : '',
 						].join('\n'),
-					);
+						flags: ['Ephemeral'],
+					});
 				}
 
 				case 'update': {
-					if (!user) return interaction.editReply('`⚠️` No user specified.');
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', flags: ['Ephemeral'] });
 
 					const existing = await client.prisma.users.findUnique({ where: { userId: user.id } });
-					if (!existing) return interaction.editReply(`\`⚠️\` ${user.tag} is not flagged.`);
+					if (!existing)
+						return interaction.reply({ content: `\`⚠️\` ${user.tag} is not flagged.`, flags: ['Ephemeral'] });
 
 					await client.prisma.users.update({
 						where: { userId: user.id },
@@ -303,24 +307,32 @@ const command: CommandInterface = {
 						},
 					});
 
-					return interaction.editReply(`\`✏️\` Updated flagged user **${user.tag}**.`);
+					return interaction.reply({ content: `\`✏️\` Updated flagged user **${user.tag}**.`, flags: ['Ephemeral'] });
 				}
 
 				case 'remove': {
-					if (!user) return interaction.editReply('`⚠️` No user specified.');
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', flags: ['Ephemeral'] });
 
 					const existing = await client.prisma.users.findUnique({ where: { userId: user.id } });
-					if (!existing) return interaction.editReply(`\`⚠️\` ${user.tag} is not flagged.`);
+					if (!existing)
+						return interaction.reply({ content: `\`⚠️\` ${user.tag} is not flagged.`, flags: ['Ephemeral'] });
 
-					await client.prisma.users.delete({ where: { userId: user.id } });
-					return interaction.editReply(`\`🗑️\` ${user.tag} has been unflagged.`);
+					await client.prisma.appeal.deleteMany({
+						where: { userId: user.id },
+					});
+
+					await client.prisma.users.delete({
+						where: { userId: user.id },
+					});
+					return interaction.reply({ content: `\`🗑️\` ${user.tag} has been unflagged.`, flags: ['Ephemeral'] });
 				}
 
 				case 'info': {
-					if (!user) return interaction.editReply('`⚠️` No user specified.');
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', flags: ['Ephemeral'] });
 
 					const existing = await client.prisma.users.findUnique({ where: { userId: user.id } });
-					if (!existing) return interaction.editReply(`\`⚠️\` ${user.tag} is not flagged.`);
+					if (!existing)
+						return interaction.reply({ content: `\`⚠️\` ${user.tag} is not flagged.`, flags: ['Ephemeral'] });
 
 					const embed = new EmbedBuilder()
 						.setTitle(`🚩 Flag Info: ${user.tag}`)
@@ -331,7 +343,7 @@ const command: CommandInterface = {
 						.setFooter({ text: `User ID: ${existing.userId}` })
 						.setTimestamp();
 
-					return interaction.editReply({ embeds: [embed] });
+					return interaction.reply({ embeds: [embed], flags: ['Ephemeral'] });
 				}
 
 				case 'scan': {
@@ -339,12 +351,18 @@ const command: CommandInterface = {
 					try {
 						guild = await client.guilds.fetch(guildId);
 					} catch {
-						return interaction.editReply(`\`❌\` Guild with ID \`${guildId}\` could not be found.`);
+						return interaction.reply({
+							content: `\`❌\` Guild with ID \`${guildId}\` could not be found.`,
+							flags: ['Ephemeral'],
+						});
 					}
 
 					const flaggedSettings = await client.prisma.watchdogConfig.findUnique({ where: { guildId: guild.id } });
 					if (!flaggedSettings || !flaggedSettings.enabled)
-						return interaction.editReply('`⚠️` Flagged system is disabled for this guild.');
+						return interaction.reply({
+							content: '`⚠️` Flagged system is disabled for this guild.',
+							flags: ['Ephemeral'],
+						});
 
 					const members = await guild.members.fetch();
 					let affected = 0;
@@ -370,7 +388,10 @@ const command: CommandInterface = {
 						}
 					}
 
-					return interaction.editReply(`\`✅\` Scan complete. Applied actions to **${affected}** flagged member(s).`);
+					return interaction.reply({
+						content: `\`✅\` Scan complete. Applied actions to **${affected}** flagged member(s).`,
+						flags: ['Ephemeral'],
+					});
 				}
 			}
 		}

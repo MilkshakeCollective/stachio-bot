@@ -15,7 +15,9 @@ const event: EventInterface = {
 		if (!command) {
 			logger.error(`(CONTEXT) Command not found: ${interaction.commandName}`);
 			return interaction.reply({
-				embeds: [new EmbedBuilder().setColor('Red').setDescription(`Failed to process this command`)],
+				embeds: [
+					new EmbedBuilder().setColor(client.config.colors.error).setDescription(`Failed to process this command`),
+				],
 				ephemeral: true,
 			});
 		}
@@ -38,7 +40,7 @@ const event: EventInterface = {
 				return interaction.reply({
 					embeds: [
 						new EmbedBuilder()
-							.setColor('Red')
+							.setColor(client.config.colors.error)
 							.setDescription(`Please wait **${time}** more second(s) before using this command again.`),
 					],
 					ephemeral: true,
@@ -54,7 +56,11 @@ const event: EventInterface = {
 		} catch (error) {
 			logger.error(error);
 			return interaction.reply({
-				embeds: [new EmbedBuilder().setColor('Red').setDescription(`Failed to execute \`${command.data.name}\``)],
+				embeds: [
+					new EmbedBuilder()
+						.setColor(client.config.colors.error)
+						.setDescription(`Failed to execute \`${command.data.name}\``),
+				],
 				ephemeral: true,
 			});
 		}

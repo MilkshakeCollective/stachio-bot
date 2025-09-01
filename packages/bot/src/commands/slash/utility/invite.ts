@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -24,22 +24,22 @@ const command: CommandInterface = {
 		const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user?.id}`;
 
 		const embed = new EmbedBuilder()
-			.setTitle('📩 Invite Online Safety')
+			.setTitle('📩 Invite Stachio')
 			.setDescription(
 				[
-					'Thanks for choosing **Online Safety**!',
+					'Thanks for choosing **Stachio**!',
 					' ',
 					"With this bot, you'll get:",
 					'- `🛡️` Automatic moderation',
 					'- `📊` Safety reports & logs',
 					'- `⚙️` Easy setup and customization',
 					'',
-					'Click the button below to invite Online Safety to your server.  ',
+					'Click the button below to invite Stachio to your server.  ',
 					'Help us make Discord a safer place for everyone!',
 				].join('\n'),
 			)
 			.setColor('Blurple')
-			.setFooter({ text: 'Online Safety • Protecting communities since 2025' })
+			.setFooter({ text: 'Stachio • Protecting communities since 2025' })
 			.setTimestamp();
 
 		const button = new ActionRowBuilder<ButtonBuilder>().addComponents(

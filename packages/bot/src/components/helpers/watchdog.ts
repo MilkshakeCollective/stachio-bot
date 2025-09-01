@@ -1,7 +1,11 @@
 import { GuildMember, EmbedBuilder, Role, TextChannel } from 'discord.js';
-import { MilkshakeClient } from '../../index.js';
+import { MilkshakeClient, t } from '../../index.js';
 import { logger } from '../exports.js';
 
+/**
+ * @param client
+ * @returns
+ */
 export async function sendWatchdogReport(client: MilkshakeClient) {
 	const reportChannel = client.channels.cache.get(client.config.channels[0].id) as TextChannel;
 	if (!reportChannel) {
@@ -30,31 +34,45 @@ export async function sendWatchdogReport(client: MilkshakeClient) {
 	});
 
 	const embed = new EmbedBuilder()
-		.setTitle('📊 Weekly Watchdog Report')
-		.setColor('Blurple')
+		.setTitle(await t(reportChannel.guildId, 'helpers.watchdog.weekly_report.title'))
+		.setColor(client.config.colors.primary)
 		.setDescription(
 			[
-				'Here\'s a summary of flagged users and appeals for the past week. Stay safe and keep your community clean!',
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._1'),
 				'',
-				'**`⚠️` Flagged Users**',
-				`- Total Flagged: \`${totalFlagged}\``,
-				`- Auto-Flagged: \`${totalAutoFlagged}\``,
-				`- Permanent Flags: \`${totalPermFlagged}\``,
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._2'),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._3', { total_flagged: totalFlagged }),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._4', { total_auto_flagged: totalAutoFlagged }),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._5', { total_perm_flagged: totalPermFlagged }),
 				'',
-				'**`✉️` Appeals**',
-				`- Total Appeals: \`${totalAppealed}\``,
-				`- Approved: \`✅\` \`${totalApprovedAppeals}\``,
-				`- Denied: \`❌\` \`${totalDeniedAppeals}\``,
-				`- Pending: \`⏳\` \`${totalPendingAppeals}\``,
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._6'),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._7', { total_appealed: totalAppealed }),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._8', {
+					total_approved_appeals: totalApprovedAppeals,
+				}),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._9', {
+					total_denied_appeals: totalDeniedAppeals,
+				}),
+				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._10', {
+					total_pending_appeals: totalPendingAppeals,
+				}),
 			].join('\n'),
 		)
-		.setFooter({ text: 'Watchdog Weekly Report' })
+		.setFooter({ text: await t(reportChannel.guildId, 'helpers.watchdog.weekly_report.footer') })
 		.setTimestamp();
 
 	await reportChannel.send({ embeds: [embed] });
 	logger.info('[WATCHDOG REPORT] Weekly report sent.');
 }
 
+/**
+ * @param member
+ * @param client
+ * @param action
+ * @param flaggedUser
+ * @param flaggedSettings
+ * @returns
+ */
 export async function actionUser(
 	member: GuildMember,
 	client: MilkshakeClient,
@@ -73,30 +91,32 @@ export async function actionUser(
 
 	const actionText =
 		action === 'ROLE'
-			? 'You have automatically been assigned a restricted role.'
+			? await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._2')
 			: action === 'BAN'
-				? 'You are permanently banned from this server.'
+				? await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._3')
 				: action === 'KICK'
-					? 'You have been kicked from this server.'
-					: 'You have received a warning.';
+					? await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._4')
+					: await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._5');
 
-	// DM embed
 	const dmEmbed = new EmbedBuilder()
-		.setTitle('⚠️ You Have Been Flagged')
-		.setColor('Orange')
+		.setTitle(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.title'))
+		.setColor(client.config.colors.warning)
 		.setDescription(
 			[
-				`If you are receiving this message, you are flagged in **${member.guild.name}** by the safety system.`,
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._1', { member_guild_name: member.guild.name }),
 				'',
-				`**Reason:** ${flaggedUser.reason ?? 'No reason provided'}`,
-				`**What This Means?** ${actionText}`,
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._1'),
+				+`${flaggedUser.reason ?? (await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2'))}`,
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._1', { action_taken: actionText }),
 				'',
-				`**Next Steps:**`,
-				`Join the **Online Safety Discord** to appeal or learn more.`,
-				'👉 [Join Online Safety Discord](https://discord.gg/wSAkewmzAM)',
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._4'),
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._5'),
+				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._6', {
+					client_support_server: 'https://discord.gg/wSAkewmzAM',
+				}),
 			].join('\n'),
 		)
-		.setFooter({ text: 'This is an automated system message' })
+		.setFooter({ text: await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.footer') })
 		.setTimestamp();
 
 	try {
@@ -108,7 +128,6 @@ export async function actionUser(
 
 	let actionTaken = 'NONE';
 
-	// Selve handlingen
 	switch (action) {
 		case 'BAN':
 			await member.ban({ reason: flaggedUser.reason ?? `Flagged by ${client.user?.username}` });
@@ -147,17 +166,17 @@ export async function actionUser(
 		const logChannel = member.guild.channels.cache.get(flaggedSettings.logChannelId) as TextChannel;
 		if (logChannel) {
 			const logEmbed = new EmbedBuilder()
-				.setTitle('🚨 Flagged User Detected')
-				.setColor('Red')
+				.setTitle(await t(member.guild.id, 'helpers.watchdog.action.logEmbed.title'))
+				.setColor(client.config.colors.error)
 				.setThumbnail(member.user.displayAvatarURL())
 				.setDescription(
 					[
-						`A flagged user has joined **${member.guild.name}**.`,
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._1', { member_guild_name: member.guild.name }),
 						'',
-						`**User:** ${member.user.tag} (${member.id})`,
-						`**Status:** ${flaggedUser.status}`,
-						`**Action Taken:** ${actionTaken}`,
-						`**Reason:** ${flaggedUser.reason ?? 'No reason provided'}`,
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._2', { member_user_tag: member.user, member_id: member.user.id }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._3', { flaggedUser_status: flaggedUser.status }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._4', { action_taken: actionTaken }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._5', { flaggedUser_reason: flaggedUser.reason }),
 					].join('\n'),
 				)
 				.setTimestamp();

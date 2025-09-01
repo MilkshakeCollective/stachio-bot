@@ -9,13 +9,14 @@ datasource db {
 }
 
 model GuildConfig {
-  guildId      String              @id
-  language     String              @default("EN")
-  watchdog     WatchdogConfig?
-  AntiPhishing AntiPhishingConfig?
-  verification VerificationConfig?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  guildId       String              @id
+  language      String              @default("EN")
+  watchdog      WatchdogConfig?
+  AntiPhishing  AntiPhishingConfig?
+  verification  VerificationConfig?
+  WarningConfig WarningConfig?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 }
 
 model Users {
@@ -24,7 +25,7 @@ model Users {
   last_username String?
   last_avatar   String?
   status        WatchdogStatus @default(FLAGGED)
-  reason        String?
+  reason        String         @default("No reason provided")
   evidence      Json
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -58,10 +59,10 @@ enum AppealStatus {
 }
 
 model WatchdogConfig {
-  id           Int            @id @default(autoincrement())
-  guildId      String         @unique
-  enabled      Boolean        @default(true)
-  
+  id      Int     @id @default(autoincrement())
+  guildId String  @unique
+  enabled Boolean @default(true)
+
   actionOnFlag WatchdogAction @default(KICK)
   actionOnPerm WatchdogAction @default(KICK)
   actionOnAuto WatchdogAction @default(ROLE)
@@ -82,9 +83,9 @@ enum WatchdogAction {
 }
 
 model AntiPhishingConfig {
-  id              Int     @id @default(autoincrement())
-  guildId         String  @unique
-  enabled         Boolean @default(true)
+  id      Int     @id @default(autoincrement())
+  guildId String  @unique
+  enabled Boolean @default(true)
 
   ignoredRoles    Json
   ignoredUsers    Json
@@ -136,4 +137,24 @@ model VerificationAttempt {
   verificationConfigId String?
 
   @@unique([guildId, userId])
+}
+
+model Warnings {
+  id        Int      @id @default(autoincrement())
+  guildId   String
+  userId    String
+  moderator String
+  points    Int
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model WarningConfig {
+  id         Int      @id @default(autoincrement())
+  guildId    String   @unique
+  decayDays  Int      @default(90)
+  thresholds Json
+  updatedAt  DateTime @updatedAt
+
+  guild GuildConfig @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
 }

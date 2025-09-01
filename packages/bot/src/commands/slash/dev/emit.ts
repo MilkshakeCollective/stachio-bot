@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
 const command: CommandInterface = {

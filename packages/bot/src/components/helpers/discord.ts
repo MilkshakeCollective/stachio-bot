@@ -1,12 +1,84 @@
-import { MilkshakeClient } from '../../index.js';
-import { Snowflake } from 'discord.js';
+import { MilkshakeClient, t } from '../../index.js';
+import { GuildMember, Snowflake } from 'discord.js';
+
+/**
+ * @param client
+ * @param guildId
+ * @param userId
+ * @param moderatorId
+ * @param points
+ * @param reason
+ * @returns
+ */
+export async function addWarning(
+	client: MilkshakeClient,
+	guildId: string,
+	userId: string,
+	moderatorId: string,
+	points: number,
+	reason: string,
+) {
+	await client.prisma.warnings.create({
+		data: { guildId, userId, moderator: moderatorId, points, reason },
+	});
+
+	let config = await client.prisma.warningConfig.findUnique({ where: { guildId } });
+	config ??= await client.prisma.warningConfig.create({
+		data: {
+			guildId,
+			decayDays: 90,
+			thresholds: JSON.stringify([
+				{ points: 5, action: 'mute', durationMinutes: 30 },
+				{ points: 10, action: 'kick' },
+				{ points: 15, action: 'ban' },
+			]),
+		},
+	});
+
+	const cutoff = new Date(Date.now() - config.decayDays * 24 * 60 * 60 * 1000);
+
+	const warnings = await client.prisma.warnings.findMany({
+		where: { guildId, userId, createdAt: { gte: cutoff } },
+	});
+
+	const total = warnings.reduce((sum, w) => sum + w.points, 0);
+
+	return { total, config };
+}
+
+/**
+ * @param member
+ * @param total
+ * @param config
+ */
+export async function enforceSanctions(member: GuildMember, total: number, config: any) {
+	if (!config || !config.thresholds) return;
+
+	// Convert thresholds object into array of entries
+	for (const [action, pointsValue] of Object.entries(config.thresholds)) {
+		const points = Number(pointsValue); // cast to number
+		if (total >= points) {
+			switch (action) {
+				case 'mute':
+					await member.timeout(10 * 60 * 1000, await t(member.guild.id, "helpers.warn.sanctions.mute"));
+					break;
+				case 'kick':
+					await member.kick(await t(member.guild.id, "helpers.warn.sanctions.kick"));
+					break;
+				case 'ban':
+					await member.ban({ reason: await t(member.guild.id, "helpers.warn.sanctions.ban") });
+					break;
+			}
+		}
+	}
+}
 
 /**
  * Ensure guild data exists in the database.
  * @param guildId The ID of the guild.
  * @param language Optional language code, defaults to "EN".
  */
-export async function installGuild(client: MilkshakeClient, guildId: string, language: string = 'EN') {
+export async function installGuild(client: MilkshakeClient, guildId: string, language: string = 'en-US') {
 	try {
 		const existing = await client.prisma.guildConfig.findUnique({
 			where: { guildId },

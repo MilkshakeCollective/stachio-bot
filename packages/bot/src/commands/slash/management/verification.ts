@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
@@ -29,7 +29,7 @@ const command: CommandInterface = {
 	isDeveloperOnly: false,
 	data: new SlashCommandBuilder()
 		.setName('verification')
-		.setDescription('Manage and setup the verification system (Online Safety 2.0)')
+		.setDescription('Manage and setup the verification system')
 		.setNSFW(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.addSubcommand((sub) =>
@@ -140,7 +140,7 @@ const command: CommandInterface = {
 							'`⚠️` You only get a few chances — choose carefully!',
 						].join('\n'),
 					)
-					.setColor('Blurple')
+					.setColor(client.config.colors.primary)
 					.setFooter({ text: 'Verification System • Stay safe online' })
 					.setTimestamp();
 

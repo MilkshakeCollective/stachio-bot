@@ -1,6 +1,6 @@
 import { Guild, TextChannel } from 'discord.js';
 import { EventInterface } from '../../types.js';
-import { MilkshakeClient } from '../../index.js';
+import { MilkshakeClient, t } from '../../index.js';
 import { logger, installGuild } from '../../components/exports.js';
 
 const event: EventInterface = {
@@ -15,17 +15,19 @@ const event: EventInterface = {
 		}
 
 		const welcomeMessage = [
-			`👋 Hey **${guild.name}**!`,
-			'',
-			`Thanks for inviting **Online Safety Bot** 🚨`,
-			'We\'ll help keep your community safe and positive ✅',
-			'',
-			'🔗 **Quick Links**',
-			'• [Invite the Bot](<https://discord.com/oauth2/authorize?client_id=1374870746006032414>)',
-			'• [Support Server](https://discord.com/invite/wSAkewmzAM)',
-			'• [Support Us](<https://ko-fi.com/duckodas>)',
-			'',
-			'💡 Need help? Join our support server anytime!',
+			await t(guild.id, 'events.newGuild._1', { guild_name: guild.name }),
+			' ',
+			await t(guild.id, 'events.newGuild._2'),
+			await t(guild.id, 'events.newGuild._3'),
+			' ',
+			await t(guild.id, 'events.newGuild._4'),
+			await t(guild.id, 'events.newGuild._5', {
+				client_invite: 'https://discord.com/oauth2/authorize?client_id=1374870746006032414',
+			}),
+			await t(guild.id, 'events.newGuild._6', { client_support_server: 'https://discord.com/invite/wSAkewmzAM' }),
+			await t(guild.id, 'events.newGuild._7', { client_kofi_link: 'https://ko-fi.com/duckodas' }),
+			' ',
+			await t(guild.id, 'events.newGuild._8'),
 		].join('\n');
 
 		const channel = guild.channels.cache

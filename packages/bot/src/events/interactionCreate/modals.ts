@@ -25,7 +25,7 @@ const event: EventInterface = {
 			if (logChannel) {
 				const embed = new EmbedBuilder()
 					.setTitle('📩 New Appeal Submitted')
-					.setColor('Blurple')
+					.setColor(client.config.colors.primary)
 					.setThumbnail(interaction.user.displayAvatarURL())
 					.setDescription(
 						[

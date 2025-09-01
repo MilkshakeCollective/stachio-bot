@@ -12,7 +12,17 @@ export interface ConfigInterface {
 	channels: ObjectNameIDArray;
 	webhooks: webhookArray;
 	APIs: ObjectNameIDArray;
+	colors: {
+		success: number;
+		error: number;
+		warning: number;
+		info: number;
+		secondary: number;
+		primary: number;
+	};
 }
+
+export const defaultLanguage = "en-US"
 
 export const config: ConfigInterface = {
 	client: {
@@ -24,10 +34,6 @@ export const config: ConfigInterface = {
 		{
 			name: 'Milkshake Collective',
 			id: '1396235829579485214',
-		},
-		{
-			name: 'Online Safety',
-			id: '1360001636424093928',
 		},
 	],
 	channels: [
@@ -45,4 +51,12 @@ export const config: ConfigInterface = {
 		{ name: 'Perspective API Key', id: process.env.PERSPECTIVE_API_KEY },
 		{ name: 'OpenAI API Key', id: process.env.OPENAI_API_KEY },
 	],
+	colors: {
+		success: 0x57f287,
+		error: 0xed4245,
+		warning: 0xfaa61a,
+		info: 0x5865f2,
+		secondary: 0x2b2d31,
+		primary: 0xaac49b,
+	},
 };

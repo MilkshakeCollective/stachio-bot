@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
 	PermissionFlagsBits,
@@ -123,7 +123,7 @@ const command: CommandInterface = {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle('✅ Anti-Phish Setup Complete')
-						.setColor('Green')
+						.setColor(client.config.colors.success)
 						.setDescription(
 							[
 								`**Log Channel:** ${logChannel ? `<#${logChannel}>` : '`Not set`'}`,
@@ -146,7 +146,7 @@ const command: CommandInterface = {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle('🐾 Anti-Phish Settings')
-						.setColor('Blurple')
+						.setColor(client.config.colors.primary)
 						.setDescription(
 							[
 								`**Enabled:** ${settings!.enabled ? '`✅`' : '`❌`'}`,

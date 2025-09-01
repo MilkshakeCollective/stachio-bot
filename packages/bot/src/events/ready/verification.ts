@@ -38,7 +38,7 @@ const event: EventInterface = {
 							'`⚠️` You only get a few chances — choose carefully!',
 						].join('\n'),
 					)
-					.setColor('Blurple')
+					.setColor(client.config.colors.primary)
 					.setFooter({ text: 'Verification System • Stay safe online' })
 					.setTimestamp();
                     

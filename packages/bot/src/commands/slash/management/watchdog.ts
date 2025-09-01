@@ -1,5 +1,5 @@
 import { MilkshakeClient } from '../../../index.js';
-import { CommandInterface } from '../../../types';
+import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
 	PermissionFlagsBits,
@@ -89,7 +89,7 @@ const command: CommandInterface = {
 
 			const embed = new EmbedBuilder()
 				.setTitle('✅ Watchdog Setup Complete')
-				.setColor('Green')
+				.setColor(client.config.colors.success)
 				.setDescription(
 					[
 						`**Logs:** ${logChannel ? `<#${logChannel}>` : '`Not set`'}`,
@@ -113,7 +113,7 @@ const command: CommandInterface = {
 
 			const embed = new EmbedBuilder()
 				.setTitle('🐾 Watchdog Settings')
-				.setColor('Blurple')
+				.setColor(client.config.colors.primary)
 				.setDescription(
 					[
 						`**Enabled:** ${settings.enabled ? '`✅`' : '`❌`'}`,

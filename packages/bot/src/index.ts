@@ -1,3 +1,12 @@
+export {
+	getGuildT,
+	getGuildLanguage,
+	setGuildLanguage,
+	loadLanguagesForGuilds,
+	t,
+	changeLanguage,
+} from './handlers/i18n.js';
+
 import { Client, Collection, GatewayIntentBits, Options, Partials } from 'discord.js';
 import { ConfigInterface, config } from './config/config.js';
 import { EventInterface, CommandInterface } from './types.js';
