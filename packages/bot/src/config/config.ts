@@ -22,8 +22,7 @@ export interface ConfigInterface {
 	};
 }
 
-export const defaultLanguage = "en-US"
-
+export const defaultLanguage = process.env.DEFAULT_LANGUAGE
 export const config: ConfigInterface = {
 	client: {
 		token: process.env.CLIENT_TOKEN as string,
