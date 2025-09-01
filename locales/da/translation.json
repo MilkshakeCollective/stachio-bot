@@ -2,29 +2,29 @@
 	"events": {
 		"newGuild": {
 			"_1": "👋 Hey **{{guild_name}}**!",
-			"_2": "Thanks for inviting **Stachio** 🚨",
+			"_2": "Tak fordi du inviterede **Stachio** 🚨",
 			"_3": "We'll help keep your community safe and positive ✅",
-			"_4": "🔗 **Quick Links**",
-			"_5": "• [Invite the Bot](<{{client_invite}}>)",
+			"_4": "🔗 **Hurtige Links**",
+			"_5": "• [Inviter Bot](<{{client_invite}}>)",
 			"_6": "• [Support Server]({{client_support_server}})",
-			"_7": "• [Support Us](<{{client_kofi_link}}>)",
-			"_8": "💡 Need help? Join our support server anytime!"
+			"_7": "• [Støt os] (<{{client_kofi_link}}>)",
+			"_8": "💡 Brug for hjælp? Tilmeld dig vores supportserver når som helst!"
 		}
 	},
 	"helpers": {
 		"warn": {
 			"sanctions": {
-				"mute": "Auto mute due to too many warning points",
-				"kick": "Auto kick due to too many warning points",
-				"ban": "Auto ban due to too many warning points"
+				"mute": "Auto mute på grund af for mange advarselspunkter",
+				"kick": "Auto kick på grund af for mange advarselspunkter",
+				"ban": "Auto ban på grund af for mange advarselspunkter"
 			}
 		},
 		"watchdog": {
 			"weekly_report": {
-				"title": "📊 Weekly Watchdog Report",
-				"_1": "Here's a summary of flagged users and appeals for the past week. Stay safe and keep your community clean!",
-				"_2": "**`⚠️` Flagged Users**",
-				"_3": "- Total Flagged: `{{total_flagged}}`",
+				"title": "📊 Ugentlig Watchdog Rapport",
+				"_1": "Her er en oversigt over mærkeret brugere og appeller til den sidste uge. Hold dit fællesskab ren!",
+				"_2": "**`⚠️` Markerede Brugere**",
+				"_3": "- Total Markerede: `{{total_flagged}}`",
 				"_4": "- Auto-Flagged: `{{total_auto_flagged}}`",
 				"_5": "- Permanent Flags: `{{total_perm_flagged}}`",
 				"_6": "**`✉️` Appeals**",
