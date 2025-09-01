@@ -10,7 +10,7 @@ datasource db {
 
 model GuildConfig {
   guildId       String              @id
-  language      String              @default("EN")
+  language      String              @default("en-US")
   watchdog      WatchdogConfig?
   AntiPhishing  AntiPhishingConfig?
   verification  VerificationConfig?
