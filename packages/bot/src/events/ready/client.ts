@@ -3,6 +3,7 @@ import { EventInterface } from '../../types.js';
 import { logger, installGuild, sendWatchdogReport } from '../../components/exports.js';
 import { ActivityType, Events } from 'discord.js';
 import cron from 'node-cron';
+import { ReportStatus } from '@prisma/client';
 
 const event: EventInterface = {
 	name: Events.ClientReady,
@@ -23,11 +24,23 @@ const event: EventInterface = {
 		for (const [, guild] of client.guilds.cache) {
 			try {
 				await installGuild(client, guild.id);
-				logger.info(`✅ Guild settings ensured for ${guild.name} (${guild.id})`);
 			} catch (err) {
 				logger.error(`❌ Failed to ensure guild settings for ${guild.name} (${guild.id}): ${err}`);
 			}
 		}
+
+		const cleanupOldReports = async () => {
+			const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000); // 90 days
+
+			await client.prisma.report.deleteMany({
+				where: {
+					status: ReportStatus.REJECTED ?? ReportStatus.RESOLVED,
+					createdAt: { lt: ninetyDaysAgo },
+				},
+			});
+
+			logger.info('✅ Old denied & resolved reports cleaned up');
+		};
 
 		const cleanupOldAppeals = async () => {
 			const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -56,6 +69,7 @@ const event: EventInterface = {
 
 		setInterval(
 			() => {
+				cleanupOldReports();
 				cleanupOldAppeals();
 				cleanupOldAttempts();
 			},
