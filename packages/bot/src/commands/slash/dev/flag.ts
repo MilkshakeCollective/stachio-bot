@@ -171,11 +171,11 @@ const command: CommandInterface = {
 					const channel = interaction.channel as TextChannel;
 					await channel.send({ embeds: [embed], components: [row] });
 
-					return interaction.reply({ content: '`✅` Appeal setup message sent successfully!', ephemeral: true });
+					return interaction.reply({ content: '`✅` Appeal setup message sent successfully!', flags: ["Ephemeral"] });
 				}
 
 				case 'manage': {
-					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', ephemeral: true });
+					if (!user) return interaction.reply({ content: '`⚠️` No user specified.', flags: ["Ephemeral"] });
 
 					const action = interaction.options.getString('action', true) as 'APPROVE' | 'DENY';
 					const modReason = reason ?? '';
@@ -184,7 +184,7 @@ const command: CommandInterface = {
 						where: { userId: user.id, status: 'PENDING' },
 					});
 					if (!appeal)
-						return interaction.reply({ content: `\`⚠️\` No pending appeal found for ${user.tag}.`, ephemeral: true });
+						return interaction.reply({ content: `\`⚠️\` No pending appeal found for ${user.tag}.`, flags: ["Ephemeral"] });
 
 					await client.prisma.appeal.update({
 						where: { id: appeal.id },
@@ -213,7 +213,7 @@ const command: CommandInterface = {
 
 					return interaction.reply({
 						content: `\`✅\` Appeal for ${user.tag} has been ${action === 'APPROVE' ? 'approved' : 'denied'}.`,
-						ephemeral: true,
+						flags: ["Ephemeral"],
 					});
 				}
 			}
