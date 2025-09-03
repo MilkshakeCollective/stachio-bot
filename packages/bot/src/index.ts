@@ -12,6 +12,7 @@ import { ConfigInterface, config } from './config/config.js';
 import { EventInterface, CommandInterface } from './types.js';
 import { loadCrashHandler } from './handlers/crash.js';
 import { loadCommands } from './handlers/commands.js';
+import { startKoFiWebhookServer } from './kofi.js';
 import { loadEvents } from './handlers/events.js';
 import { logger } from './components/exports.js';
 
@@ -76,6 +77,7 @@ export class MilkshakeClient extends Client {
 			loadCrashHandler();
 			await loadEvents(this);
 			await loadCommands(this);
+			startKoFiWebhookServer(this);
 		} catch (error) {
 			logger.error(error);
 		}
