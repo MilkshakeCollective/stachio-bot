@@ -22,7 +22,7 @@ export interface ConfigInterface {
 	};
 }
 
-export const defaultLanguage = process.env.DEFAULT_LANGUAGE
+export const defaultLanguage: string = process.env.DEFAULT_LANGUAGE as string;
 export const config: ConfigInterface = {
 	client: {
 		token: process.env.CLIENT_TOKEN as string,
@@ -43,6 +43,14 @@ export const config: ConfigInterface = {
 		{
 			name: 'Appeal Log Channel',
 			id: process.env.APPEAL_LOG_CHANNEL_ID,
+		},
+		{
+			name: 'Watchdog Report Channel',
+			id: process.env.WATCHDOG_REPORT_CHANNEL_ID,
+		},
+		{
+			name: 'Watchdog Report Log Channel',
+			id: process.env.WATCHDOG_REPORT_LOG_CHANNEL_ID,
 		},
 	],
 	webhooks: [],
