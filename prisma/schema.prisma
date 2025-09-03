@@ -39,6 +39,27 @@ enum WatchdogStatus {
   AUTO_FLAGGED
 }
 
+model Report {
+  id          Int          @id @default(autoincrement())
+  guildId     String
+  reporterId  String
+  reportedId  String
+  description String
+  evidence    Json
+  screenshots Json
+  status      ReportStatus @default(PENDING)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum ReportStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  REJECTED
+}
+
 model Appeal {
   id                Int          @id @default(autoincrement())
   userId            String
