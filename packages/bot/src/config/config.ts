@@ -7,6 +7,7 @@ dotenv.config();
 export type webhookArray = Array<{ name: string; id: string; token: string }>;
 
 export interface ConfigInterface {
+	version: string;
 	client: { token: string; id: string; secret: string };
 	guilds: ObjectNameIDArray;
 	channels: ObjectNameIDArray;
@@ -24,6 +25,7 @@ export interface ConfigInterface {
 
 export const defaultLanguage: string = process.env.DEFAULT_LANGUAGE as string;
 export const config: ConfigInterface = {
+	version: process.env.VERSION as string,
 	client: {
 		token: process.env.CLIENT_TOKEN as string,
 		id: process.env.CLIENT_ID as string,
