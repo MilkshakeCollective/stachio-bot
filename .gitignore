@@ -128,3 +128,4 @@ dist
 
 package-lock.json
 .turbo
+/packages/script
