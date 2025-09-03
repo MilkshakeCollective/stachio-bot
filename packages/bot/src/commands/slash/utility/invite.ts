@@ -19,7 +19,7 @@ const command: CommandInterface = {
 		.setNSFW(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
-		await interaction.deferReply({ flags: ["Ephemeral"] });
+		await interaction.deferReply({ flags: ['Ephemeral'] });
 
 		const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user?.id}`;
 
@@ -27,18 +27,19 @@ const command: CommandInterface = {
 			.setTitle('📩 Invite Stachio')
 			.setDescription(
 				[
-					'Thanks for choosing **Stachio**!',
-					' ',
-					"With this bot, you'll get:",
-					'- `🛡️` Automatic moderation',
-					'- `📊` Safety reports & logs',
-					'- `⚙️` Easy setup and customization',
+					'Thanks for choosing **Stachio** — your community guardian! 💚',
 					'',
-					'Click the button below to invite Stachio to your server.  ',
-					'Help us make Discord a safer place for everyone!',
+					'With Stachio, your server gets:',
+					'- `👁️` **Watchdog**: Global ban protection against repeat offenders',
+					'- `🛡️` **Anti-Phishing**: Blocks malicious links automatically',
+					'- `📑` **Report System**: Members can flag issues for review',
+					'- `⚖️` **Appeals**: Fair review process for flagged users',
+					'- `🌍` **Multi-language Support**: Moderation for communities worldwide',
+					'',
+					'Click the button below to add Stachio and make your community safer today!',
 				].join('\n'),
 			)
-			.setColor('Blurple')
+			.setColor(client.config.colors.primary)
 			.setFooter({ text: 'Stachio • Protecting communities since 2025' })
 			.setTimestamp();
 
