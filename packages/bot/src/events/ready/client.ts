@@ -14,7 +14,7 @@ const event: EventInterface = {
 		client.user?.setPresence({
 			activities: [
 				{
-					name: '/help | Donate: ko-fi.com/duckodas',
+					name: '/help | stachio.dk',
 					type: ActivityType.Listening,
 				},
 			],
