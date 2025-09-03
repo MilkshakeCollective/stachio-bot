@@ -118,8 +118,8 @@ const command: CommandInterface = {
 		const subcommandGroup = interaction.options.getSubcommandGroup(false);
 		const subcommand = interaction.options.getSubcommand();
 
-		const user = interaction.options.getUser('user') ?? null;
-		const reason = interaction.options.getString('reason') ?? null;
+		const user = interaction.options.getUser('user')!;
+		const reason = interaction.options.getString('reason') ?? "No reason provided";
 		const status = interaction.options.getString('status') as any;
 		const evidence = interaction.options.getString('evidence') ?? null;
 		const guildId = interaction.options.getString('guild') ?? interaction.guild!.id;
@@ -246,7 +246,7 @@ const command: CommandInterface = {
 				case 'add-multiple': {
 					const usersInput = interaction.options.getString('users', true);
 					const status = interaction.options.getString('status', true) as any;
-					const reason = interaction.options.getString('reason') ?? null;
+					const reason = interaction.options.getString('reason') ?? "No reason provided";
 					const evidence = interaction.options.getString('evidence') ?? null;
 
 					const userIds = usersInput
