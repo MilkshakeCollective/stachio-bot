@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'node:url';
 import path, { dirname } from 'node:path';
-import { readdirSync } from 'node:fs';
 import i18next from 'i18next';
 import FsBackend from 'i18next-fs-backend';
 import type { FsBackendOptions } from 'i18next-fs-backend';
@@ -66,7 +65,9 @@ export async function getGuildLanguage(guild: Guild) {
 // ------------------------------
 export async function setGuildLanguage(guildId: string, lng: string) {
 	// Optional: validate language code pattern
-	if (!/^[a-z]{2}-[A-Z]{2}$/.test(lng)) throw new Error('INVALID_LANGUAGE_CODE');
+	if (!/^[a-z]{2}(-[A-Z]{2})?$/.test(lng)) {
+		throw new Error('INVALID_LANGUAGE_CODE');
+	}
 
 	await prisma.guildConfig.upsert({
 		where: { guildId },
