@@ -24,6 +24,8 @@ const command: CommandInterface = {
 			'',
 			'💡 Setup guides and support are available on our [official Discord](https://stachio.dk/discord).',
 			'',
+			'⚠️ Please note: Errors or translation mistakes may occur during this beta. If you encounter any, feel free to report them in our support server.',
+			'',
 			'Thank you for your patience and continued support 💙',
 		].join('\n');
 
