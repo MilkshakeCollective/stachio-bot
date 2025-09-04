@@ -92,16 +92,16 @@ const command: CommandInterface = {
 				.setColor(client.config.colors.success)
 				.setDescription(
 					[
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog..embedsetup._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
 						'',
-						await t(interaction.guild!.id, 'commands.management.watchdog.setup._4'),
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._5')} \`${actionOnFlag}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._6')} \`${actionOnPerm}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._7')} \`${actionOnAuto}\``,
+						await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._4'),
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._5')} \`${actionOnFlag}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._6')} \`${actionOnPerm}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._7')} \`${actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.footer') });
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup.footer') });
 
 			return interaction.editReply({ embeds: [embed] });
 		}
