@@ -88,20 +88,20 @@ const command: CommandInterface = {
 			});
 
 			const embed = new EmbedBuilder()
-				.setTitle(await t(interaction.guild!.id, 'commands.management.watchdog.setup.title'))
+				.setTitle(await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.title'))
 				.setColor(client.config.colors.success)
 				.setDescription(
 					[
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog..embedsetup._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
 						'',
-						await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._4'),
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._5')} \`${actionOnFlag}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._6')} \`${actionOnPerm}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup._7')} \`${actionOnAuto}\``,
+						await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._4'),
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._5')} \`${actionOnFlag}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._6')} \`${actionOnPerm}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._7')} \`${actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.embed.setup.footer') });
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer') });
 
 			return interaction.editReply({ embeds: [embed] });
 		}
