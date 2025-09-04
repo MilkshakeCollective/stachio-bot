@@ -23,9 +23,22 @@ const event: EventInterface = {
 
 		for (const [, guild] of client.guilds.cache) {
 			try {
+				// enforce upsert instead of relying only on installGuild
+				await client.prisma.guildConfig.upsert({
+					where: { guildId: guild.id },
+					update: {},
+					create: {
+						guildId: guild.id,
+						language: 'en-US',
+					},
+				});
+
+				// optional: also run installGuild if you need additional setup logic
 				await installGuild(client, guild.id);
+
+				logger.info(`✅ Guild config ensured for ${guild.name} (${guild.id})`);
 			} catch (err) {
-				logger.error(`❌ Failed to ensure guild settings for ${guild.name} (${guild.id}): ${err}`);
+				logger.error(`❌ Failed to ensure guild config for ${guild.name} (${guild.id}): ${err}`);
 			}
 		}
 
