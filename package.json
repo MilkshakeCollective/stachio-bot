@@ -21,7 +21,8 @@
 		"migrate": "npx prisma migrate dev --name init",
 		"migrate-reset": "npx prisma migrate reset --force",
 		"deploy-migrate": "npx prisma migrate deploy",
-		"start-bot": "node ./packages/bot/dist/index.js"
+		"start-bot": "node ./packages/bot/dist/index.js",
+		"start-import": "node ./packages/import/dist/index.js"
 	},
 	"devDependencies": {
 		"prettier": "^3.2.5",
