@@ -92,8 +92,8 @@ const command: CommandInterface = {
 				.setColor(client.config.colors.success)
 				.setDescription(
 					[
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._3')}`,
 						'',
 						await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._4'),
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._5')} \`${actionOnFlag}\``,
