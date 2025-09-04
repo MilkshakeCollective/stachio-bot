@@ -101,7 +101,7 @@ const command: CommandInterface = {
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._7')} \`${actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer', {guildId}) });
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer') });
 
 			return interaction.editReply({ embeds: [embed] });
 		}
@@ -128,7 +128,9 @@ const command: CommandInterface = {
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._8')} \`${settings.actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed.footer') })
+				.setFooter({
+					text: await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed.footer', { guildId }),
+				})
 				.setTimestamp();
 
 			return interaction.editReply({ embeds: [embed] });
