@@ -113,6 +113,8 @@ const command: CommandInterface = {
 		)
 		.addSubcommand((sub) => sub.setName('toggle').setDescription('toggle the verification system in this server')),
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
+		await interaction.deferReply({ flags: ['Ephemeral'] });
+
 		const { options, guild } = interaction;
 		const sub = options.getSubcommand();
 		const guildId = guild!.id;
@@ -176,9 +178,8 @@ const command: CommandInterface = {
 					},
 				});
 
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.setup.success'),
-					flags: ['Ephemeral'],
 				});
 			}
 
@@ -203,43 +204,38 @@ const command: CommandInterface = {
 						},
 					});
 				}
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.style.set', { style }),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'log': {
 				if (!existing)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.log.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				const newChannel = options.getChannel('channel') as TextChannel;
 				if (!newChannel)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.log.current', {
 							channelId: existing.logsChannelId,
 						}),
-						flags: ['Ephemeral'],
 					});
 				await client.prisma.verificationConfig.update({
 					where: { guildId },
 					data: { logsChannelId: newChannel.id },
 				});
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.log.updated', {
 						channelId: newChannel.id,
 					}),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'roles': {
 				if (!existing)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.roles.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				const role = options.getRole('role') as Role | null;
 				const action = options.getString('action') as 'add' | 'remove' | null;
@@ -248,9 +244,8 @@ const command: CommandInterface = {
 					const current = roleIds.length
 						? roleIds.map((id) => `<@&${id}>`).join(', ')
 						: await t(guildId, 'commands.management.verification.roles.none');
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.roles.current', { roles: current }),
-						flags: ['Ephemeral'],
 					});
 				}
 				const set = new Set(roleIds);
@@ -260,45 +255,40 @@ const command: CommandInterface = {
 					where: { guildId },
 					data: { verifiedRoleIds: Array.from(set) },
 				});
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(
 						guildId,
 						`commands.management.verification.roles.${action === 'add' ? 'added' : 'removed'}`,
 						{ roleId: role.id },
 					),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'kick-on-fail': {
 				if (!existing)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.kickOnFail.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				const enabled = options.getBoolean('enabled', true);
 				await client.prisma.verificationConfig.update({
 					where: { guildId },
 					data: { kickOnFail: enabled },
 				});
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, `commands.management.verification.kickOnFail.${enabled ? 'enabled' : 'disabled'}`),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'limits': {
 				if (!existing)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.limits.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				const timeout = options.getInteger('timeout_seconds');
 				const maxAttempts = options.getInteger('max_attempts');
 				if (timeout == null && maxAttempts == null)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.limits.missing'),
-						flags: ['Ephemeral'],
 					});
 				await client.prisma.verificationConfig.update({
 					where: { guildId },
@@ -307,17 +297,15 @@ const command: CommandInterface = {
 						...(maxAttempts != null ? { maxAttempts: Math.max(1, maxAttempts) } : {}),
 					},
 				});
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.limits.updated'),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'regenerate': {
 				if (!existing || !existing.channelId)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.regenerate.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				const styleCategory = existing.emojiCategory ?? 'colors';
 				const pool = emojiCategories[styleCategory] ?? emojiCategories.colors;
@@ -334,17 +322,15 @@ const command: CommandInterface = {
 					where: { guildId },
 					data: { emojis: shuffled, correctEmoji },
 				});
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.regenerate.success'),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'clear-attempts': {
 				if (!existing)
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.clearAttempts.noConfig'),
-						flags: ['Ephemeral'],
 					});
 
 				const target = options.getUser('user', true);
@@ -353,20 +339,18 @@ const command: CommandInterface = {
 					where: { guildId, userId: target.id },
 				});
 
-				return interaction.reply({
+				return interaction.editReply({
 					content: await t(guildId, 'commands.management.verification.clearAttempts.success', {
 						tag: target.tag,
 						id: target.id,
 					}),
-					flags: ['Ephemeral'],
 				});
 			}
 
 			case 'toggle': {
 				if (!existing) {
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.toggle.noConfig'),
-						flags: ['Ephemeral'],
 					});
 				}
 
@@ -378,9 +362,8 @@ const command: CommandInterface = {
 						data: { enabled: true },
 					});
 
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.toggle.enabled'),
-						flags: ['Ephemeral'],
 					});
 				} else {
 					if (existing.channelId && existing.messageId) {
@@ -399,9 +382,8 @@ const command: CommandInterface = {
 						where: { guildId },
 					});
 
-					return interaction.reply({
+					return interaction.editReply({
 						content: await t(guildId, 'commands.management.verification.toggle.disabled'),
-						flags: ['Ephemeral'],
 					});
 				}
 			}
