@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../index.js';
+import { loadLanguagesForGuilds, MilkshakeClient } from '../../index.js';
 import { EventInterface } from '../../types.js';
 import { logger, installGuild, sendWatchdogReport } from '../../components/exports.js';
 import { ActivityType, Events } from 'discord.js';
@@ -23,16 +23,8 @@ const event: EventInterface = {
 
 		for (const [, guild] of client.guilds.cache) {
 			try {
-				await client.prisma.guildConfig.upsert({
-					where: { guildId: guild.id },
-					update: {},
-					create: {
-						guildId: guild.id,
-						language: 'en-US',
-					},
-				});
-
-				await installGuild(client, guild.id, "en-US");
+				await installGuild(client, guild.id, 'en-US');
+				loadLanguagesForGuilds([guild]);
 
 				logger.info(`✅ Guild config ensured for ${guild.name} (${guild.id})`);
 			} catch (err) {
@@ -45,7 +37,7 @@ const event: EventInterface = {
 
 			await client.prisma.report.deleteMany({
 				where: {
-					status: ReportStatus.REJECTED ?? ReportStatus.RESOLVED,
+					status: { in: [ReportStatus.REJECTED, ReportStatus.RESOLVED] },
 					createdAt: { lt: ninetyDaysAgo },
 				},
 			});
