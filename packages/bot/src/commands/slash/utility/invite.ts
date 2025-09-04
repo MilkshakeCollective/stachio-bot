@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
 import {
 	ActionRowBuilder,
@@ -24,27 +24,27 @@ const command: CommandInterface = {
 		const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${client.user?.id}`;
 
 		const embed = new EmbedBuilder()
-			.setTitle('📩 Invite Stachio')
+			.setTitle(await t(interaction.guild!.id, "commands.utility.invite.embed.title"))
 			.setDescription(
 				[
-					'Thanks for choosing **Stachio** — your community guardian! 💚',
+					await t(interaction.guild!.id, "commands.utility.invite.embed._1"),
 					'',
-					'With Stachio, your server gets:',
-					'- `👁️` **Watchdog**: Global ban protection against repeat offenders',
-					'- `🛡️` **Anti-Phishing**: Blocks malicious links automatically',
-					'- `📑` **Report System**: Members can flag issues for review',
-					'- `⚖️` **Appeals**: Fair review process for flagged users',
-					'- `🌍` **Multi-language Support**: Moderation for communities worldwide',
+					await t(interaction.guild!.id, "commands.utility.invite.embed._2"),
+					await t(interaction.guild!.id, "commands.utility.invite.embed._3"),
+					await t(interaction.guild!.id, "commands.utility.invite.embed._4"),
+					await t(interaction.guild!.id, "commands.utility.invite.embed._5"),
+					await t(interaction.guild!.id, "commands.utility.invite.embed._6"),
+					await t(interaction.guild!.id, "commands.utility.invite.embed._7"),
 					'',
-					'Click the button below to add Stachio and make your community safer today!',
+					await t(interaction.guild!.id, "commands.utility.invite.embed._8"),
 				].join('\n'),
 			)
 			.setColor(client.config.colors.primary)
-			.setFooter({ text: 'Stachio • Protecting communities since 2025' })
+			.setFooter({ text: await t(interaction.guild!.id, "commands.utility.invite.embed.footer") })
 			.setTimestamp();
 
 		const button = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setLabel('Invite the Bot').setStyle(ButtonStyle.Link).setURL(inviteUrl),
+			new ButtonBuilder().setLabel(await t(interaction.guild!.id, "commands.utility.invite.embed.button")).setStyle(ButtonStyle.Link).setURL(inviteUrl),
 		);
 
 		return interaction.editReply({

@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
@@ -16,7 +16,7 @@ import { emojiCategories } from '../../../config/emojiCategories.js';
 function buildCaptchaRow(emojis: string[]) {
 	const buttons = emojis
 		.slice(0, 3)
-		.map((e, idx) => new ButtonBuilder().setCustomId(`verify:pick:${e}`).setLabel(e).setStyle(ButtonStyle.Secondary));
+		.map((e) => new ButtonBuilder().setCustomId(`verify:pick:${e}`).setLabel(e).setStyle(ButtonStyle.Secondary));
 	return new ActionRowBuilder<ButtonBuilder>().addComponents(buttons);
 }
 
@@ -115,7 +115,10 @@ const command: CommandInterface = {
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		const { options, guild } = interaction;
 		const sub = options.getSubcommand();
-		const existing = await client.prisma.verificationConfig.findUnique({ where: { guildId: guild!.id } });
+		const guildId = guild!.id;
+
+		const existing = await client.prisma.verificationConfig.findUnique({ where: { guildId } });
+
 		switch (sub) {
 			case 'setup': {
 				const log_channel = options.getChannel('log_channel') as TextChannel;
@@ -129,26 +132,26 @@ const command: CommandInterface = {
 				const correctEmoji = shuffled[Math.floor(Math.random() * shuffled.length)];
 
 				const embed = new EmbedBuilder()
-					.setTitle('🔐 Server Verification')
+					.setTitle(await t(guildId, 'commands.management.verification.setup.embed.title'))
 					.setDescription(
 						[
-							"Welcome! Before you can access the server, we need to make sure you're not a bot.",
+							await t(guildId, 'commands.management.verification.setup.embed._1'),
 							'',
-							'`✅` **How to verify:**',
-							`Press the **correct emoji button** below that matches this one: \`${correctEmoji}\`.`,
+							await t(guildId, 'commands.management.verification.setup.embed._2'),
+							await t(guildId, 'commands.management.verification.setup.embed._3', { emoji: correctEmoji }),
 							'',
-							'`⚠️` You only get a few chances — choose carefully!',
+							await t(guildId, 'commands.management.verification.setup.embed._4'),
 						].join('\n'),
 					)
 					.setColor(client.config.colors.primary)
-					.setFooter({ text: 'Verification System • Stay safe online' })
+					.setFooter({ text: await t(guildId, 'commands.management.verification.setup.embed.footer') })
 					.setTimestamp();
 
 				const row = buildCaptchaRow(shuffled);
 				const message = await channel.send({ embeds: [embed], components: [row] });
 
 				await client.prisma.verificationConfig.upsert({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					update: {
 						enabled: true,
 						kickOnFail,
@@ -160,7 +163,7 @@ const command: CommandInterface = {
 						emojis: shuffled,
 					},
 					create: {
-						guildId: guild!.id,
+						guildId,
 						enabled: true,
 						kickOnFail,
 						logsChannelId: log_channel.id,
@@ -173,20 +176,23 @@ const command: CommandInterface = {
 					},
 				});
 
-				return interaction.reply({ content: '`✅` Verification message is live with buttons.', flags: ['Ephemeral'] });
+				return interaction.reply({
+					content: await t(guildId, 'commands.management.verification.setup.success'),
+					flags: ['Ephemeral'],
+				});
 			}
 
 			case 'set-emoji-style': {
 				const style = options.getString('style', true);
 				if (existing) {
 					await client.prisma.verificationConfig.update({
-						where: { guildId: guild!.id },
+						where: { guildId },
 						data: { emojiCategory: style },
 					});
 				} else {
 					await client.prisma.verificationConfig.create({
 						data: {
-							guildId: guild!.id,
+							guildId,
 							kickOnFail: true,
 							logsChannelId: '',
 							channelId: '',
@@ -197,27 +203,34 @@ const command: CommandInterface = {
 						},
 					});
 				}
-				return interaction.reply({ content: `\`✅\` Emoji style set to **\`${style}\`**.`, flags: ['Ephemeral'] });
+				return interaction.reply({
+					content: await t(guildId, 'commands.management.verification.style.set', { style }),
+					flags: ['Ephemeral'],
+				});
 			}
 
 			case 'log': {
 				if (!existing)
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.log.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				const newChannel = options.getChannel('channel') as TextChannel;
 				if (!newChannel)
 					return interaction.reply({
-						content: `Current log channel: <#${existing.logsChannelId}>`,
+						content: await t(guildId, 'commands.management.verification.log.current', {
+							channelId: existing.logsChannelId,
+						}),
 						flags: ['Ephemeral'],
 					});
 				await client.prisma.verificationConfig.update({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					data: { logsChannelId: newChannel.id },
 				});
 				return interaction.reply({
-					content: `\`✅\` Log channel updated to <#${newChannel.id}>.`,
+					content: await t(guildId, 'commands.management.verification.log.updated', {
+						channelId: newChannel.id,
+					}),
 					flags: ['Ephemeral'],
 				});
 			}
@@ -225,25 +238,34 @@ const command: CommandInterface = {
 			case 'roles': {
 				if (!existing)
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.roles.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				const role = options.getRole('role') as Role | null;
 				const action = options.getString('action') as 'add' | 'remove' | null;
 				const roleIds: string[] = Array.isArray(existing.verifiedRoleIds) ? (existing.verifiedRoleIds as string[]) : [];
 				if (!role || !action) {
-					const current = roleIds.length ? roleIds.map((id) => `<@&${id}>`).join(', ') : 'None';
-					return interaction.reply({ content: `Current verification roles: ${current}`, flags: ['Ephemeral'] });
+					const current = roleIds.length
+						? roleIds.map((id) => `<@&${id}>`).join(', ')
+						: await t(guildId, 'commands.management.verification.roles.none');
+					return interaction.reply({
+						content: await t(guildId, 'commands.management.verification.roles.current', { roles: current }),
+						flags: ['Ephemeral'],
+					});
 				}
 				const set = new Set(roleIds);
 				if (action === 'add') set.add(role.id);
 				if (action === 'remove') set.delete(role.id);
 				await client.prisma.verificationConfig.update({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					data: { verifiedRoleIds: Array.from(set) },
 				});
 				return interaction.reply({
-					content: `\`✅\` Role <@&${role.id}> ${action === 'add' ? 'added to' : 'removed from'} verification roles.`,
+					content: await t(
+						guildId,
+						`commands.management.verification.roles.${action === 'add' ? 'added' : 'removed'}`,
+						{ roleId: role.id },
+					),
 					flags: ['Ephemeral'],
 				});
 			}
@@ -251,16 +273,16 @@ const command: CommandInterface = {
 			case 'kick-on-fail': {
 				if (!existing)
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.kickOnFail.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				const enabled = options.getBoolean('enabled', true);
 				await client.prisma.verificationConfig.update({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					data: { kickOnFail: enabled },
 				});
 				return interaction.reply({
-					content: `\`✅\` Auto kick on fail has been **${enabled ? 'enabled' : 'disabled'}**.`,
+					content: await t(guildId, `commands.management.verification.kickOnFail.${enabled ? 'enabled' : 'disabled'}`),
 					flags: ['Ephemeral'],
 				});
 			}
@@ -268,27 +290,33 @@ const command: CommandInterface = {
 			case 'limits': {
 				if (!existing)
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.limits.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				const timeout = options.getInteger('timeout_seconds');
 				const maxAttempts = options.getInteger('max_attempts');
 				if (timeout == null && maxAttempts == null)
-					return interaction.reply({ content: 'Provide at least one option.', flags: ['Ephemeral'] });
+					return interaction.reply({
+						content: await t(guildId, 'commands.management.verification.limits.missing'),
+						flags: ['Ephemeral'],
+					});
 				await client.prisma.verificationConfig.update({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					data: {
 						...(timeout != null ? { timeoutSeconds: Math.max(60, timeout) } : {}),
 						...(maxAttempts != null ? { maxAttempts: Math.max(1, maxAttempts) } : {}),
 					},
 				});
-				return interaction.reply({ content: '`✅` Limits updated.', flags: ['Ephemeral'] });
+				return interaction.reply({
+					content: await t(guildId, 'commands.management.verification.limits.updated'),
+					flags: ['Ephemeral'],
+				});
 			}
 
 			case 'regenerate': {
 				if (!existing || !existing.channelId)
 					return interaction.reply({
-						content: '`⚠️` No verification message to update. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.regenerate.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				const styleCategory = existing.emojiCategory ?? 'colors';
@@ -303,27 +331,33 @@ const command: CommandInterface = {
 				if (message) await message.edit({ components: [row] });
 
 				await client.prisma.verificationConfig.update({
-					where: { guildId: guild!.id },
+					where: { guildId },
 					data: { emojis: shuffled, correctEmoji },
 				});
-				return interaction.reply({ content: '`✅` Captcha regenerated.', flags: ['Ephemeral'] });
+				return interaction.reply({
+					content: await t(guildId, 'commands.management.verification.regenerate.success'),
+					flags: ['Ephemeral'],
+				});
 			}
 
 			case 'clear-attempts': {
 				if (!existing)
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.clearAttempts.noConfig'),
 						flags: ['Ephemeral'],
 					});
 
 				const target = options.getUser('user', true);
 
 				await client.prisma.verificationAttempt.deleteMany({
-					where: { guildId: guild!.id, userId: target.id },
+					where: { guildId, userId: target.id },
 				});
 
 				return interaction.reply({
-					content: `\`✅\` Cleared verification attempts for **${target.tag}** (${target.id}).`,
+					content: await t(guildId, 'commands.management.verification.clearAttempts.success', {
+						tag: target.tag,
+						id: target.id,
+					}),
 					flags: ['Ephemeral'],
 				});
 			}
@@ -331,7 +365,7 @@ const command: CommandInterface = {
 			case 'toggle': {
 				if (!existing) {
 					return interaction.reply({
-						content: '`⚠️` No verification config found. Run `/verification setup` first.',
+						content: await t(guildId, 'commands.management.verification.toggle.noConfig'),
 						flags: ['Ephemeral'],
 					});
 				}
@@ -340,12 +374,12 @@ const command: CommandInterface = {
 
 				if (newState) {
 					await client.prisma.verificationConfig.update({
-						where: { guildId: guild!.id },
+						where: { guildId },
 						data: { enabled: true },
 					});
 
 					return interaction.reply({
-						content: '`✅` Verification system has been **enabled**.',
+						content: await t(guildId, 'commands.management.verification.toggle.enabled'),
 						flags: ['Ephemeral'],
 					});
 				} else {
@@ -358,15 +392,15 @@ const command: CommandInterface = {
 					}
 
 					await client.prisma.verificationAttempt.deleteMany({
-						where: { guildId: guild!.id, verificationConfigId: existing.id },
+						where: { guildId, verificationConfigId: existing.id },
 					});
 
 					await client.prisma.verificationConfig.delete({
-						where: { guildId: guild!.id },
+						where: { guildId },
 					});
 
 					return interaction.reply({
-						content: '`✅` Verification system has been **disabled** and all configuration data was deleted.',
+						content: await t(guildId, 'commands.management.verification.toggle.disabled'),
 						flags: ['Ephemeral'],
 					});
 				}

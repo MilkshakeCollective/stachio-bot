@@ -5,7 +5,7 @@ import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder }
 
 const command: CommandInterface = {
 	cooldown: 5,
-	isDeveloperOnly: false,
+	isDeveloperOnly: true,
 	data: new SlashCommandBuilder()
 		.setName('warnings')
 		.setDescription('⚠️ Manage warnings system')

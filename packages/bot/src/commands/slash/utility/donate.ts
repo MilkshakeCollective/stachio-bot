@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types';
 import {
 	ChatInputCommandInteraction,
@@ -22,20 +22,24 @@ const command: CommandInterface = {
 		const kofiUrl = 'https://ko-fi.com/duckodas';
 
 		const embed = new EmbedBuilder()
-			.setTitle('🫂 Support Stachio')
+			.setTitle(await t(interaction.guild!.id, 'commands.utility.donate.embed.title'))
 			.setDescription(
 				[
-					'Stachio is built to keep your community safe and thriving! 💚',
-					"If you'd like to support development, consider donating via Ko-fi:",
-					`[Click here to donate](${kofiUrl})`,
-				].join('\n\n'),
+					await t(interaction.guild!.id, 'commands.utility.donate.embed._1'),
+					await t(interaction.guild!.id, 'commands.utility.donate.embed._2'),
+					`[${await t(interaction.guild!.id, 'commands.utility.donate.embed._3')}](${kofiUrl})`,
+				].join('\n'),
 			)
 			.setColor(client.config.colors.primary)
-			.setFooter({ text: 'Thank you for supporting Stachio!' })
+			.setFooter({ text: await t(interaction.guild!.id, 'commands.utility.donate.embed.footer') })
 			.setTimestamp();
 
 		const button = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder().setLabel('Donate via Ko-fi').setEmoji('💚').setStyle(ButtonStyle.Link).setURL(kofiUrl),
+			new ButtonBuilder()
+				.setLabel(await t(interaction.guild!.id, 'commands.utility.donate.embed.button'))
+				.setEmoji('💚')
+				.setStyle(ButtonStyle.Link)
+				.setURL(kofiUrl),
 		);
 
 		return interaction.reply({

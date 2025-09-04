@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
@@ -55,7 +55,7 @@ const command: CommandInterface = {
 						.setRequired(false),
 				),
 		)
-		.addSubcommand((sub) => sub.setName('status').setDescription('View current Watchdog settings'))
+		.addSubcommand((sub) => sub.setName('settings').setDescription('View current Watchdog settings'))
 		.addSubcommand((sub) =>
 			sub
 				.setName('toggle')
@@ -88,45 +88,47 @@ const command: CommandInterface = {
 			});
 
 			const embed = new EmbedBuilder()
-				.setTitle('✅ Watchdog Setup Complete')
+				.setTitle(await t(interaction.guild!.id, 'commands.management.watchdog.setup.title'))
 				.setColor(client.config.colors.success)
 				.setDescription(
 					[
-						`**Logs:** ${logChannel ? `<#${logChannel}>` : '`Not set`'}`,
-						`**Role:** ${roleId ? `<@&${roleId}>` : '`Not set`'}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup._3')}`,
 						'',
-						'**Actions:**',
-						`• Flagged → \`${actionOnFlag}\``,
-						`• Perm Flagged → \`${actionOnPerm}\``,
-						`• Auto Flagged → \`${actionOnAuto}\``,
+						await t(interaction.guild!.id, 'commands.management.watchdog.setup._4'),
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._5')} \`${actionOnFlag}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._6')} \`${actionOnPerm}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup._7')} \`${actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: 'Watchdog v2 will activate these settings automatically.' });
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.footer') });
 
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-		if (sub === 'status') {
+		if (sub === 'settings') {
 			if (!settings) {
-				return interaction.editReply({ content: '`⚠️` No Watchdog settings found. Run `/watchdog setup` first.' });
+				return interaction.editReply({
+					content: await t(interaction.guild!.id, 'commands.management.watchdog.settings.noSettings'),
+				});
 			}
 
 			const embed = new EmbedBuilder()
-				.setTitle('🐾 Watchdog Settings')
+				.setTitle(await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed.title'))
 				.setColor(client.config.colors.primary)
 				.setDescription(
 					[
-						`**Enabled:** ${settings.enabled ? '`✅`' : '`❌`'}`,
-						`**Log Channel:** ${settings.logChannelId ? `<#${settings.logChannelId}>` : '`Not set`'}`,
-						`**Role:** ${settings.roleId ? `<@&${settings.roleId}>` : '`Not set`'}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._1')} ${settings.enabled ? '`✅`' : '`❌`'}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._2')} ${settings.logChannelId ? `<#${settings.logChannelId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._4')}`,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._3')} ${settings.roleId ? `<@&${settings.roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._4')}`,
 						'',
-						'**Actions:**',
-						`• Flagged → \`${settings.actionOnFlag}\``,
-						`• Perm Flagged → \`${settings.actionOnPerm}\``,
-						`• Auto Flagged → \`${settings.actionOnAuto}\``,
+						await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._5'),
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._6')} \`${settings.actionOnFlag}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._7')} \`${settings.actionOnPerm}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._8')} \`${settings.actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: `Guild ID: ${guildId}` })
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed.footer') })
 				.setTimestamp();
 
 			return interaction.editReply({ embeds: [embed] });
@@ -136,7 +138,9 @@ const command: CommandInterface = {
 			const enabled = interaction.options.getBoolean('enabled', true);
 
 			if (!settings) {
-				return interaction.editReply({ content: '`⚠️` No Watchdog settings found. Run `/watchdog setup` first.' });
+				return interaction.editReply({
+					content: await t(interaction.guild!.id, 'commands.management.watchdog.toggle.noSettings'),
+				});
 			}
 
 			await client.prisma.watchdogConfig.update({
@@ -145,7 +149,10 @@ const command: CommandInterface = {
 			});
 
 			return interaction.editReply({
-				content: `\`✅\` Watchdog has been **${enabled ? 'enabled' : 'disabled'}**.`,
+				content: await t(
+					interaction.guild!.id,
+					enabled ? 'commands.management.watchdog.toggle.enabled' : 'commands.management.watchdog.toggle.disabled',
+				),
 			});
 		}
 	},

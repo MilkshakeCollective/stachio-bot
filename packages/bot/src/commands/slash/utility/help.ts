@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types';
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
@@ -7,42 +7,42 @@ const command: CommandInterface = {
 	isDeveloperOnly: false,
 	data: new SlashCommandBuilder()
 		.setName('help')
-		.setDescription('View Stachio\'s commands and key features')
+		.setDescription("View Stachio's commands and key features")
 		.setNSFW(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		await interaction.deferReply({ flags: ['Ephemeral'] });
 
 		const tips = [
-			'`💡` Use `/report` to quickly alert staff about users in your community.',
-			'`💡` Stachio automatically blocks known phishing links',
-			'`💡` Support Stachio on Ko-fi to help fund hosting, development, and new features.',
-			'`💡` Keep your moderation logs channel private to ensure sensitive data stays secure.',
-			'`💡` Stachio also works automatically in the background with global bans, phishing protection, and detailed moderation logs.',
+			await t(interaction.guild!.id, 'commands.utility.help.tips._1'),
+			await t(interaction.guild!.id, 'commands.utility.help.tips._2'),
+			await t(interaction.guild!.id, 'commands.utility.help.tips._3'),
+			await t(interaction.guild!.id, 'commands.utility.help.tips._4'),
+			await t(interaction.guild!.id, 'commands.utility.help.tips._5'),
 		];
 
 		const embed = new EmbedBuilder()
-			.setTitle('📖 Stachio Help Menu')
+			.setTitle(await t(interaction.guild!.id, 'commands.utility.help.embed.title'))
 			.setDescription(
 				[
-					'Welcome to **Stachio** - your all-in-one community moderator.',
-					'Use the commands below to get started and explore what Stachio can do for your server.',
-					'### `⚙️` General',
-					'🔹 **/invite** - Invite Stachio to your server',
-					'🔹 **/donate** - Support development on Ko-fi',
-					'### `🛡️` Safety & Moderation',
-					'🔹 **/report** - Submit a safety or moderation report',
-					'### `📢` Support & Appeals',
-					'If your account is flagged and you wish to appeal, please visit our official Discord server at [stachio.dk/discord](https://stachio.dk/discord).',
-					'### 🧾 Version & Info',
-					`\`🔹\` **Version:** \`${client.config.version}\``,
-					`\`🔹\` **Developer:** ${client.users.cache.get('711712752246325343')?.username} (${client.users.cache.get('711712752246325343')?.id})`,
+					await t(interaction.guild!.id, 'commands.utility.help.embed._1'),
+					await t(interaction.guild!.id, 'commands.utility.help.embed._2'),
+					'### ' + (await t(interaction.guild!.id, 'commands.utility.help.embed._3')),
+					await t(interaction.guild!.id, 'commands.utility.help.embed._4'),
+					await t(interaction.guild!.id, 'commands.utility.help.embed._5'),
+					'### ' + (await t(interaction.guild!.id, 'commands.utility.help.embed._6')),
+					await t(interaction.guild!.id, 'commands.utility.help.embed._7'),
+					'### ' + (await t(interaction.guild!.id, 'commands.utility.help.embed._8')),
+					await t(interaction.guild!.id, 'commands.utility.help.embed._9'),
+					'### ' + (await t(interaction.guild!.id, 'commands.utility.help.embed._10')),
+					`${await t(interaction.guild!.id, 'commands.utility.help.embed._11')} \`${client.config.version}\``,
+					`${await t(interaction.guild!.id, 'commands.utility.help.embed._12')} ${client.users.cache.get('711712752246325343')?.username} (${client.users.cache.get('711712752246325343')?.id})`,
 					'',
 					tips[Math.floor(Math.random() * tips.length)],
 				].join('\n'),
 			)
 			.setColor(client.config.colors.primary)
-			.setFooter({ text: 'Stachio • Protecting communities since 2025' })
+			.setFooter({ text: await t(interaction.guild!.id, 'commands.utility.help.embed.footer') })
 			.setTimestamp();
 
 		return interaction.editReply({ embeds: [embed] });

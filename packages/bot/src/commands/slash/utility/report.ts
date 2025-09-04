@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
 import {
 	SlashCommandBuilder,
@@ -26,19 +26,19 @@ const command: CommandInterface = {
 			option.setName('evidence').setDescription('Extra details (message links, IDs, etc.)').setRequired(false),
 		)
 		.addAttachmentOption((option) =>
-			option.setName('screenshot1').setDescription('Upload a screenshot (optional)').setRequired(false),
+			option.setName('screenshot1').setDescription('(FULLSCREEN) Upload a screenshot (optional)').setRequired(false),
 		)
 		.addAttachmentOption((option) =>
-			option.setName('screenshot2').setDescription('Upload another screenshot (optional)').setRequired(false),
+			option.setName('screenshot2').setDescription('(FULLSCREEN) Upload another screenshot (optional)').setRequired(false),
 		)
 		.addAttachmentOption((option) =>
-			option.setName('screenshot3').setDescription('Upload a third screenshot (optional)').setRequired(false),
+			option.setName('screenshot3').setDescription('(FULLSCREEN) Upload a third screenshot (optional)').setRequired(false),
 		)
 		.addAttachmentOption((option) =>
-			option.setName('screenshot4').setDescription('Upload a fourth screenshot (optional)').setRequired(false),
+			option.setName('screenshot4').setDescription('(FULLSCREEN) Upload a fourth screenshot (optional)').setRequired(false),
 		)
 		.addAttachmentOption((option) =>
-			option.setName('screenshot5').setDescription('Upload a fifth screenshot (optional)').setRequired(false),
+			option.setName('screenshot5').setDescription('(FULLSCREEN) Upload a fifth screenshot (optional)').setRequired(false),
 		),
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		await interaction.deferReply({ flags: ['Ephemeral'] });
@@ -69,18 +69,23 @@ const command: CommandInterface = {
 
 			// Build staff embed
 			const embed = new EmbedBuilder()
-				.setTitle('🚨 New User Report')
+				.setTitle(await t(interaction.guild!.id, 'commands.utility.report.embed.title'))
 				.setColor(client.config.colors.error)
 				.setDescription(
 					[
-						`**Reporter:**\n${reporter.tag} (${reporter.id})`,
-						`**Reported User:**\n${reported.tag} (${reported.id})`,
-						`**Reason:**\n${description}`,
-						`**Evidence:**\n${evidence || 'No extra details provided'}`,
-						`**Screenshots:**\n${
+						`${await t(interaction.guild!.id, 'commands.utility.report.embed._1')}\n${reporter.tag} (${reporter.id})`,
+						`${await t(interaction.guild!.id, 'commands.utility.report.embed._2')}\n${reported.tag} (${reported.id})`,
+						`${await t(interaction.guild!.id, 'commands.utility.report.embed._3')}\n${description}`,
+						`${await t(interaction.guild!.id, 'commands.utility.report.embed._4')}\n${evidence || await t(interaction.guild!.id, 'commands.utility.report.embed._5')}`,
+						`${await t(interaction.guild!.id, 'commands.utility.report.embed.__6')}\n${
 							screenshots.length
-								? screenshots.map((s, i) => `[Screenshot ${i + 1}](${s})`).join('\n')
-								: 'No screenshots provided'
+								? screenshots
+										.map(
+											async (s, i) =>
+												`[${await t(interaction.guild!.id, 'commands.utility.report.embed._7')} ${i + 1}](${s})`,
+										)
+										.join('\n')
+								: await t(interaction.guild!.id, 'commands.utility.report.embed._8')
 						}`,
 					].join('\n'),
 				)
@@ -89,25 +94,31 @@ const command: CommandInterface = {
 			const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setCustomId(`report_preview_${report.id}`)
-					.setLabel('Under Review')
+					.setLabel(await t(interaction.guild!.id, 'commands.utility.report.embed.button_1'))
 					.setStyle(ButtonStyle.Secondary),
 				new ButtonBuilder()
 					.setCustomId(`report_resolved_${report.id}`)
-					.setLabel('Resolve')
+					.setLabel(await t(interaction.guild!.id, 'commands.utility.report.embed.button_2'))
 					.setStyle(ButtonStyle.Success),
-				new ButtonBuilder().setCustomId(`report_rejected_${report.id}`).setLabel('Reject').setStyle(ButtonStyle.Danger),
+				new ButtonBuilder()
+					.setCustomId(`report_rejected_${report.id}`)
+					.setLabel(await t(interaction.guild!.id, 'commands.utility.report.embed.button_3'))
+					.setStyle(ButtonStyle.Danger),
 			);
 
 			const staffChannel = (await client.channels.fetch(client.config.channels[2].id)) as TextChannel;
 			await staffChannel.send({ embeds: [embed], components: [buttons] });
 
 			return interaction.editReply({
-				content: `✅ Your report against **${reported.tag}** has been submitted with **${screenshots.length}** screenshot(s). Staff will review it soon.`,
+				content: await t(interaction.guild!.id, 'commands.utility.report.reply.success', {
+					reported_username: reported.username,
+					screenshots_length: screenshots.length,
+				}),
 			});
 		} catch (err) {
 			console.error(err);
 			return interaction.editReply({
-				content: '❌ Something went wrong while submitting your report. Please try again later.',
+				content: await t(interaction.guild!.id, 'commands.utility.report.reply.error.'),
 			});
 		}
 	},

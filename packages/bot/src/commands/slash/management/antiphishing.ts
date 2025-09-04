@@ -1,4 +1,4 @@
-import { MilkshakeClient } from '../../../index.js';
+import { MilkshakeClient, t } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
 import {
 	ChatInputCommandInteraction,
@@ -12,7 +12,7 @@ const command: CommandInterface = {
 	cooldown: 5,
 	isDeveloperOnly: false,
 	data: new SlashCommandBuilder()
-		.setName('antiphish')
+		.setName('antiphishing')
 		.setDescription('⚙️ Manage Anti-Phishing settings')
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.addSubcommand((sub) =>
@@ -32,7 +32,7 @@ const command: CommandInterface = {
 					opt.setName('ignored_channel').setDescription('Channel to ignore').setRequired(false),
 				),
 		)
-		.addSubcommand((sub) => sub.setName('status').setDescription('View current Anti-Phish settings'))
+		.addSubcommand((sub) => sub.setName('settings').setDescription('View current Anti-Phish settings'))
 		.addSubcommand((sub) =>
 			sub
 				.setName('add')
@@ -86,7 +86,7 @@ const command: CommandInterface = {
 			Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : [];
 
 		if (!settings && sub !== 'setup') {
-			return interaction.editReply('`⚠️` No Anti-Phish settings found. Run `/antiphish setup` first.');
+			return interaction.editReply(await t(interaction.guild!.id, 'commands.management.antiphishing.setup.noData'));
 		}
 
 		if (sub === 'setup') {
@@ -122,22 +122,22 @@ const command: CommandInterface = {
 			return interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('✅ Anti-Phish Setup Complete')
+						.setTitle(await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed.title'))
 						.setColor(client.config.colors.success)
 						.setDescription(
 							[
-								`**Log Channel:** ${logChannel ? `<#${logChannel}>` : '`Not set`'}`,
-								`**Ignored Role(s):** ${ignoredRole ? `<@&${ignoredRole}>` : '`None`'}`,
-								`**Ignored User(s):** ${ignoredUser ? `<@${ignoredUser}>` : '`None`'}`,
-								`**Ignored Channel(s):** ${ignoredChannel ? `<#${ignoredChannel}>` : '`None`'}`,
+								`${await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._1')} ${logChannel ? `<#${logChannel}>` : await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._5')}`,
+								`${await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._2')} ${ignoredRole ? `<@&${ignoredRole}>` : await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._5')}`,
+								`${await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._3')} ${ignoredUser ? `<@${ignoredUser}>` : await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._5')}`,
+								`${await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._4')} ${ignoredChannel ? `<#${ignoredChannel}>` : await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed._5')}`,
 							].join('\n'),
 						)
-						.setFooter({ text: 'Anti-Phish will now use these settings.' }),
+						.setFooter({ text: await t(interaction.guild!.id, 'commands.management.antiphishing.setup.embed.footer') }),
 				],
 			});
 		}
 
-		if (sub === 'status') {
+		if (sub === 'settings') {
 			const ignoredRoles = toStringArray(settings!.ignoredRoles);
 			const ignoredUsers = toStringArray(settings!.ignoredUsers);
 			const ignoredChannels = toStringArray(settings!.ignoredChannels);
@@ -145,17 +145,33 @@ const command: CommandInterface = {
 			return interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle('🐾 Anti-Phish Settings')
+						.setTitle(await t(interaction.guild!.id, 'commands.management.antiphishing.settings.title'))
 						.setColor(client.config.colors.primary)
 						.setDescription(
 							[
-								`**Enabled:** ${settings!.enabled ? '`✅`' : '`❌`'}`,
-								`**Ignored Roles:** ${ignoredRoles.length ? ignoredRoles.map((r) => `<@&${r}>`).join(', ') : '`None`'}`,
-								`**Ignored Users:** ${ignoredUsers.length ? ignoredUsers.map((u) => `<@${u}>`).join(', ') : '`None`'}`,
-								`**Ignored Channels:** ${ignoredChannels.length ? ignoredChannels.map((c) => `<#${c}>`).join(', ') : '`None`'}`,
+								await t(interaction.guild!.id, 'commands.management.antiphishing.settings.enabled', {
+									state: settings!.enabled ? '`✅`' : '`❌`',
+								}),
+								await t(interaction.guild!.id, 'commands.management.antiphishing.settings.roles', {
+									roles: ignoredRoles.length
+										? ignoredRoles.map((r) => `<@&${r}>`).join(', ')
+										: await t(interaction.guild!.id, 'commands.management.antiphishing.settings.none'),
+								}),
+								await t(interaction.guild!.id, 'commands.management.antiphishing.settings.users', {
+									users: ignoredUsers.length
+										? ignoredUsers.map((u) => `<@${u}>`).join(', ')
+										: await t(interaction.guild!.id, 'commands.management.antiphishing.settings.none'),
+								}),
+								await t(interaction.guild!.id, 'commands.management.antiphishing.settings.channels', {
+									channels: ignoredChannels.length
+										? ignoredChannels.map((c) => `<#${c}>`).join(', ')
+										: await t(interaction.guild!.id, 'commands.management.antiphishing.settings.none'),
+								}),
 							].join('\n'),
 						)
-						.setFooter({ text: `Guild ID: ${guildId}` })
+						.setFooter({
+							text: await t(interaction.guild!.id, 'commands.management.antiphishing.settings.footer', { guildId }),
+						})
 						.setTimestamp(),
 				],
 			});
@@ -175,7 +191,11 @@ const command: CommandInterface = {
 			if (type === 'user') id = interaction.options.getUser('user')?.id;
 			if (type === 'channel') id = interaction.options.getChannel('channel')?.id;
 
-			if (!id) return interaction.editReply(`You must provide a ${type}.`);
+			if (!id) {
+				return interaction.editReply(
+					await t(interaction.guild!.id, 'commands.management.antiphishing.addRemove.noId', { type }),
+				);
+			}
 
 			if (sub === 'add' && !current.includes(id)) current.push(id);
 			if (sub === 'remove') current = current.filter((i) => i !== id);
@@ -190,9 +210,13 @@ const command: CommandInterface = {
 							: { ignoredChannels: current },
 			});
 
-			return interaction.editReply({
-				content: `\`✅\` Successfully ${sub === 'add' ? 'added' : 'removed'} ${type}.`,
-			});
+			return interaction.editReply(
+				await t(
+					interaction.guild!.id,
+					`commands.management.antiphishing.addRemove.${sub === 'add' ? 'added' : 'removed'}`,
+					{ type },
+				),
+			);
 		}
 
 		if (sub === 'toggle') {
@@ -203,7 +227,10 @@ const command: CommandInterface = {
 			});
 
 			return interaction.editReply({
-				content: `\`✅\` Anti-Phish has been **${newState ? 'enabled' : 'disabled'}**.`,
+				content: await t(
+					interaction.guild!.id,
+					`commands.management.antiphishing.toggle.${newState ? 'enabled' : 'disabled'}`,
+				),
 			});
 		}
 	},
