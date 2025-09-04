@@ -101,7 +101,7 @@ const command: CommandInterface = {
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._7')} \`${actionOnAuto}\``,
 					].join('\n'),
 				)
-				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer') });
+				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer', {guildId}) });
 
 			return interaction.editReply({ embeds: [embed] });
 		}
