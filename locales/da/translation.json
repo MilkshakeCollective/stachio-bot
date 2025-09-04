@@ -99,13 +99,13 @@
 				"setup": {
 					"embed": {
 						"title": "✅ Watchdog opsætning afsluttet",
-						"_1": "**Logs:** {{channel}}",
-						"_2": "**Rolle:** {{role}}",
+						"_1": "**Logs:**",
+						"_2": "**Role:**",
 						"_3": "`Ikke angivet`",
 						"_4": "**Handlinger:**",
-						"_5": "• Markeret → `{{actionOnFlag}}`",
-						"_6": "• Perm Markeret → `{{actionOnPerm}}`",
-						"_7": "• Automatisk Markeret → `{{actionOnAuto}}`",
+						"_5": "• Flagged →",
+						"_6": "• Perm Flagged →",
+						"_7": "• Auto Flagged →",
 						"footer": "Watchdog v2 aktiverer automatisk disse indstillinger."
 					}
 				},
@@ -113,13 +113,13 @@
 					"embed": {
 						"title": "🐾 Watchdog indstillinger",
 						"_1": "**Aktiveret:**",
-						"_2": "**Log kanal:** {{channel}}",
-						"_3": "**Rolle:** {{role}}",
+						"_2": "**Log channel:**",
+						"_3": "**Role:**",
 						"_4": "`Ikke angivet`",
 						"_5": "**Handlinger:**",
-						"_6": "• Markeret → `{{actionOnFlag}}`",
-						"_7": "• Perm Markeret → `{{actionOnPerm}}`",
-						"_8": "• Automatisk Markeret → `{{actionOnAuto}}`",
+						"_6": "• Flagged →",
+						"_7": "• Perm Flagged →",
+						"_8": "• Auto Flagged →",
 						"footer": "Guild ID: {{guildId}}"
 					},
 					"noSettings": "`⚠️` Ingen Watchdog indstillinger fundet. Kør `/watchdog setup` først."
