@@ -99,13 +99,13 @@
 				"setup": {
 					"embed": {
 						"title": "✅ Watchdog setup completed",
-						"_1": "**Logs:** {{channel}}",
-						"_2": "**Role:** {{role}}",
+						"_1": "**Logs:**",
+						"_2": "**Role:**",
 						"_3": "`Not set`",
 						"_4": "**Actions:**",
-						"_5": "• Flagged → `{{actionOnFlag}}`",
-						"_6": "• Perm Flagged → `{{actionOnPerm}}`",
-						"_7": "• Auto Flagged → `{{actionOnAuto}}`",
+						"_5": "• Flagged →",
+						"_6": "• Perm Flagged →",
+						"_7": "• Auto Flagged →",
 						"footer": "Watchdog v2 automatically enables these settings."
 					}
 				},
@@ -113,13 +113,13 @@
 					"embed": {
 						"title": "🐾 Watchdog settings",
 						"_1": "**Enabled:**",
-						"_2": "**Log channel:** {{channel}}",
-						"_3": "**Role:** {{role}}",
+						"_2": "**Log channel:**",
+						"_3": "**Role:**",
 						"_4": "`Not set`",
 						"_5": "**Actions:**",
-						"_6": "• Flagged → `{{actionOnFlag}}`",
-						"_7": "• Perm Flagged → `{{actionOnPerm}}`",
-						"_8": "• Auto Flagged → `{{actionOnAuto}}`",
+						"_6": "• Flagged →",
+						"_7": "• Perm Flagged →",
+						"_8": "• Auto Flagged →",
 						"footer": "Guild ID: {{guildId}}"
 					},
 					"noSettings": "`⚠️` No Watchdog settings found. Run `/watchdog setup` first."
