@@ -2,6 +2,7 @@ export {
 	getGuildT,
 	getGuildLanguage,
 	setGuildLanguage,
+	loadLanguageForGuild,
 	loadLanguagesForGuilds,
 	t,
 	changeLanguage,

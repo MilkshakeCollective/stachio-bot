@@ -41,10 +41,10 @@ const command: CommandInterface = {
 	cooldown: 5,
 	isDeveloperOnly: false,
 	data: new SlashCommandBuilder()
-		.setName('settings')
+		.setName('guild')
 		.setDescription('View or change the bot settings for this server')
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-		.addSubcommand((sub) => sub.setName('view').setDescription('View current guild settings'))
+		.addSubcommand((sub) => sub.setName('settings').setDescription('View current guild settings'))
 		.addSubcommand((sub) =>
 			sub
 				.setName('language')
@@ -61,7 +61,7 @@ const command: CommandInterface = {
 			const guildId = interaction.guildId!;
 			const subcommand = interaction.options.getSubcommand();
 
-			if (subcommand === 'view') {
+			if (subcommand === 'settings') {
 				const guildConfig = await client.prisma.guildConfig.upsert({
 					where: { guildId },
 					update: {},
@@ -75,14 +75,18 @@ const command: CommandInterface = {
 				});
 
 				const embed = new EmbedBuilder()
-					.setTitle(`⚙️ Guild Settings for ${interaction.guild!.name}`)
+					.setTitle(
+						await t(interaction.guild!.id, 'commands.management.guild.settings.embed.title', {
+							guild_name: interaction.guild!.name,
+						}),
+					)
 					.setDescription(
 						[
-							`**Language:** \`${guildConfig.language}\``,
-							`**Watchdog:** ${guildConfig.watchdog?.enabled ? '`✅`' : '`❌`'}`,
-							`**Anti-Phishing:** ${guildConfig.AntiPhishing?.enabled ? '`✅`' : '`❌`'}`,
-							`**Verification:** ${guildConfig.verification?.enabled ? '`✅`' : '`❌`'}`,
-							`**Warnings:** ${guildConfig.WarningConfig ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._1')} \`${guildConfig.language}\``,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._2')} ${guildConfig.watchdog?.enabled ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._3')} ${guildConfig.AntiPhishing?.enabled ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._4')} ${guildConfig.verification?.enabled ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._5')} ${guildConfig.WarningConfig ? '`✅`' : '`❌`'}`,
 						].join('\n'),
 					)
 					.setColor(client.config.colors.primary)
@@ -92,24 +96,34 @@ const command: CommandInterface = {
 			}
 
 			if (subcommand === 'language') {
-				const lang = interaction.options.getString('code') ?? "en-US";
+				const lang = interaction.options.getString('code') ?? 'en-US';
 
 				if (!SUPPORTED_LANGUAGES.includes(lang)) {
 					return interaction.editReply({
-						content: `\`❌\` The language **${lang}** is not supported.\n\n\`✅\` Supported languages are:\n\`${SUPPORTED_LANGUAGES.join(', ')}\``,
+						content: [
+							await t(interaction.guild!.id, 'commands.management.guild.language.unsupportedLanguages._1', {
+								language: lang,
+							}),
+							await t(interaction.guild!.id, 'commands.management.guild.language.unsupportedLanguages._2'),
+							`\`${SUPPORTED_LANGUAGES.join(', ')}\``,
+						].join('n'),
 					});
 				}
 
 				await setGuildLanguage(guildId, lang);
 
 				return interaction.editReply({
-					content: `\`🌍\` Language for this guild has been set to **${lang}**`,
+					content: await t(interaction.guild!.id, 'commands.management.guild.language.success', {
+						language: lang,
+					}),
 				});
 			}
 		} catch (err) {
 			console.error(err);
 			if (!interaction.replied) {
-				await interaction.editReply({ content: '⚠️ An error occurred while processing this command.' });
+				await interaction.editReply({
+					content: await t(interaction.guild!.id, 'commands.management.guild.language.error'),
+				});
 			}
 		}
 	},

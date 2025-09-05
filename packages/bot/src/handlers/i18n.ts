@@ -115,6 +115,35 @@ export async function loadLanguagesForGuilds(guilds: Guild[]) {
 }
 
 // ------------------------------
+// Load language for a single guild
+// ------------------------------
+export async function loadLanguageForGuild(guild: Guild) {
+	try {
+		const cfg = await prisma.guildConfig.findUnique({
+			where: { guildId: guild.id },
+		});
+
+		let lang: string;
+
+		if (cfg) {
+			lang = cfg.language ?? defaultLanguage;
+		} else {
+			const newCfg = await prisma.guildConfig.create({
+				data: { guildId: guild.id, language: defaultLanguage },
+			});
+			lang = newCfg.language;
+		}
+
+		guildLanguageCache.set(guild.id, lang);
+		return lang;
+	} catch (error) {
+		logger.error(`Failed to load language for guild ${guild.name}:`, error);
+		guildLanguageCache.set(guild.id, defaultLanguage);
+		return defaultLanguage;
+	}
+}
+
+// ------------------------------
 // Helper: translate a key for a guild with optional variables
 // ------------------------------
 export async function t(guildId: string, key: string, vars?: Record<string, any>) {

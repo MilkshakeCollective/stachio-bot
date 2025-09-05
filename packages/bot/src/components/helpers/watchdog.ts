@@ -105,8 +105,9 @@ export async function actionUser(
 			[
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._1', { member_guild_name: member.guild.name }),
 				'',
-				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._1'),
-				+`${flaggedUser.reason ?? (await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2'))}`,
+				(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._1')) +
+					' ' +
+					`${flaggedUser.reason ? flaggedUser.reason : await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2')}`,
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._1', { action_taken: actionText }),
 				'',
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._4'),
@@ -173,7 +174,10 @@ export async function actionUser(
 					[
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._1', { member_guild_name: member.guild.name }),
 						'',
-						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._2', { member_user_tag: member.user, member_id: member.user.id }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._2', {
+							member_user_tag: member.user,
+							member_id: member.user.id,
+						}),
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._3', { flaggedUser_status: flaggedUser.status }),
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._4', { action_taken: actionTaken }),
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._5', { flaggedUser_reason: flaggedUser.reason }),

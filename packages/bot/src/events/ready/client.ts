@@ -1,4 +1,4 @@
-import { loadLanguagesForGuilds, MilkshakeClient } from '../../index.js';
+import { MilkshakeClient, setGuildLanguage } from '../../index.js';
 import { EventInterface } from '../../types.js';
 import { logger, installGuild, sendWatchdogReport } from '../../components/exports.js';
 import { ActivityType, Events } from 'discord.js';
@@ -23,8 +23,9 @@ const event: EventInterface = {
 
 		for (const [, guild] of client.guilds.cache) {
 			try {
-				await installGuild(client, guild.id, 'en-US');
-				loadLanguagesForGuilds([guild]);
+				const installedGuild = await installGuild(client, guild.id, 'en-US');
+				
+				await setGuildLanguage(guild.id, installedGuild.language);
 
 				logger.info(`✅ Guild config ensured for ${guild.name} (${guild.id})`);
 			} catch (err) {

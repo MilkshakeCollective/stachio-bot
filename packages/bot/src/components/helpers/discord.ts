@@ -60,13 +60,13 @@ export async function enforceSanctions(member: GuildMember, total: number, confi
 		if (total >= points) {
 			switch (action) {
 				case 'mute':
-					await member.timeout(10 * 60 * 1000, await t(member.guild.id, "helpers.warn.sanctions.mute"));
+					await member.timeout(10 * 60 * 1000, await t(member.guild.id, 'helpers.warn.sanctions.mute'));
 					break;
 				case 'kick':
-					await member.kick(await t(member.guild.id, "helpers.warn.sanctions.kick"));
+					await member.kick(await t(member.guild.id, 'helpers.warn.sanctions.kick'));
 					break;
 				case 'ban':
-					await member.ban({ reason: await t(member.guild.id, "helpers.warn.sanctions.ban") });
+					await member.ban({ reason: await t(member.guild.id, 'helpers.warn.sanctions.ban') });
 					break;
 			}
 		}
