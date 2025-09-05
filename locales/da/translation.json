@@ -45,6 +45,26 @@
 					"disabled": "`✅` Anti-Phish er blevet **deaktiveret**."
 				}
 			},
+			"guild": {
+				"settings": {
+					"embed": {
+						"title": "⚙️ Guild Settings for {{guild_name}}",
+						"_1": "**Language:**",
+						"_2": "**Watchdog:**",
+						"_3": "**Anti-Phishing:**",
+						"_4": "**Verification:**",
+						"_5": "**Warnings:**"
+					}
+				},
+				"language": {
+					"unsupportedLanguages": {
+						"_1": "`❌` The language **{{language}}** is not supported.",
+						"_2": "`✅` Supported languages are:"
+					},
+					"success": "`🌍` Language for this guild has been set to **{{language}}**",
+					"error": "`⚠️` An error occurred while processing this command."
+				}
+			},
 			"verification": {
 				"setup": {
 					"success": "`✅` Verifikation besked er live med knapper.",
