@@ -179,12 +179,24 @@
 					"_5": "🔹 **/donate** - Støtte udvikling på Ko-fi",
 					"_6": "`🛡️` Sikkerhed & Moderation",
 					"_7": "🔹 **/report** - Indsend en sikkerheds- eller moderationsrapport",
-					"_8": "`📢` Support & Appeals",
-					"_9": "Hvis din konto er markeret og du ønsker at appellere, kan du besøge vores officielle Discord server på",
-					"_10": "`🧾` Version & Info",
-					"_11": "🔹 **Version:**",
-					"_12": "🔹 **Udvikler:**",
+					"_8": "`🗂️` Administration",
+					"_9": "🔹 **/antiphishing** - Administrer anti-phishing-beskyttelse",
+					"_10": "🔹 **/guild** - Vis og konfigurer guild indstillinger",
+					"_11": "🔹 **/verification** - Konfigurér verifikationsindstillinger",
+					"_12": "🔹 **/warnings** - Administrer medlems advarsler",
+					"_13": "🔹 **/watchdog** - Indstil og vis watchdog indstillinger",
+					"_14": "`📢` Support & Appeals",
+					"_15": "Hvis din konto er markeret og du ønsker at appellere, kan du besøge vores officielle Discord server på",
+					"_16": "`🧾` Version & Info",
+					"_17": "🔹 **Version:**",
+					"_18": "🔹 **Udvikler:**",
 					"footer": "Stachio • Beskytter fællesskaber siden 2025"
+				},
+				"buttons": {
+					"website": "Hjemmeside",
+					"supportServer": "Support Server",
+					"supportUs": "Støt Os",
+					"invite": "Invitér Stachio"
 				}
 			},
 			"invite": {
