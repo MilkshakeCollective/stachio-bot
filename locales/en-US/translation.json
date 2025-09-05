@@ -9,6 +9,26 @@
 			"_6": "• [Support Server]({{client_support_server}})",
 			"_7": "• [Support Us](<{{client_kofi_link}}>)",
 			"_8": "💡 Need help? Join our support server anytime!"
+		},
+		"verification": {
+			"config_error": "`❌` Configuration error. Please try again later.",
+			"not_configured": "`❌` Verification not configured.",
+			"button_inactive": "`❌` This button is no longer active.",
+			"already_verified": "`✅` You are already verified",
+			"success_verified": "`✅` Verified! Welcome.",
+			"success_dm": "`✅` You have been verified!\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"success_log": "`✅` {{user_name}} ({{user_id}}) successfully verified.",
+			"role_assign_error": "Unexpected error while assigning roles.",
+			"kick_log": "`👢` {{user_name}} ({{user_id}}) was kicked for failing verification.",
+			"max_attempts_log": "`🚫` {{user_name}} ({{user_id}}) reached max attempts.",
+			"kick_failed_log": "`⚠️` Failed to kick {{user_name}} ({{user_id}}). Missing permissions?",
+			"kick_dm": "`👢` You have been kicked for failing verification too many times.\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"kick_notice": "You failed the verification too many times and were kicked.",
+			"kick_error": "Max attempts reached. An error occurred attempting to kick.",
+			"fail_dm": "`🚫` You have failed the verification too many times.\n\nPlease contact a moderator if you believe this was a mistake or need another chance.\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"fail_notice": "Max attempts reached. Please contact a moderator.",
+			"wrong_dm": "`❌` Wrong emoji. Please try again.\n\nAttempts left: **{{attempts_left}}**\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"wrong_notice": "`❌` Wrong emoji. Attempts left: **{{attempts_left}}**"
 		}
 	},
 	"commands": {
