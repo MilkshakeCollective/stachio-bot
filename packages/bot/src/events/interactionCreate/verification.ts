@@ -1,6 +1,6 @@
 import { ButtonInteraction, Events, TextChannel } from 'discord.js';
 import { EventInterface } from '../../types.js';
-import { MilkshakeClient } from '../../index.js';
+import { MilkshakeClient, t } from '../../index.js';
 import { logger, toStringArray } from '../../components/exports.js';
 
 const event: EventInterface = {
@@ -23,12 +23,12 @@ const event: EventInterface = {
 			config = await client.prisma.verificationConfig.findUnique({ where: { guildId: guild.id } });
 		} catch (err) {
 			logger.error({ message: `Failed to fetch verification config: ${err}`, labels: { guild: guild.id } });
-			return interaction.editReply({ content: 'Configuration error. Please try again later.' });
+			return interaction.editReply({ content: await t(guild.id, 'events.verification.config_error') });
 		}
-		if (!config) return interaction.editReply({ content: 'Verification not configured.' });
+		if (!config) return interaction.editReply({ content: await t(guild.id, 'events.verification.not_configured') });
 
 		if (interaction.message.id !== config.messageId)
-			return interaction.editReply({ content: 'This button is no longer active.' });
+			return interaction.editReply({ content: await t(guild.id, 'events.verification.button_inactive') });
 
 		const verifiedRoles = toStringArray(config.verifiedRoleIds);
 		const correct = config.correctEmoji;
@@ -50,7 +50,7 @@ const event: EventInterface = {
 		};
 
 		if (attempt.verified) {
-			return interaction.editReply({ content: 'You are already verified ✅' });
+			return interaction.editReply({ content: await t(guild.id, 'events.verification.already_verified') });
 		}
 
 		const remaining = Math.max(0, config.maxAttempts - attempt.attempts);
@@ -70,19 +70,19 @@ const event: EventInterface = {
 					where: { guildId_userId: { guildId: guild.id, userId: user.id } },
 					data: { verified: true, lastTriedAt: new Date(), verificationConfigId: config.id },
 				});
-				await log(`\`✅\` ${user.tag} (${user.id}) successfully verified.`);
+				await log(await t(guild.id, 'events.verification.success_log', { user_name: user.username, user_id: user.id }));
 				if (config.dmOnSuccess) {
 					await user
-						.send(['`✅` You have been verified!', '', `-# Sent from **${guild.name} (${guild.id})**`].join('\n'))
+						.send(await t(guild.id, 'events.verification.success_dm', { guild_name: guild.name, guild_id: guild.id }))
 						.catch(() => {});
 				}
-				return interaction.editReply({ content: '`✅` Verified! Welcome.' });
+				return interaction.editReply({ content: await t(guild.id, 'events.verification.success_verified') });
 			} catch (err) {
 				logger.error({
 					message: `Verification success flow failed: ${err}`,
 					labels: { user: user.id, guild: guild.id },
 				});
-				return interaction.editReply({ content: 'Unexpected error while assigning roles.' });
+				return interaction.editReply({ content: await t(guild.id, 'events.verification.role_assign_error') });
 			}
 		}
 
@@ -95,9 +95,9 @@ const event: EventInterface = {
 		if (newAttempts >= config.maxAttempts) {
 			if (attempt.attempts < config.maxAttempts) {
 				if (config.kickOnFail) {
-					await log(`\`👢\` ${user.username} (${user.id}) was kicked for failing verification.`);
+					await log(await t(guild.id, 'events.verification.kick_log', { user_name: user.username, user_id: user.id }));
 				} else {
-					await log(`\`🚫\` ${user.username} (${user.id}) reached max attempts.`);
+					await log(await t(guild.id, 'events.verification.max_attempts_log', { user_name: user.username, user_id: user.id }));
 				}
 			}
 
@@ -105,39 +105,25 @@ const event: EventInterface = {
 				try {
 					if (config.dmOnFailure) {
 						await user
-							.send(
-								[
-									'`👢` You have been kicked for failing verification too many times.',
-									'',
-									`-# Sent from **${guild.name} (${guild.id})**`,
-								].join('\n'),
-							)
+							.send(await t(guild.id, 'events.verification.kick_dm', { guild_name: guild.name, guild_id: guild.id }))
 							.catch(() => {});
 					}
 					const member = await guild.members.fetch(user.id).catch(() => null);
 					if (member) await member.kick('Failed verification too many times');
-					return interaction.editReply({ content: 'You failed the verification too many times and were kicked.' });
+					return interaction.editReply({ content: await t(guild.id, 'events.verification.kick_notice') });
 				} catch (err) {
 					logger.error({ message: `Kick failed: ${err}`, labels: { user: user.id, guild: guild.id } });
-					await log(`\`⚠️\` Failed to kick ${user.username} (${user.id}). Missing permissions?`);
-					return interaction.editReply({ content: 'Max attempts reached. An error occurred attempting to kick.' });
+					await log(await t(guild.id, 'events.verification.kick_failed_log', { user_name: user.username, user_id: user.id }));
+					return interaction.editReply({ content: await t(guild.id, 'events.verification.kick_error') });
 				}
 			} else {
 				if (config.dmOnFailure) {
 					await user
-						.send(
-							[
-								'`🚫` You have failed the verification too many times.',
-								'',
-								'Please contact a moderator if you believe this was a mistake or need another chance.',
-								'',
-								`-# Sent from **${guild.name} (${guild.id})**`,
-							].join('\n'),
-						)
+						.send(await t(guild.id, 'events.verification.fail_dm', { guild_name: guild.name, guild_id: guild.id }))
 						.catch(() => {});
 				}
 
-				return interaction.editReply({ content: 'Max attempts reached. Please contact a moderator.' });
+				return interaction.editReply({ content: await t(guild.id, 'events.verification.fail_notice') });
 			}
 		}
 
@@ -145,19 +131,11 @@ const event: EventInterface = {
 		try {
 			if (config.dmOnFailure) {
 				await user
-					.send(
-						[
-							'`❌` Wrong emoji. Please try again.',
-							'',
-							`Attempts left: **${left}**`,
-							'',
-							`-# Sent from **${guild.name} (${guild.id})**`,
-						].join('\n'),
-					)
+					.send(await t(guild.id, 'events.verification.wrong_dm', { attempts_left: left, guild_name: guild.name, guild_id: guild.id }))
 					.catch(() => {});
 			}
 		} catch {}
-		return interaction.editReply({ content: `❌ Wrong emoji. Attempts left: **${left}**` });
+		return interaction.editReply({ content: await t(guild.id, 'events.verification.wrong_notice', { attempts_left: left }) });
 	},
 };
 

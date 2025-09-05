@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Events, TextChannel } from 'discord.js';
 import { EventInterface } from '../../types.js';
-import { MilkshakeClient } from '../../index.js';
+import { MilkshakeClient, t } from '../../index.js';
 import { emojiCategories } from '../../config/emojiCategories.js';
 
 function shuffle<T>(arr: T[]): T[] {
@@ -27,21 +27,21 @@ const event: EventInterface = {
 				const correctEmoji = shuffled[Math.floor(Math.random() * shuffled.length)];
 
 				const embed = new EmbedBuilder()
-					.setTitle('🔐 Server Verification')
+					.setTitle(await t(guild.id, 'commands.management.verification.setup.embed.title'))
 					.setDescription(
 						[
-							"Welcome! Before you can access the server, we need to make sure you're not a bot.",
+							await t(guild.id, 'commands.management.verification.setup.embed._1'),
 							'',
-							'`✅` **How to verify:**',
-							`Press the **correct emoji button** below that matches this one: \`${correctEmoji}\`.`,
+							await t(guild.id, 'commands.management.verification.setup.embed._2'),
+							await t(guild.id, 'commands.management.verification.setup.embed._3', { emoji: correctEmoji }),
 							'',
-							'`⚠️` You only get a few chances — choose carefully!',
+							await t(guild.id, 'commands.management.verification.setup.embed._4'),
 						].join('\n'),
 					)
 					.setColor(client.config.colors.primary)
-					.setFooter({ text: 'Verification System • Stay safe online' })
+					.setFooter({ text: await t(guild.id, 'commands.management.verification.setup.embed.footer') })
 					.setTimestamp();
-                    
+
 				const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 					shuffled.map((e) =>
 						new ButtonBuilder().setCustomId(`verify:pick:${e}`).setLabel(e).setStyle(ButtonStyle.Secondary),
