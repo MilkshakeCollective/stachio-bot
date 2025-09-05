@@ -48,21 +48,21 @@
 			"guild": {
 				"settings": {
 					"embed": {
-						"title": "⚙️ Guild Settings for {{guild_name}}",
-						"_1": "**Language:**",
+						"title": "⚙️ Guild indstillinger for {{guild_name}}",
+						"_1": "**Sprog:**",
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
-						"_4": "**Verification:**",
-						"_5": "**Warnings:**"
+						"_4": "**Verifikation:**",
+						"_5": "**Advarsler:**"
 					}
 				},
 				"language": {
 					"unsupportedLanguages": {
-						"_1": "`❌` The language **{{language}}** is not supported.",
-						"_2": "`✅` Supported languages are:"
+						"_1": "`❌` Sprog **{{language}}** understøttes ikke.",
+						"_2": "`✅` Understøttede sprog er:"
 					},
-					"success": "`🌍` Language for this guild has been set to **{{language}}**",
-					"error": "`⚠️` An error occurred while processing this command."
+					"success": "`🌍` Sprog for dette guild er sat til **{{language}}**",
+					"error": "`⚠️` Der opstod en fejl under behandling af denne kommando."
 				}
 			},
 			"verification": {
