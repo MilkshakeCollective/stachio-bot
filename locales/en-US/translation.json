@@ -179,12 +179,24 @@
 					"_5": "🔹 **/donate** - Support development on Ko-fi",
 					"_6": "`🛡️` Safety & Moderation",
 					"_7": "🔹 **/report** - Submit a safety or moderation report",
-					"_8": "`📢` Support & Appeals",
-					"_9": "If your account is flagged and you wish to appeal, please visit our official Discord server at",
-					"_10": "`🧾` Version & Info",
-					"_11": "🔹 **Version:**",
-					"_12": "🔹 **Developer:**",
+					"_8": "`🗂️` Management",
+					"_9": "🔹 **/antiphishing** - Manage anti-phishing protection",
+					"_10": "🔹 **/guild** - View and configure guild settings",
+					"_11": "🔹 **/verification** - Configure verification settings",
+					"_12": "🔹 **/warnings** - Manage member warnings",
+					"_13": "🔹 **/watchdog** - Configure and view watchdog settings",
+					"_14": "`📢` Support & Appeals",
+					"_15": "If your account is flagged and you wish to appeal, please visit our official Discord server at",
+					"_16": "`🧾` Version & Info",
+					"_17": "🔹 **Version:**",
+					"_18": "🔹 **Developer:**",
 					"footer": "Stachio • Protecting communities since 2025"
+				},
+				"buttons": {
+					"website": "Website",
+					"supportServer": "Support Server",
+					"supportUs": "Support Us",
+					"invite": "Invite Stachio"
 				}
 			},
 			"invite": {
