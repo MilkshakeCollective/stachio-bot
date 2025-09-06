@@ -54,6 +54,10 @@ export const config: ConfigInterface = {
 			name: 'Watchdog Report Log Channel',
 			id: process.env.WATCHDOG_REPORT_LOG_CHANNEL_ID,
 		},
+		{
+			name: 'Watchdog Guild Log Channel',
+			id: process.env.WATCHDOG_GUILD_LOG_CHANNEL_ID,
+		},
 	],
 	webhooks: [],
 	APIs: [

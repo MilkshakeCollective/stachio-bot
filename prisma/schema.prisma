@@ -19,6 +19,38 @@ model GuildConfig {
   updatedAt     DateTime            @updatedAt
 }
 
+model Guilds {
+  id        Int         @id @default(autoincrement())
+  guildId   String      @unique
+  name      String?
+  icon      String?
+  status    GuildStatus @default(FLAGGED)
+  type      GuildType   @default(COMMUNITY)
+  reason    String      @default("No reason provided")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum GuildStatus {
+  FLAGGED
+}
+
+enum GuildType {
+  COMMUNITY
+  BOT_FARM
+  PARTNER
+  LEAKS
+  CHEATS
+  MARKETPLACE
+  RMT
+  EXPLOITS
+  GAMBLING
+  MALWARE
+  NSFW
+  COPYCAT
+  EXTREMISM
+}
+
 model Users {
   id            Int            @id @default(autoincrement())
   userId        String         @unique
@@ -49,8 +81,8 @@ model Report {
   screenshots Json
   status      ReportStatus @default(PENDING)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum ReportStatus {
