@@ -16,6 +16,12 @@
 		"noImplicitAny": false,
 		"strictNullChecks": true,
 		"skipDefaultLibCheck": true,
-		"skipLibCheck": true
-	}
+		"skipLibCheck": true,
+		"baseUrl": ".",
+		"paths": {
+			"@milkshakecollective/helper": ["packages/helper/src/index.ts"],
+			"@milkshakecollective/bot": ["packages/bot/src/index.ts"]
+		}
+	},
+	"references": [{ "path": "packages/helper" }, { "path": "packages/bot" }, { "path": "packages/import" }]
 }
