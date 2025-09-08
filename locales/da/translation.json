@@ -1,32 +1,33 @@
 {
 	"events": {
 		"newGuild": {
-			"_1": "👋 Hej **{{guild_name}}**!",
+			"_1": "👋 Velkommen, **{{guild_name}}**!",
 			"_2": "Tak fordi du inviterede **Stachio** 🚨",
-			"_3": "Vi hjælper med at holde dit fællesskab sikkert og positivt ✅",
-			"_4": "🔗 **Hurtige Links**",
-			"_5": "• [Inviter Bot](<{{client_invite}}>)",
+			"_3": "Vi hjælper med at holde dit fællesskab sikkert, positivt og velbeskyttet ✅",
+			"_4": "🔗 **Nyttige Links**",
+			"_5": "• [Inviter Stachio](<{{client_invite}}>)",
 			"_6": "• [Support Server]({{client_support_server}})",
 			"_7": "• [Støt os] (<{{client_kofi_link}}>)",
-			"_8": "💡 Brug for hjælp? Tilmeld dig vores supportserver når som helst!"
+			"_8": "💡 Har du brug for hjælp? Vores supportserver er altid åben!",
+			"_9": "i Denne kanal er blevet indstillet automatisk som **broadcast kanal** for Stachio opdateringer. Du kan ændre den når som helst ved hjælp af `/guild broadcast-kanal`."
 		},
 		"verification": {
 			"config_error": "`❌` Konfigurationsfejl. Prøv igen senere.",
-			"not_configured": "`❌` Verifikation ikke konfigureret.",
+			"not_configured": "`❌` Verifikation er ikke sat op.",
 			"button_inactive": "`❌` Denne knap er ikke længere aktiv.",
-			"already_verified": "`✅` Du er allerede verificeret",
-			"success_verified": "`✅` Verificeret! Velkommen.",
+			"already_verified": "`✅` Du er allerede verificeret.",
+			"success_verified": "`✅` Verifikation fuldført! Velkommen.",
 			"success_dm": "`✅` Du er blevet verificeret!\n\n-# Sendt fra **{{guild_name}} ({{guild_id}})**",
 			"success_log": "`✅` {{user_name}} ({{user_id}}) blev verificeret.",
-			"role_assign_error": "Uventet fejl under tildeling af roller.",
+			"role_assign_error": "Uventet fejl under tildeling af verifikationsroller.",
 			"kick_log": "`👢` {{user_name}} ({{user_id}}) blev smidt ud for manglende verifikation.",
-			"max_attempts_log": "`🚫` {{user_name}} ({{user_id}}) nåede maksimale forsøg.",
+			"max_attempts_log": "`🚫` {{user_name}} ({{user_id}}) nåede maksimale antal forsøg.",
 			"kick_failed_log": "`⚠️` Kunne ikke smide {{user_name}} ({{user_id}}) ud. Mangler tilladelser?",
 			"kick_dm": "`👢` Du er blevet smidt ud for at fejle verifikation for mange gange.\n\n-# Sendt fra **{{guild_name}} ({{guild_id}})**",
 			"kick_notice": "Du fejlede verifikationen for mange gange og blev smidt ud.",
 			"kick_error": "Maks. forsøg nået. Der opstod en fejl under forsøget på at smide ud.",
 			"fail_dm": "`🚫` Du har fejlet verifikation for mange gange.\n\nKontakt venligst en moderator, hvis du mener, at dette var en fejl eller brug for en anden chance.\n\n-# Sendt fra **{{guild_name}} ({{guild_id}})**",
-			"fail_notice": "Maks. forsøg er nået. Kontakt venligst en moderator.",
+			"fail_notice": "Du har nået de maksimale forsøg. Kontakt venligst en moderator.",
 			"wrong_dm": "`❌` Forkert emoji. Prøv igen.\n\nForsøg tilbage: **{{attempts_left}}**\n\n-# Sendt fra **{{guild_name}} ({{guild_id}})**",
 			"wrong_notice": "`❌` Forkert emoji. Forsøg tilbage: **{{attempts_left}}**"
 		}
@@ -37,17 +38,17 @@
 				"setup": {
 					"noData": "`⚠️` Ingen anti-phish indstillinger fundet. Kør `/antiphishing setup` først.",
 					"embed": {
-						"title": "✅ Anti-phish Opsætning Komplet",
+						"title": "✅ Anti-Phishing Opsætning Komplet",
 						"_1": "**Log Kanal:**",
-						"_2": "**Ignorerede Rolle(r):**",
-						"_3": "**Ignorerede Rolle(r):**",
-						"_4": "**Ignorerede Rolle(r):**",
+						"_2": "**Ignorerede Roller:**",
+						"_3": "**Ignorerede Brugere:**",
+						"_4": "**Ignorerede Kanaler:**",
 						"_5": "`Ingen`",
-						"footer": "Anti-Phish vil nu bruge disse indstillinger."
+						"footer": "Anti-Phishing er nu aktiv med disse indstillinger."
 					}
 				},
 				"settings": {
-					"title": "🐾 Anti-phish Indstillinger",
+					"title": "🐾 Anti-phishing-indstillinger",
 					"enabled": "**Aktiveret:** {{state}}",
 					"roles": "**Ignorerede Roller:** {{roles}}",
 					"users": "**Ignorerede Brugere:** {{users}}",
@@ -56,19 +57,19 @@
 					"footer": "Guild ID: {{guildId}}"
 				},
 				"addRemove": {
-					"noId": "Du skal angive en {{type}}.",
+					"noId": "Du skal angive en gyldig {{type}}.",
 					"added": "`✅` Tilføjet {{type}}.",
 					"removed": "`✅` Fjernet {{type}}."
 				},
 				"toggle": {
-					"enabled": "`✅` Anti-Phish er blevet **aktiveret**.",
-					"disabled": "`✅` Anti-Phish er blevet **deaktiveret**."
+					"enabled": "`✅` Anti-Phishing er blevet **aktiveret**.",
+					"disabled": "`✅` Anti-Phishing er blevet **deaktiveret**."
 				}
 			},
 			"guild": {
 				"settings": {
 					"embed": {
-						"title": "⚙️ Guild indstillinger for {{guild_name}}",
+						"title": "⚙️ Serverindstillinger for {{guild_name}}",
 						"_1": "**Sprog:**",
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
@@ -81,8 +82,12 @@
 						"_1": "`❌` Sprog **{{language}}** understøttes ikke.",
 						"_2": "`✅` Understøttede sprog er:"
 					},
-					"success": "`🌍` Sprog for dette guild er sat til **{{language}}**",
-					"error": "`⚠️` Der opstod en fejl under behandling af denne kommando."
+					"success": "`🌍` Serversprog er sat til **{{language}}**",
+					"error": "`⚠️` Der opstod en fejl under ændring af sproget."
+				},
+				"broadcast_channel": {
+					"success": "`📫` Broadcast-kanal sat til **<#{{channelId}}>**",
+					"error": "`⚠️` Der opstod en fejl under ændring af broadcast kanalen."
 				}
 			},
 			"verification": {
@@ -90,15 +95,15 @@
 					"success": "`✅` Verifikation besked er live med knapper.",
 					"embed": {
 						"title": "🔐 Server Verifikation",
-						"_1": "Velkommen! Før du kan få adgang til serveren, skal vi sørge for, at du ikke er en bot.",
+						"_1": "Velkommen! Før du kan få adgang til denne server, skal vi bekræfte, at du ikke er en bot.",
 						"_2": "`✅` **Hvordan verificeres:**",
-						"_3": "Tryk på den **korrekte emoji knap** nedenfor, der matcher denne: `{{emoji}}`.",
-						"_4": "`⚠️` Du får kun et par chancer — vælg omhyggeligt!",
+						"_3": "Klik på den **emoji knap** der matcher denne: `{{emoji}}`.",
+						"_4": "`⚠️` Du får kun et begrænset antal forsøg - vælg omhyggeligt!",
 						"footer": "Verifikationssystem • Bliv sikker online"
 					}
 				},
 				"style": {
-					"set": "`✅` Emoji stil sat til **`{{style}}`**."
+					"set": "`✅` Emoji stil er blevet sat til **`{{style}}`**."
 				},
 				"log": {
 					"noConfig": "`⚠️` Ingen verifikation config fundet. Kør `/verification setup` først.",
@@ -113,13 +118,13 @@
 				},
 				"kickOnFail": {
 					"noConfig": "`⚠️` Ingen verifikation config fundet. Kør `/verification setup` først.",
-					"enabled": "`✅` Auto kick på mislykkedes er blevet **aktiveret**.",
-					"disabled": "`✅` Auto kick på mislykkedes er blevet **deaktiveret**."
+					"enabled": "`✅` Auto-kick på verifikationsfejl er blevet **aktiveret**.",
+					"disabled": "`✅` Auto-kick på verifikationsfejl er blevet **deaktiveret**."
 				},
 				"limits": {
 					"noConfig": "`⚠️` Ingen verifikation config fundet. Kør `/verification setup` først.",
-					"missing": "Angiv mindst én mulighed.",
-					"updated": "`✅` Grænser opdateret."
+					"missing": "Du skal angive mindst én mulighed.",
+					"updated": "`✅` Verifikationsgrænser opdateret."
 				},
 				"regenerate": {
 					"noConfig": "`⚠️` Ingen bekræftelsesmeddelelse at opdatere. Kør `/verification setup` først.",
@@ -127,39 +132,39 @@
 				},
 				"clearAttempts": {
 					"noConfig": "`⚠️` Ingen verifikation config fundet. Kør `/verification setup` først.",
-					"success": "`✅` Ryddede verifikationsforsøg for **{{tag}}** ({{id}})."
+					"success": "`✅` Verifikationsforsøg ryddet for **{{tag}}** ({{id}})."
 				},
 				"toggle": {
 					"noConfig": "`⚠️` Ingen verifikation config fundet. Kør `/verification setup` først.",
-					"enabled": "`✅` Verifikationssystem er blevet **aktiveret**.",
-					"disabled": "`✅` Verifikationssystem er **deaktiveret** og alle konfigurationsdata blev slettet."
+					"enabled": "`✅` Verifikationssystem er nu **aktiveret**.",
+					"disabled": "`✅` Verifikationssystem er nu **deaktiveret** og alle konfigurationsdata blev fjernet."
 				}
 			},
 			"watchdog": {
 				"setup": {
 					"embed": {
-						"title": "✅ Watchdog opsætning afsluttet",
+						"title": "✅ Watchdog Opsætning Komplet",
 						"_1": "**Logs:**",
 						"_2": "**Role:**",
 						"_3": "`Ikke angivet`",
 						"_4": "**Handlinger:**",
-						"_5": "• Flagged →",
-						"_6": "• Perm Flagged →",
-						"_7": "• Auto Flagged →",
-						"footer": "Watchdog v2 aktiverer automatisk disse indstillinger."
+						"_5": "• Identificeret →",
+						"_6": "• Permanent Identificeret →",
+						"_7": "• Automatisk Identificeret →",
+						"footer": "Watchdog v2 er nu aktiv med disse indstillinger."
 					}
 				},
 				"settings": {
 					"embed": {
-						"title": "🐾 Watchdog indstillinger",
+						"title": "🐾 Watchdog Indstillinger",
 						"_1": "**Aktiveret:**",
-						"_2": "**Log channel:**",
+						"_2": "**Log Kanal:**",
 						"_3": "**Role:**",
 						"_4": "`Ikke angivet`",
 						"_5": "**Handlinger:**",
-						"_6": "• Flagged →",
-						"_7": "• Perm Flagged →",
-						"_8": "• Auto Flagged →",
+						"_6": "• Identificeret →",
+						"_7": "• Permanent Identificeret →",
+						"_8": "• Automatisk Identificeret →",
 						"footer": "Guild ID: {{guildId}}"
 					},
 					"noSettings": "`⚠️` Ingen Watchdog indstillinger fundet. Kør `/watchdog setup` først."
@@ -176,23 +181,23 @@
 				"embed": {
 					"title": "🫂 Støt Stachio",
 					"_1": "Stachio er bygget til at holde dit samfund sikkert og blomstrende! 💚",
-					"_2": "Hvis du gerne vil støtte udvikling, overveje at donere via Ko-fi:",
-					"_3": "Klik her for at donere",
+					"_2": "Hvis du gerne vil støtte igangværende udvikling, overveje at donere via Ko-fi:",
+					"_3": "Klik nedenfor for at donere",
 					"footer": "Tak fordi du støttede Stachio!",
 					"button": "Donér via Ko- fi"
 				}
 			},
 			"help": {
 				"tips": {
-					"_1": "`💡` Brug `/report` for hurtigt at advare vagthund personale om brugere i dit fællesskab.",
-					"_2": "`💡` Stachio blokerer automatisk kendte phishing-links",
+					"_1": "`💡` Brug `/report` for hurtigt at advare Watchdog personale om potentielle risici.",
+					"_2": "`💡` Stachio blokerer automatisk kendte phishing-links.",
 					"_3": "`💡` Support Stachio på Ko-fi at hjælpe med at finansiere hosting, udvikling og nye funktioner.",
 					"_4": "`💡` Hold dine moderation logfiler kanal privat for at sikre, at følsomme data forbliver sikre.",
-					"_5": "`💡` Stachio virker også automatisk i baggrunden med globale forbud, phishing beskyttelse, og detaljerede mådehold logs."
+					"_5": "`💡` Stachio kører løbende i baggrunden med globale forbud, phishing beskyttelse, og detaljerede mådehold logs."
 				},
 				"embed": {
 					"title": "📖 Stachio Hjælp Menu",
-					"_1": "Velkommen til **Stachio** - din alt-i-én fællesskabs moderator.",
+					"_1": "Velkommen til **Stachio** — din alt-i-én fællesskabs watchdog.",
 					"_2": "Brug kommandoerne nedenfor for at komme i gang og udforske hvad Stachio kan gøre for din server.",
 					"_3": "`⚙️` Generelt",
 					"_4": "🔹 **/invite** - Inviter Stachio til din server",
@@ -200,13 +205,13 @@
 					"_6": "`🛡️` Sikkerhed & Moderation",
 					"_7": "🔹 **/report** - Indsend en sikkerheds- eller moderationsrapport",
 					"_8": "`🗂️` Administration",
-					"_9": "🔹 **/antiphishing** - Administrer anti-phishing-beskyttelse",
-					"_10": "🔹 **/guild** - Vis og konfigurer guild indstillinger",
+					"_9": "🔹 **/antiphishing** - Administrer phishing-beskyttelse",
+					"_10": "🔹 **/guild** - Vis og konfigurer serverindstillinger",
 					"_11": "🔹 **/verification** - Konfigurér verifikationsindstillinger",
 					"_12": "🔹 **/warnings** - Administrer medlems advarsler",
-					"_13": "🔹 **/watchdog** - Indstil og vis watchdog indstillinger",
+					"_13": "🔹 **/watchdog** - Konfigurer og vis Watchdog indstillinger",
 					"_14": "`📢` Support & Appeals",
-					"_15": "Hvis din konto er markeret og du ønsker at appellere, kan du besøge vores officielle Discord server på",
+					"_15": "Hvis din konto er identificeret, og du ønsker at appellere, kan du besøge vores officielle Discord server:",
 					"_16": "`🧾` Version & Info",
 					"_17": "🔹 **Version:**",
 					"_18": "🔹 **Udvikler:**",
@@ -222,26 +227,26 @@
 			"invite": {
 				"embed": {
 					"title": "📩 Invitér Stachio",
-					"_1": "Tak fordi du valgte **Stachio** — din fællesskabs vogter! 💚",
-					"_2": "Med Stachio, din server får:",
+					"_1": "Tak fordi du valgte **Stachio** — din betroede fællesskabs vogter! 💚",
+					"_2": "Med Stachio, din server fordele fra:",
 					"_3": "- `👁️` **Watchdog**: Globalt forbud mod gentagne lovovertrædere",
 					"_4": "- `🛡️` **Anti-phishing**: Blokerer automatisk ondsindede links",
-					"_5": "- `📑` **Rapportsystem **: Medlemmer kan markere problemer til gennemgang",
-					"_6": "- `⚖️` **Appeals**: Fair review process for flagede brugere",
-					"_7": "- `🌍` **Multi-language Support**: Moderation for fællesskaber over hele verden",
-					"_8": "Klik på knappen nedenfor for at tilføje Stachio og gøre dit fællesskab sikrere i dag!",
+					"_5": "- `📑` **Rapportsystem **: Medlemmerne kan rejse spørgsmål til gennemgang",
+					"_6": "- `⚖️` **Appeals**: Fair review process for identified accounts",
+					"_7": "- `🌍` **Multi-Language Support**: Beskyttelse af samfund over hele verden",
+					"_8": "Klik nedenfor for at invitere Stachio og styrke dit fællesskabs sikkerhed i dag!",
 					"footer": "Stachio • Beskytter fællesskaber siden 2025",
-					"button": "Inviter Bot"
+					"button": "Invitér Stachio"
 				}
 			},
 			"report": {
 				"embed": {
-					"title": "🚨 Ny brugerrapport",
+					"title": "🚨 Ny Rapport Indsendt",
 					"_1": "**Rapporter:**",
 					"_2": "**Rapporteret Bruger:**",
 					"_3": "**Begrundelse:**",
 					"_4": "**Beviser:**",
-					"_5": "Ingen ekstra detaljer angivet",
+					"_5": "Ingen yderligere oplysninger angivet",
 					"_6": "**Skærmbilleder:**",
 					"_7": "Skærmbillede",
 					"_8": "Ingen skærmbilleder angivet",
@@ -250,8 +255,16 @@
 					"button_3": "Afvis"
 				},
 				"reply": {
-					"success": "`✅` Din rapport mod **{{reported_username}}** er blevet indsendt med **{{screenshots_length}}** skærmbilleder. Personalet vil snart gennemgå den.",
+					"success": "`✅` Din rapport mod **{{reported_username}}** er blevet indsendt med **{{screenshots_length}}** screenshot(s). Personalet vil gennemgå det snarest.",
 					"error": "`❌` Noget gik galt under indsendelse af din rapport. Prøv igen senere."
+				}
+			},
+			"vote": {
+				"embed": {
+					"title": "🗳️ Stem på Stachio",
+					"_1": "Hjælp **Stachio** vokse ved at opstemme os på bot listerne nedenfor!",
+					"_2": "Hver stemme hjælper os med at nå flere fællesskaber 💙",
+					"footer": "Tak fordi du støtter Stachio!"
 				}
 			}
 		}
@@ -259,50 +272,36 @@
 	"helpers": {
 		"warn": {
 			"sanctions": {
-				"mute": "Auto mute på grund af for mange advarselspunkter",
-				"kick": "Auto kick på grund af for mange advarselspunkter",
-				"ban": "Auto ban på grund af for mange advarselspunkter"
+				"mute": "Auto-mute anvendt på grund af for mange advarselspunkter",
+				"kick": "Auto-kick anvendt på grund af for mange advarselspunkter",
+				"ban": "Auto-ban anvendt på grund af for mange advarselspunkter"
 			}
 		},
 		"watchdog": {
-			"weekly_report": {
-				"title": "📊 Ugentlig Watchdog Rapport",
-				"_1": "Her er en oversigt over mærkeret brugere og appeller til den sidste uge. Hold dit fællesskab ren!",
-				"_2": "**`⚠️` Markerede Brugere**",
-				"_3": "- Total Markerede: `{{total_flagged}}`",
-				"_4": "- Automatisk Markeret → `{{total_auto_flagged}}`",
-				"_5": "- Permanent Markeret: `{{total_perm_flagged}}`",
-				"_6": "**`✉️` Appeals**",
-				"_7": "- Total Appeals: `{{total_appealed}}`",
-				"_8": "- Godkendt: `✅`{total_approved_appeals}`",
-				"_9": "- Afvist: `❌`{total_denied_appeals}`",
-				"_10": "- Afventer: `⏳` `{{total_pending_appeals}}`",
-				"footer": "Watchdog Ugentlig Rapport"
-			},
 			"action": {
 				"dmEmbed": {
-					"title": "⚠️ Du Er Blevet Markeret",
-					"_1": "Hvis du modtager denne besked, markeres du i **{{member_guild_name}}** af **Stachio**.",
+					"title": "⚠️ Du er blevet identificeret",
+					"_1": "Du er blevet identificeret i **{{member_guild_name}}** af **Stachio**.",
 					"_2": {
 						"_1": "**Begrundelse:**",
 						"_2": "Ingen begrundelse givet"
 					},
 					"_3": {
 						"_1": "**Hvad Betyder dette?** {{action_taken}}",
-						"_2": "Du er automatisk blevet tildelt en begrænset rolle.",
-						"_3": "Du er permanent udelukket fra denne server.",
+						"_2": "Du er blevet tildelt automatisk en begrænset rolle.",
+						"_3": "Du er blevet permanent udelukket fra denne server.",
 						"_4": "Du er blevet smidt ud fra denne server.",
 						"_5": "Du har modtaget en advarsel."
 					},
 					"_4": "**Næste Trin:**",
 					"_5": "Tilmeld dig **Stachio Discord** for at appellere eller lære mere.",
 					"_6": "👉 [Tilmeld dig Stachio Discord]({{client_support_server}})",
-					"footer": "Dette er en automatisk systemmeddelelse"
+					"footer": "Dette er en automatisk systemmeddelelse."
 				},
 				"logEmbed": {
-					"title": "🚨 Markeret Bruger Fundet",
-					"_1": "En markeret bruger har tilsluttet sig **{{member_guild_name}}**.",
-					"_2": "**Bruger:** {{member_user_tag}} ({{member_id}})",
+					"title": "🚨 Identificeret Brugeradvarsel",
+					"_1": "En identificeret bruger har tilsluttet sig **{{member_guild_name}}**.",
+					"_2": "**Bruger:** {{member_user_name}} ({{member_id}})",
 					"_3": "**Status:** {{flaggedUser_status}}",
 					"_4": "**Handling taget:** {{action_taken}}",
 					"_5": "**Begrundelse:** {{flaggedUser_reason}}"
