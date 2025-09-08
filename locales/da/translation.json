@@ -158,13 +158,13 @@
 					"embed": {
 						"title": "🐾 Watchdog Indstillinger",
 						"_1": "**Aktiveret:**",
-						"_2": "**Log Channel:**",
+						"_2": "**Log Kanal:**",
 						"_3": "**Role:**",
 						"_4": "`Ikke angivet`",
 						"_5": "**Handlinger:**",
-						"_6": "• Identified →",
-						"_7": "• Permanently Identified →",
-						"_8": "• Automatically Identified →",
+						"_6": "• Identificeret →",
+						"_7": "• Permanent Identificeret →",
+						"_8": "• Automatisk Identificeret →",
 						"footer": "Guild ID: {{guildId}}"
 					},
 					"noSettings": "`⚠️` Ingen Watchdog indstillinger fundet. Kør `/watchdog setup` først."
@@ -181,23 +181,23 @@
 				"embed": {
 					"title": "🫂 Støt Stachio",
 					"_1": "Stachio er bygget til at holde dit samfund sikkert og blomstrende! 💚",
-					"_2": "If you’d like to support ongoing development, consider donating via Ko-fi:",
-					"_3": "Click below to donate",
+					"_2": "Hvis du gerne vil støtte igangværende udvikling, overveje at donere via Ko-fi:",
+					"_3": "Klik nedenfor for at donere",
 					"footer": "Tak fordi du støttede Stachio!",
 					"button": "Donér via Ko- fi"
 				}
 			},
 			"help": {
 				"tips": {
-					"_1": "`💡` Use `/report` to quickly alert Watchdog staff about potential risks.",
-					"_2": "`💡` Stachio automatically blocks known phishing links.",
+					"_1": "`💡` Brug `/report` for hurtigt at advare Watchdog personale om potentielle risici.",
+					"_2": "`💡` Stachio blokerer automatisk kendte phishing-links.",
 					"_3": "`💡` Support Stachio på Ko-fi at hjælpe med at finansiere hosting, udvikling og nye funktioner.",
 					"_4": "`💡` Hold dine moderation logfiler kanal privat for at sikre, at følsomme data forbliver sikre.",
-					"_5": "`💡` Stachio continuously runs in the background with global bans, phishing protection, and detailed moderation logs."
+					"_5": "`💡` Stachio kører løbende i baggrunden med globale forbud, phishing beskyttelse, og detaljerede mådehold logs."
 				},
 				"embed": {
 					"title": "📖 Stachio Hjælp Menu",
-					"_1": "Welcome to **Stachio** — your all-in-one community guardian.",
+					"_1": "Velkommen til **Stachio** — din alt-i-én fællesskabs watchdog.",
 					"_2": "Brug kommandoerne nedenfor for at komme i gang og udforske hvad Stachio kan gøre for din server.",
 					"_3": "`⚙️` Generelt",
 					"_4": "🔹 **/invite** - Inviter Stachio til din server",
@@ -205,13 +205,13 @@
 					"_6": "`🛡️` Sikkerhed & Moderation",
 					"_7": "🔹 **/report** - Indsend en sikkerheds- eller moderationsrapport",
 					"_8": "`🗂️` Administration",
-					"_9": "🔹 **/antiphishing** - Manage phishing protection",
-					"_10": "🔹 **/guild** - View and configure server settings",
+					"_9": "🔹 **/antiphishing** - Administrer phishing-beskyttelse",
+					"_10": "🔹 **/guild** - Vis og konfigurer serverindstillinger",
 					"_11": "🔹 **/verification** - Konfigurér verifikationsindstillinger",
 					"_12": "🔹 **/warnings** - Administrer medlems advarsler",
-					"_13": "🔹 **/watchdog** - Configure and view Watchdog settings",
+					"_13": "🔹 **/watchdog** - Konfigurer og vis Watchdog indstillinger",
 					"_14": "`📢` Support & Appeals",
-					"_15": "If your account is identified and you wish to appeal, please visit our official Discord server:",
+					"_15": "Hvis din konto er identificeret, og du ønsker at appellere, kan du besøge vores officielle Discord server:",
 					"_16": "`🧾` Version & Info",
 					"_17": "🔹 **Version:**",
 					"_18": "🔹 **Udvikler:**",
@@ -227,26 +227,26 @@
 			"invite": {
 				"embed": {
 					"title": "📩 Invitér Stachio",
-					"_1": "Thanks for choosing **Stachio** — your trusted community guardian! 💚",
-					"_2": "With Stachio, your server benefits from:",
+					"_1": "Tak fordi du valgte **Stachio** — din betroede fællesskabs vogter! 💚",
+					"_2": "Med Stachio, din server fordele fra:",
 					"_3": "- `👁️` **Watchdog**: Globalt forbud mod gentagne lovovertrædere",
 					"_4": "- `🛡️` **Anti-phishing**: Blokerer automatisk ondsindede links",
-					"_5": "- `📑` **Report System**: Members can raise issues for review",
+					"_5": "- `📑` **Rapportsystem **: Medlemmerne kan rejse spørgsmål til gennemgang",
 					"_6": "- `⚖️` **Appeals**: Fair review process for identified accounts",
-					"_7": "- `🌍` **Multi-Language Support**: Protection for communities worldwide",
-					"_8": "Click below to invite Stachio and strengthen your community’s safety today!",
+					"_7": "- `🌍` **Multi-Language Support**: Beskyttelse af samfund over hele verden",
+					"_8": "Klik nedenfor for at invitere Stachio og styrke dit fællesskabs sikkerhed i dag!",
 					"footer": "Stachio • Beskytter fællesskaber siden 2025",
-					"button": "Invite Stachio"
+					"button": "Invitér Stachio"
 				}
 			},
 			"report": {
 				"embed": {
-					"title": "🚨 New Report Submitted",
+					"title": "🚨 Ny Rapport Indsendt",
 					"_1": "**Rapporter:**",
 					"_2": "**Rapporteret Bruger:**",
 					"_3": "**Begrundelse:**",
 					"_4": "**Beviser:**",
-					"_5": "No additional details provided",
+					"_5": "Ingen yderligere oplysninger angivet",
 					"_6": "**Skærmbilleder:**",
 					"_7": "Skærmbillede",
 					"_8": "Ingen skærmbilleder angivet",
@@ -255,16 +255,16 @@
 					"button_3": "Afvis"
 				},
 				"reply": {
-					"success": "`✅` Your report against **{{reported_username}}** has been submitted with **{{screenshots_length}}** screenshot(s). Staff will review it shortly.",
+					"success": "`✅` Din rapport mod **{{reported_username}}** er blevet indsendt med **{{screenshots_length}}** screenshot(s). Personalet vil gennemgå det snarest.",
 					"error": "`❌` Noget gik galt under indsendelse af din rapport. Prøv igen senere."
 				}
 			},
 			"vote": {
 				"embed": {
-					"title": "🗳️ Vote for Stachio",
-					"_1": "Help **Stachio** grow by upvoting us on the bot lists below!",
-					"_2": "Every vote helps us reach more communities 💙",
-					"footer": "Thank you for supporting Stachio!"
+					"title": "🗳️ Stem på Stachio",
+					"_1": "Hjælp **Stachio** vokse ved at opstemme os på bot listerne nedenfor!",
+					"_2": "Hver stemme hjælper os med at nå flere fællesskaber 💙",
+					"footer": "Tak fordi du støtter Stachio!"
 				}
 			}
 		}
@@ -272,36 +272,36 @@
 	"helpers": {
 		"warn": {
 			"sanctions": {
-				"mute": "Auto-mute applied due to too many warning points",
-				"kick": "Auto-kick applied due to too many warning points",
-				"ban": "Auto-ban applied due to too many warning points"
+				"mute": "Auto-mute anvendt på grund af for mange advarselspunkter",
+				"kick": "Auto-kick anvendt på grund af for mange advarselspunkter",
+				"ban": "Auto-ban anvendt på grund af for mange advarselspunkter"
 			}
 		},
 		"watchdog": {
 			"action": {
 				"dmEmbed": {
-					"title": "⚠️ You have been Identified",
-					"_1": "You have been identified in **{{member_guild_name}}** by **Stachio**.",
+					"title": "⚠️ Du er blevet identificeret",
+					"_1": "Du er blevet identificeret i **{{member_guild_name}}** af **Stachio**.",
 					"_2": {
 						"_1": "**Begrundelse:**",
 						"_2": "Ingen begrundelse givet"
 					},
 					"_3": {
-						"_1": "**What This Means:** {{action_taken}}",
-						"_2": "You've been automatically assigned a restricted role.",
-						"_3": "You have been permanently banned from this server.",
+						"_1": "**Hvad Betyder dette?** {{action_taken}}",
+						"_2": "Du er blevet tildelt automatisk en begrænset rolle.",
+						"_3": "Du er blevet permanent udelukket fra denne server.",
 						"_4": "Du er blevet smidt ud fra denne server.",
 						"_5": "Du har modtaget en advarsel."
 					},
 					"_4": "**Næste Trin:**",
 					"_5": "Tilmeld dig **Stachio Discord** for at appellere eller lære mere.",
 					"_6": "👉 [Tilmeld dig Stachio Discord]({{client_support_server}})",
-					"footer": "This is an automated system message."
+					"footer": "Dette er en automatisk systemmeddelelse."
 				},
 				"logEmbed": {
-					"title": "🚨 Identified User Alert",
-					"_1": "An identified user has joined **{{member_guild_name}}**.",
-					"_2": "**User:** {{member_user_name}} ({{member_id}})",
+					"title": "🚨 Identificeret Brugeradvarsel",
+					"_1": "En identificeret bruger har tilsluttet sig **{{member_guild_name}}**.",
+					"_2": "**Bruger:** {{member_user_name}} ({{member_id}})",
 					"_3": "**Status:** {{flaggedUser_status}}",
 					"_4": "**Handling taget:** {{action_taken}}",
 					"_5": "**Begrundelse:** {{flaggedUser_reason}}"
