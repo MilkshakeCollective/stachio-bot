@@ -241,6 +241,9 @@ const command: CommandInterface = {
 						flags: ['Ephemeral'],
 					});
 
+				// Defer the reply to avoid interaction timeout
+				await interaction.deferReply({ ephemeral: true });
+
 				const members = await guild.members.fetch();
 				let affected = 0;
 
@@ -265,9 +268,9 @@ const command: CommandInterface = {
 					}
 				}
 
-				return interaction.reply({
+				// Edit the deferred reply instead of sending a new message
+				return interaction.editReply({
 					content: `\`✅\` Scan complete. Applied actions to **${affected}** blocked member(s).`,
-					flags: ['Ephemeral'],
 				});
 			}
 		}
