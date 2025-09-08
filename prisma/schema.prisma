@@ -3,36 +3,38 @@ generator client {
 }
 
 datasource db {
-  provider  = "mysql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model GuildConfig {
-  guildId       String              @id
-  language      String              @default("en-US")
-  watchdog      WatchdogConfig?
-  AntiPhishing  AntiPhishingConfig?
-  verification  VerificationConfig?
-  WarningConfig WarningConfig?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
+  guildId            String              @id
+  language           String              @default("en-US")
+  broadcastChannelId String?
+  watchdog           WatchdogConfig?
+  AntiPhishing       AntiPhishingConfig?
+  verification       VerificationConfig?
+  WarningConfig      WarningConfig?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 }
 
 model Guilds {
   id        Int         @id @default(autoincrement())
   guildId   String      @unique
+  ownerId   String?
   name      String?
   icon      String?
-  status    GuildStatus @default(FLAGGED)
+  status    GuildStatus @default(BLACKLISTED)
   type      GuildType   @default(COMMUNITY)
   reason    String      @default("No reason provided")
+  logged    Boolean     @default(false)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
 
 enum GuildStatus {
-  FLAGGED
+  BLACKLISTED
 }
 
 enum GuildType {
@@ -56,59 +58,19 @@ model Users {
   userId        String         @unique
   last_username String?
   last_avatar   String?
-  status        WatchdogStatus @default(FLAGGED)
+  status        WatchdogStatus @default(BLOCKED)
   reason        String         @default("No reason provided")
   evidence      Json
+  logged        Boolean        @default(false)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  appeals       Appeal[]
 }
 
 enum WatchdogStatus {
   APPEALED
-  FLAGGED
-  PERM_FLAGGED
-  AUTO_FLAGGED
-}
-
-model Report {
-  id          Int          @id @default(autoincrement())
-  guildId     String
-  reporterId  String
-  reportedId  String
-  description String
-  evidence    Json
-  screenshots Json
-  status      ReportStatus @default(PENDING)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum ReportStatus {
-  PENDING
-  UNDER_REVIEW
-  RESOLVED
-  REJECTED
-}
-
-model Appeal {
-  id                Int          @id @default(autoincrement())
-  userId            String
-  status            AppealStatus @default(PENDING)
-  reason            String?
-  moderatorResponse String       @default("Awaiting Response")
-  moderator         String       @default("Awaiting Response")
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-
-  user Users @relation(fields: [userId], references: [userId])
-}
-
-enum AppealStatus {
-  PENDING
-  APPROVED
-  DENIED
+  BLOCKED
+  PERM_BLOCKED
+  AUTO_BLOCKED
 }
 
 model WatchdogConfig {
@@ -116,11 +78,11 @@ model WatchdogConfig {
   guildId String  @unique
   enabled Boolean @default(true)
 
-  actionOnFlag WatchdogAction @default(KICK)
-  actionOnPerm WatchdogAction @default(KICK)
-  actionOnAuto WatchdogAction @default(ROLE)
-  roleId       String?
-  logChannelId String?
+  actionOnBlocked     WatchdogAction @default(KICK)
+  actionOnPermBlocked WatchdogAction @default(BAN)
+  actionOnAutoBlocked WatchdogAction @default(ROLE)
+  roleId              String?
+  logChannelId        String?
 
   guild GuildConfig @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
 
