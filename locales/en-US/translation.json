@@ -1,53 +1,54 @@
 {
 	"events": {
 		"newGuild": {
-			"_1": "👋 Hey **{{guild_name}}**!",
+			"_1": "👋 Welcome, **{{guild_name}}**!",
 			"_2": "Thanks for inviting **Stachio** 🚨",
-			"_3": "We'll help keep your community safe and positive ✅",
-			"_4": "🔗 **Quick Links**",
-			"_5": "• [Invite the Bot](<{{client_invite}}>)",
+			"_3": "We’ll help keep your community safe, positive, and well-protected ✅",
+			"_4": "🔗 **Useful Links**",
+			"_5": "• [Invite Stachio](<{{client_invite}}>)",
 			"_6": "• [Support Server]({{client_support_server}})",
 			"_7": "• [Support Us](<{{client_kofi_link}}>)",
-			"_8": "💡 Need help? Join our support server anytime!"
+			"_8": "💡 Need help? Our support server is always open!",
+			"_9": "ℹ️ This channel has been automatically set as the **broadcast channel** for Stachio updates. You can change it anytime using `/guild broadcast-channel`."
 		},
 		"verification": {
 			"config_error": "`❌` Configuration error. Please try again later.",
-			"not_configured": "`❌` Verification not configured.",
+			"not_configured": "`❌` Verification has not been set up.",
 			"button_inactive": "`❌` This button is no longer active.",
-			"already_verified": "`✅` You are already verified",
-			"success_verified": "`✅` Verified! Welcome.",
-			"success_dm": "`✅` You have been verified!\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"already_verified": "`✅` You are already verified.",
+			"success_verified": "`✅` Verification complete! Welcome.",
+			"success_dm": "`✅` You’ve been verified!\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
 			"success_log": "`✅` {{user_name}} ({{user_id}}) successfully verified.",
-			"role_assign_error": "Unexpected error while assigning roles.",
+			"role_assign_error": "Unexpected error while assigning verification roles.",
 			"kick_log": "`👢` {{user_name}} ({{user_id}}) was kicked for failing verification.",
-			"max_attempts_log": "`🚫` {{user_name}} ({{user_id}}) reached max attempts.",
+			"max_attempts_log": "`🚫` {{user_name}} ({{user_id}}) reached the maximum number of attempts.",
 			"kick_failed_log": "`⚠️` Failed to kick {{user_name}} ({{user_id}}). Missing permissions?",
 			"kick_dm": "`👢` You have been kicked for failing verification too many times.\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
-			"kick_notice": "You failed the verification too many times and were kicked.",
-			"kick_error": "Max attempts reached. An error occurred attempting to kick.",
-			"fail_dm": "`🚫` You have failed the verification too many times.\n\nPlease contact a moderator if you believe this was a mistake or need another chance.\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
-			"fail_notice": "Max attempts reached. Please contact a moderator.",
+			"kick_notice": "You failed verification too many times and were removed.",
+			"kick_error": "Max attempts reached. An error occurred while attempting to kick.",
+			"fail_dm": "`🚫` You’ve failed the verification too many times.\n\nPlease contact a moderator if you believe this was a mistake or need another chance.\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
+			"fail_notice": "You’ve reached the maximum attempts. Please contact a moderator.",
 			"wrong_dm": "`❌` Wrong emoji. Please try again.\n\nAttempts left: **{{attempts_left}}**\n\n-# Sent from **{{guild_name}} ({{guild_id}})**",
-			"wrong_notice": "`❌` Wrong emoji. Attempts left: **{{attempts_left}}**"
+			"wrong_notice": "`❌` Wrong emoji. Attempts remaining: **{{attempts_left}}**"
 		}
 	},
 	"commands": {
 		"management": {
 			"antiphishing": {
 				"setup": {
-					"noData": "`⚠️` No Anti-Phish settings found. Run `/antiphishing setup` first.",
+					"noData": "`⚠️` No Anti-Phishing settings found. Run `/antiphishing setup` first.",
 					"embed": {
-						"title": "✅ Anti-Phish Setup Complete",
+						"title": "✅ Anti-Phishing Setup Complete",
 						"_1": "**Log Channel:**",
-						"_2": "**Ignored Role(s):**",
-						"_3": "**Ignored User(s):**",
-						"_4": "**Ignored Channel(s):**",
+						"_2": "**Ignored Roles:**",
+						"_3": "**Ignored Users:**",
+						"_4": "**Ignored Channels:**",
 						"_5": "`None`",
-						"footer": "Anti-Phish will now use these settings."
+						"footer": "Anti-Phishing is now active with these settings."
 					}
 				},
 				"settings": {
-					"title": "🐾 Anti-Phish Settings",
+					"title": "🐾 Anti-Phishing Settings",
 					"enabled": "**Enabled:** {{state}}",
 					"roles": "**Ignored Roles:** {{roles}}",
 					"users": "**Ignored Users:** {{users}}",
@@ -56,19 +57,19 @@
 					"footer": "Guild ID: {{guildId}}"
 				},
 				"addRemove": {
-					"noId": "You must provide a {{type}}.",
+					"noId": "You must provide a valid {{type}}.",
 					"added": "`✅` Successfully added {{type}}.",
 					"removed": "`✅` Successfully removed {{type}}."
 				},
 				"toggle": {
-					"enabled": "`✅` Anti-Phish has been **enabled**.",
-					"disabled": "`✅` Anti-Phish has been **disabled**."
+					"enabled": "`✅` Anti-Phishing has been **enabled**.",
+					"disabled": "`✅` Anti-Phishing has been **disabled**."
 				}
 			},
 			"guild": {
 				"settings": {
 					"embed": {
-						"title": "⚙️ Guild Settings for {{guild_name}}",
+						"title": "⚙️ Server Settings for {{guild_name}}",
 						"_1": "**Language:**",
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
@@ -81,24 +82,28 @@
 						"_1": "`❌` The language **{{language}}** is not supported.",
 						"_2": "`✅` Supported languages are:"
 					},
-					"success": "`🌍` Language for this guild has been set to **{{language}}**",
-					"error": "`⚠️` An error occurred while processing this command."
+					"success": "`🌍` Server language has been set to **{{language}}**",
+					"error": "`⚠️` An error occurred while changing the language."
+				},
+				"broadcast_channel": {
+					"success": "`📫` Broadcast channel set to **<#{{channelId}}>**",
+					"error": "`⚠️` An error occurred while changing the broadcast channel."
 				}
 			},
 			"verification": {
 				"setup": {
-					"success": "`✅` Verification message is live with buttons.",
+					"success": "`✅` Verification message posted with buttons.",
 					"embed": {
 						"title": "🔐 Server Verification",
-						"_1": "Welcome! Before you can access the server, we need to make sure you're not a bot.",
+						"_1": "Welcome! Before you can access this server, we need to confirm you’re not a bot.",
 						"_2": "`✅` **How to verify:**",
-						"_3": "Press the **correct emoji button** below that matches this one: `{{emoji}}`.",
-						"_4": "`⚠️` You only get a few chances — choose carefully!",
+						"_3": "Click the **emoji button** that matches this one: `{{emoji}}`.",
+						"_4": "`⚠️` You only get a limited number of tries — choose carefully!",
 						"footer": "Verification System • Stay safe online"
 					}
 				},
 				"style": {
-					"set": "`✅` Emoji style set to **`{{style}}`**."
+					"set": "`✅` Emoji style has been set to **`{{style}}`**."
 				},
 				"log": {
 					"noConfig": "`⚠️` No verification config found. Run `/verification setup` first.",
@@ -113,13 +118,13 @@
 				},
 				"kickOnFail": {
 					"noConfig": "`⚠️` No verification config found. Run `/verification setup` first.",
-					"enabled": "`✅` Auto kick on fail has been **enabled**.",
-					"disabled": "`✅` Auto kick on fail has been **disabled**."
+					"enabled": "`✅` Auto-kick on verification failure has been **enabled**.",
+					"disabled": "`✅` Auto-kick on verification failure has been **disabled**."
 				},
 				"limits": {
 					"noConfig": "`⚠️` No verification config found. Run `/verification setup` first.",
-					"missing": "Provide at least one option.",
-					"updated": "`✅` Limits updated."
+					"missing": "You must provide at least one option.",
+					"updated": "`✅` Verification limits updated."
 				},
 				"regenerate": {
 					"noConfig": "`⚠️` No verification message to update. Run `/verification setup` first.",
@@ -127,39 +132,39 @@
 				},
 				"clearAttempts": {
 					"noConfig": "`⚠️` No verification config found. Run `/verification setup` first.",
-					"success": "`✅` Cleared verification attempts for **{{tag}}** ({{id}})."
+					"success": "`✅` Verification attempts cleared for **{{tag}}** ({{id}})."
 				},
 				"toggle": {
 					"noConfig": "`⚠️` No verification config found. Run `/verification setup` first.",
-					"enabled": "`✅` Verification system has been **enabled**.",
-					"disabled": "`✅` Verification system has been **disabled** and all configuration data was deleted."
+					"enabled": "`✅` Verification system is now **enabled**.",
+					"disabled": "`✅` Verification system is now **disabled** and all configuration data was removed."
 				}
 			},
 			"watchdog": {
 				"setup": {
 					"embed": {
-						"title": "✅ Watchdog setup completed",
+						"title": "✅ Watchdog Setup Complete",
 						"_1": "**Logs:**",
 						"_2": "**Role:**",
 						"_3": "`Not set`",
 						"_4": "**Actions:**",
-						"_5": "• Flagged →",
-						"_6": "• Perm Flagged →",
-						"_7": "• Auto Flagged →",
-						"footer": "Watchdog v2 automatically enables these settings."
+						"_5": "• Identified →",
+						"_6": "• Permanently Identified →",
+						"_7": "• Automatically Identified →",
+						"footer": "Watchdog v2 is now active with these settings."
 					}
 				},
 				"settings": {
 					"embed": {
-						"title": "🐾 Watchdog settings",
+						"title": "🐾 Watchdog Settings",
 						"_1": "**Enabled:**",
-						"_2": "**Log channel:**",
+						"_2": "**Log Channel:**",
 						"_3": "**Role:**",
 						"_4": "`Not set`",
 						"_5": "**Actions:**",
-						"_6": "• Flagged →",
-						"_7": "• Perm Flagged →",
-						"_8": "• Auto Flagged →",
+						"_6": "• Identified →",
+						"_7": "• Permanently Identified →",
+						"_8": "• Automatically Identified →",
 						"footer": "Guild ID: {{guildId}}"
 					},
 					"noSettings": "`⚠️` No Watchdog settings found. Run `/watchdog setup` first."
@@ -176,23 +181,23 @@
 				"embed": {
 					"title": "🫂 Support Stachio",
 					"_1": "Stachio is built to keep your community safe and thriving! 💚",
-					"_2": "If you'd like to support development, consider donating via Ko-fi:",
-					"_3": "Click here to donate",
+					"_2": "If you’d like to support ongoing development, consider donating via Ko-fi:",
+					"_3": "Click below to donate",
 					"footer": "Thank you for supporting Stachio!",
 					"button": "Donate via Ko-fi"
 				}
 			},
 			"help": {
 				"tips": {
-					"_1": "`💡` Use `/report` to quickly alert watchdog staff about users in your community.",
-					"_2": "`💡` Stachio automatically blocks known phishing links",
+					"_1": "`💡` Use `/report` to quickly alert Watchdog staff about potential risks.",
+					"_2": "`💡` Stachio automatically blocks known phishing links.",
 					"_3": "`💡` Support Stachio on Ko-fi to help fund hosting, development, and new features.",
 					"_4": "`💡` Keep your moderation logs channel private to ensure sensitive data stays secure.",
-					"_5": "`💡` Stachio also works automatically in the background with global bans, phishing protection, and detailed moderation logs."
+					"_5": "`💡` Stachio continuously runs in the background with global bans, phishing protection, and detailed moderation logs."
 				},
 				"embed": {
 					"title": "📖 Stachio Help Menu",
-					"_1": "Welcome to **Stachio** - your all-in-one community moderator.",
+					"_1": "Welcome to **Stachio** — your all-in-one community guardian.",
 					"_2": "Use the commands below to get started and explore what Stachio can do for your server.",
 					"_3": "`⚙️` General",
 					"_4": "🔹 **/invite** - Invite Stachio to your server",
@@ -200,13 +205,13 @@
 					"_6": "`🛡️` Safety & Moderation",
 					"_7": "🔹 **/report** - Submit a safety or moderation report",
 					"_8": "`🗂️` Management",
-					"_9": "🔹 **/antiphishing** - Manage anti-phishing protection",
-					"_10": "🔹 **/guild** - View and configure guild settings",
+					"_9": "🔹 **/antiphishing** - Manage phishing protection",
+					"_10": "🔹 **/guild** - View and configure server settings",
 					"_11": "🔹 **/verification** - Configure verification settings",
 					"_12": "🔹 **/warnings** - Manage member warnings",
-					"_13": "🔹 **/watchdog** - Configure and view watchdog settings",
+					"_13": "🔹 **/watchdog** - Configure and view Watchdog settings",
 					"_14": "`📢` Support & Appeals",
-					"_15": "If your account is flagged and you wish to appeal, please visit our official Discord server at",
+					"_15": "If your account is identified and you wish to appeal, please visit our official Discord server:",
 					"_16": "`🧾` Version & Info",
 					"_17": "🔹 **Version:**",
 					"_18": "🔹 **Developer:**",
@@ -222,26 +227,26 @@
 			"invite": {
 				"embed": {
 					"title": "📩 Invite Stachio",
-					"_1": "Thanks for choosing **Stachio** — your community guardian! 💚",
-					"_2": "With Stachio, your server gets:",
+					"_1": "Thanks for choosing **Stachio** — your trusted community guardian! 💚",
+					"_2": "With Stachio, your server benefits from:",
 					"_3": "- `👁️` **Watchdog**: Global ban protection against repeat offenders",
 					"_4": "- `🛡️` **Anti-Phishing**: Blocks malicious links automatically",
-					"_5": "- `📑` **Report System**: Members can flag issues for review",
-					"_6": "- `⚖️` **Appeals**: Fair review process for flagged users",
-					"_7": "- `🌍` **Multi-language Support**: Moderation for communities worldwide",
-					"_8": "Click the button below to add Stachio and make your community safer today!",
+					"_5": "- `📑` **Report System**: Members can raise issues for review",
+					"_6": "- `⚖️` **Appeals**: Fair review process for identified accounts",
+					"_7": "- `🌍` **Multi-Language Support**: Protection for communities worldwide",
+					"_8": "Click below to invite Stachio and strengthen your community’s safety today!",
 					"footer": "Stachio • Protecting communities since 2025",
-					"button": "Invite the Bot"
+					"button": "Invite Stachio"
 				}
 			},
 			"report": {
 				"embed": {
-					"title": "🚨 New User Report",
+					"title": "🚨 New Report Submitted",
 					"_1": "**Reporter:**",
 					"_2": "**Reported User:**",
 					"_3": "**Reason:**",
 					"_4": "**Evidence:**",
-					"_5": "No extra details provided",
+					"_5": "No additional details provided",
 					"_6": "**Screenshots:**",
 					"_7": "Screenshot",
 					"_8": "No screenshots provided",
@@ -250,8 +255,16 @@
 					"button_3": "Reject"
 				},
 				"reply": {
-					"success": "`✅` Your report against **{{reported_username}}** has been submitted with **{{screenshots_length}}** screenshot(s). Staff will review it soon.",
+					"success": "`✅` Your report against **{{reported_username}}** has been submitted with **{{screenshots_length}}** screenshot(s). Staff will review it shortly.",
 					"error": "`❌` Something went wrong while submitting your report. Please try again later."
+				}
+			},
+			"vote": {
+				"embed": {
+					"title": "🗳️ Vote for Stachio",
+					"_1": "Help **Stachio** grow by upvoting us on the bot lists below!",
+					"_2": "Every vote helps us reach more communities 💙",
+					"footer": "Thank you for supporting Stachio!"
 				}
 			}
 		}
@@ -259,47 +272,33 @@
 	"helpers": {
 		"warn": {
 			"sanctions": {
-				"mute": "Auto mute due to too many warning points",
-				"kick": "Auto kick due to too many warning points",
-				"ban": "Auto ban due to too many warning points"
+				"mute": "Auto-mute applied due to too many warning points",
+				"kick": "Auto-kick applied due to too many warning points",
+				"ban": "Auto-ban applied due to too many warning points"
 			}
 		},
 		"watchdog": {
-			"weekly_report": {
-				"title": "📊 Weekly Watchdog Report",
-				"_1": "Here's a summary of flagged users and appeals for the past week. Stay safe and keep your community clean!",
-				"_2": "**`⚠️` Flagged Users**",
-				"_3": "- Total Flagged: `{{total_flagged}}`",
-				"_4": "- Auto-Flagged: `{{total_auto_flagged}}`",
-				"_5": "- Permanent Flags: `{{total_perm_flagged}}`",
-				"_6": "**`✉️` Appeals**",
-				"_7": "- Total Appeals: `{{total_appealed}}`",
-				"_8": "- Approved: `✅` `{total_approved_appeals}`",
-				"_9": "- Denied: `❌` `{total_denied_appeals}`",
-				"_10": "- Pending: `⏳` `{{total_pending_appeals}}`",
-				"footer": "Watchdog Weekly Report"
-			},
 			"action": {
 				"dmEmbed": {
-					"title": "⚠️ You Have Been Flagged",
-					"_1": "If you are receiving this message, you are flagged in **{{member_guild_name}}** by **Stachio**.",
+					"title": "⚠️ You have been Identified",
+					"_1": "You have been identified in **{{member_guild_name}}** by **Stachio**.",
 					"_2": { "_1": "**Reason:**", "_2": "No reason provided" },
 					"_3": {
-						"_1": "**What This Means?** {{action_taken}}",
-						"_2": "You have automatically been assigned a restricted role.",
-						"_3": "You are permanently banned from this server.",
+						"_1": "**What This Means:** {{action_taken}}",
+						"_2": "You've been automatically assigned a restricted role.",
+						"_3": "You have been permanently banned from this server.",
 						"_4": "You have been kicked from this server.",
 						"_5": "You have received a warning."
 					},
 					"_4": "**Next Steps:**",
 					"_5": "Join the **Stachio Discord** to appeal or learn more.",
 					"_6": "👉 [Join Stachio Discord]({{client_support_server}})",
-					"footer": "This is an automated system message"
+					"footer": "This is an automated system message."
 				},
 				"logEmbed": {
-					"title": "🚨 Flagged User Detected",
-					"_1": "A flagged user has joined **{{member_guild_name}}**.",
-					"_2": "**User:** {{member_user_tag}} ({{member_id}})",
+					"title": "🚨 Identified User Alert",
+					"_1": "An identified user has joined **{{member_guild_name}}**.",
+					"_2": "**User:** {{member_user_name}} ({{member_id}})",
 					"_3": "**Status:** {{flaggedUser_status}}",
 					"_4": "**Action Taken:** {{action_taken}}",
 					"_5": "**Reason:** {{flaggedUser_reason}}"
