@@ -10,6 +10,7 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
+	ChannelType,
 } from 'discord.js';
 import { emojiCategories } from '../../../config/emojiCategories.js';
 
@@ -37,10 +38,18 @@ const command: CommandInterface = {
 				.setName('setup')
 				.setDescription('Set up (or re-render) the verification message in a channel')
 				.addChannelOption((opt) =>
-					opt.setName('log_channel').setDescription('Verification log channel').setRequired(true),
+					opt
+						.setName('log_channel')
+						.setDescription('Verification log channel')
+						.addChannelTypes(ChannelType.GuildText)
+						.setRequired(true),
 				)
 				.addChannelOption((opt) =>
-					opt.setName('channel').setDescription('Verification message channel').setRequired(true),
+					opt
+						.setName('channel')
+						.setDescription('Verification message channel')
+						.addChannelTypes(ChannelType.GuildText)
+						.setRequired(true),
 				)
 				.addRoleOption((opt) => opt.setName('role').setDescription('Role given when verified').setRequired(true))
 				.addBooleanOption((opt) =>
@@ -67,7 +76,9 @@ const command: CommandInterface = {
 			sub
 				.setName('log')
 				.setDescription('View or change the log channel')
-				.addChannelOption((opt) => opt.setName('channel').setDescription('New log channel')),
+				.addChannelOption((opt) =>
+					opt.setName('channel').addChannelTypes(ChannelType.GuildText).setDescription('New log channel'),
+				),
 		)
 		.addSubcommand((sub) =>
 			sub

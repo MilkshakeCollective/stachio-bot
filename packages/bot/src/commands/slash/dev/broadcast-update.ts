@@ -1,52 +1,53 @@
 import { MilkshakeClient } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
-import { ChatInputCommandInteraction, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import {
+	ChatInputCommandInteraction,
+	SlashCommandBuilder,
+	PermissionFlagsBits,
+	EmbedBuilder,
+	TextChannel,
+} from 'discord.js';
 
 const command: CommandInterface = {
 	cooldown: 30,
-	isDeveloperOnly: true, // only devs can run this
+	isDeveloperOnly: true,
 	data: new SlashCommandBuilder()
 		.setName('broadcast-update')
-		.setDescription('Send an update message to all server owners')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
+		.setDescription('Send an update notice to all server owners')
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+		.addStringOption((opt) => opt.setName('link').setDescription('Link to the full update').setRequired(true))
+		.addStringOption((opt) => opt.setName('summary').setDescription('Short summary of the update').setRequired(false)),
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
-		await interaction.deferReply({ flags: ['Ephemeral'] });
+		await interaction.deferReply({ ephemeral: true });
 
-		const updateMessage = [
-			'📢 **Stachio Update Notice (2.0.0 BETA)**',
-			'',
-			'We are currently rolling out a **major update** to improve performance, stability, and security.',
-			'⚠️ **Important:** As part of this update, our bot database will be **completely reset**.',
-			'',
-			'👉 This means all previous configurations are wiped, and every server will need to **set up Stachio again from scratch**.',
-			'',
-			'We understand this may cause inconvenience, but this reset ensures a clean, optimized foundation for the future of Stachio.',
-			'',
-			'💡 Setup guides and support are available on our [official Discord](https://stachio.dk/discord).',
-			'',
-			'⚠️ Please note: Errors or translation mistakes may occur during this beta. If you encounter any, feel free to report them in our support server.',
-			'',
-			'Thank you for your patience and continued support 💙',
-		].join('\n');
+		const link = interaction.options.getString('link', true);
+		const summary = interaction.options.getString('summary') ?? '📢 Major update available!';
+
+		const embed = new EmbedBuilder()
+			.setTitle('📢 Stachio Update Notice')
+			.setDescription(`${summary}\n\nRead full update here: ${link}`)
+			.setColor(client.config.colors.primary)
+			.setFooter({ text: 'Stachio Bot - Update Broadcast' })
+			.setTimestamp();
 
 		let sent = 0;
 		let failed = 0;
 
-		for (const [guildId, guild] of client.guilds.cache) {
+		for (const [_, guild] of client.guilds.cache) {
 			try {
 				const owner = await guild.fetchOwner();
-				if (owner) {
-					await owner.send(updateMessage);
-					sent++;
-				}
+				if (!owner) continue;
+
+				await owner.send({ embeds: [embed] });
+				sent++;
 			} catch {
 				failed++;
 			}
+			// small delay to avoid rate limits
+			await new Promise((r) => setTimeout(r, 500));
 		}
 
-		return interaction.editReply(
-			`✅ Sent update message to **${sent}** server owners. Failed to send to **${failed}**.`,
-		);
+		await interaction.editReply(`✅ Sent update notice to **${sent}** server owners. Failed: **${failed}**.`);
 	},
 };
 

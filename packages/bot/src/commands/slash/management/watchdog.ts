@@ -17,7 +17,7 @@ const command: CommandInterface = {
 	isDeveloperOnly: false,
 	data: new SlashCommandBuilder()
 		.setName('watchdog')
-		.setDescription('⚙️ Manage Watchdog (flagged system)')
+		.setDescription('⚙️ Manage Watchdog')
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.addSubcommand((sub) =>
 			sub
@@ -31,26 +31,26 @@ const command: CommandInterface = {
 						.setRequired(true),
 				)
 				.addRoleOption((opt) =>
-					opt.setName('flagged_role').setDescription('Role to assign when flagged').setRequired(false),
+					opt.setName('blocked_role').setDescription('Role to assign when blocked').setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
-						.setName('action_on_flag')
-						.setDescription('Action when a user is flagged')
+						.setName('action_on_blocked')
+						.setDescription('Action when a user is blocked')
 						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
 						.setName('action_on_perm')
-						.setDescription('Action when a user is permanently flagged')
+						.setDescription('Action when a user is permanently blocked')
 						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				)
 				.addStringOption((opt) =>
 					opt
 						.setName('action_on_auto')
-						.setDescription('Action when a user is automatically flagged')
+						.setDescription('Action when a user is automatically blocked')
 						.addChoices(...ACTIONS.map((a) => ({ name: a, value: a })))
 						.setRequired(false),
 				),
@@ -75,16 +75,16 @@ const command: CommandInterface = {
 
 		if (sub === 'setup') {
 			const logChannel = interaction.options.getChannel('log_channel')?.id ?? null;
-			const roleId = interaction.options.getRole('flagged_role')?.id ?? null;
+			const roleId = interaction.options.getRole('blocked_role')?.id ?? null;
 
-			const actionOnFlag = (interaction.options.getString('action_on_flag') ?? 'KICK') as WatchdogAction;
-			const actionOnPerm = (interaction.options.getString('action_on_perm') ?? 'KICK') as WatchdogAction;
-			const actionOnAuto = (interaction.options.getString('action_on_auto') ?? 'KICK') as WatchdogAction;
+			const actionOnBlocked = (interaction.options.getString('action_on_blocked') ?? 'KICK') as WatchdogAction;
+			const actionOnPermBlocked = (interaction.options.getString('action_on_perm') ?? 'KICK') as WatchdogAction;
+			const actionOnAutoBlocked = (interaction.options.getString('action_on_auto') ?? 'KICK') as WatchdogAction;
 
 			await client.prisma.watchdogConfig.upsert({
 				where: { guildId },
-				update: { logChannelId: logChannel, roleId, actionOnFlag, actionOnPerm, actionOnAuto, enabled: true },
-				create: { guildId, logChannelId: logChannel, roleId, actionOnFlag, actionOnPerm, actionOnAuto, enabled: true },
+				update: { logChannelId: logChannel, roleId, actionOnBlocked, actionOnPermBlocked, actionOnAutoBlocked, enabled: true },
+				create: { guildId, logChannelId: logChannel, roleId, actionOnBlocked, actionOnPermBlocked, actionOnAutoBlocked, enabled: true },
 			});
 
 			const embed = new EmbedBuilder()
@@ -96,9 +96,9 @@ const command: CommandInterface = {
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._2')} ${roleId ? `<@&${roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._3')}`,
 						'',
 						await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._4'),
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._5')} \`${actionOnFlag}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._6')} \`${actionOnPerm}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._7')} \`${actionOnAuto}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._5')} \`${actionOnAutoBlocked}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._6')} \`${actionOnPermBlocked}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed._7')} \`${actionOnAutoBlocked}\``,
 					].join('\n'),
 				)
 				.setFooter({ text: await t(interaction.guild!.id, 'commands.management.watchdog.setup.embed.footer') });
@@ -123,9 +123,9 @@ const command: CommandInterface = {
 						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._3')} ${settings.roleId ? `<@&${settings.roleId}>` : await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._4')}`,
 						'',
 						await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._5'),
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._6')} \`${settings.actionOnFlag}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._7')} \`${settings.actionOnPerm}\``,
-						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._8')} \`${settings.actionOnAuto}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._6')} \`${settings.actionOnBlocked}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._7')} \`${settings.actionOnPermBlocked}\``,
+						`${await t(interaction.guild!.id, 'commands.management.watchdog.settings.embed._8')} \`${settings.actionOnAutoBlocked}\``,
 					].join('\n'),
 				)
 				.setFooter({

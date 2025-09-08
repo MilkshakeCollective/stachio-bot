@@ -126,7 +126,7 @@ const event: EventInterface = {
 					update: {
 						last_username: message.author.username,
 						last_avatar: message.author.displayAvatarURL(),
-						status: 'AUTO_FLAGGED',
+						status: 'AUTO_BLOCKED',
 						reason,
 						evidence: { message: content, channelId: message.channel.id },
 					},
@@ -134,7 +134,7 @@ const event: EventInterface = {
 						userId: message.author.id,
 						last_username: message.author.username,
 						last_avatar: message.author.displayAvatarURL(),
-						status: 'AUTO_FLAGGED',
+						status: 'AUTO_BLOCKED',
 						reason,
 						evidence: { message: content, channelId: message.channel.id },
 					},

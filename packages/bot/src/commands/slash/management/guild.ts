@@ -1,6 +1,12 @@
 import { MilkshakeClient, t, setGuildLanguage } from '../../../index.js';
 import { CommandInterface } from '../../../types.js';
-import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import {
+	ChatInputCommandInteraction,
+	PermissionFlagsBits,
+	SlashCommandBuilder,
+	EmbedBuilder,
+	ChannelType,
+} from 'discord.js';
 
 const SUPPORTED_LANGUAGES = [
 	'ar-EG',
@@ -52,6 +58,18 @@ const command: CommandInterface = {
 				.addStringOption((opt) =>
 					opt.setName('code').setDescription('Language code (e.g. en-US, da, de)').setRequired(true),
 				),
+		)
+		.addSubcommand((sub) =>
+			sub
+				.setName('broadcast-channel')
+				.setDescription('Set the channel where the bot sends broadcast messages')
+				.addChannelOption((opt) =>
+					opt
+						.setName('channel')
+						.setDescription('Select the broadcast channel')
+						.addChannelTypes(ChannelType.GuildText)
+						.setRequired(true),
+				),
 		),
 
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
@@ -87,6 +105,7 @@ const command: CommandInterface = {
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._3')} ${guildConfig.AntiPhishing?.enabled ? '`✅`' : '`❌`'}`,
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._4')} ${guildConfig.verification?.enabled ? '`✅`' : '`❌`'}`,
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._5')} ${guildConfig.WarningConfig ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._6')} ${guildConfig.broadcastChannelId ? `<#${guildConfig.broadcastChannelId}>` : '`❌`'}`,
 						].join('\n'),
 					)
 					.setColor(client.config.colors.primary)
@@ -106,7 +125,7 @@ const command: CommandInterface = {
 							}),
 							await t(interaction.guild!.id, 'commands.management.guild.language.unsupportedLanguages._2'),
 							`\`${SUPPORTED_LANGUAGES.join(', ')}\``,
-						].join('n'),
+						].join('\n'),
 					});
 				}
 
@@ -118,11 +137,27 @@ const command: CommandInterface = {
 					}),
 				});
 			}
+
+			if (subcommand === 'broadcast-channel') {
+				const channel = interaction.options.getChannel('channel', true);
+
+				await client.prisma.guildConfig.upsert({
+					where: { guildId },
+					update: { broadcastChannelId: channel.id },
+					create: { guildId, broadcastChannelId: channel.id },
+				});
+
+				return interaction.editReply({
+					content: await t(interaction.guild!.id, 'commands.management.guild.broadcast_channel.success', {
+						channelId: channel.id,
+					}),
+				});
+			}
 		} catch (err) {
 			console.error(err);
 			if (!interaction.replied) {
 				await interaction.editReply({
-					content: await t(interaction.guild!.id, 'commands.management.guild.language.error'),
+					content: await t(interaction.guild!.id, 'commands.management.guild.broadcast_channel.error'),
 				});
 			}
 		}

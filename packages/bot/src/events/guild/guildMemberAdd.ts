@@ -8,29 +8,29 @@ const event: EventInterface = {
 	options: { once: false, rest: false },
 	execute: async function (member: GuildMember, client: MilkshakeClient) {
 		try {
-			const flaggedUser = await client.prisma.users.findUnique({
+			const blockedUser = await client.prisma.users.findUnique({
 				where: { userId: member.user.id },
 			});
-			if (!flaggedUser) {
+			if (!blockedUser) {
 				return logger.info({
 					labels: { event: 'guildMemberAdd' },
 					message: `[WATCHDOG] ${member.user.tag} (${member.id}) is not flagged`,
 				});
 			}
 
-			const flaggedSettings = await client.prisma.watchdogConfig.findUnique({
+			const watchdogConfig = await client.prisma.watchdogConfig.findUnique({
 				where: { guildId: member.guild.id },
 			});
-			if (!flaggedSettings || !flaggedSettings.enabled) return;
+			if (!watchdogConfig || !watchdogConfig.enabled) return;
 
 			const action =
-				flaggedUser.status === 'PERM_FLAGGED'
-					? flaggedSettings.actionOnPerm
-					: flaggedUser.status === 'AUTO_FLAGGED'
-						? flaggedSettings.actionOnAuto
-						: flaggedSettings.actionOnFlag;
+				blockedUser.status === "PERM_BLOCKED"
+					? watchdogConfig.actionOnPermBlocked
+					: blockedUser.status === 'AUTO_BLOCKED'
+						? watchdogConfig.actionOnAutoBlocked
+						: watchdogConfig.actionOnBlocked;
 
-			await actionUser(member, client, action, flaggedUser, flaggedSettings);
+			await actionUser(member, client, action, blockedUser, watchdogConfig);
 		} catch (err) {
 			logger.error({ labels: { event: 'guildMemberAdd' }, message: `[WATCHDOG ACTION ERROR]`, err });
 		}

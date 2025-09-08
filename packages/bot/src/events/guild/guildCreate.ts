@@ -8,10 +8,32 @@ const event: EventInterface = {
 	options: { once: false, rest: false },
 	execute: async (guild: Guild, client: MilkshakeClient) => {
 		try {
-			installGuild(client, guild.id);
+			await installGuild(client, guild.id);
 			logger.info(`✅ Guild settings ensured for ${guild.name} (${guild.id})`);
 		} catch (err) {
 			logger.error(`❌ Failed to ensure guild settings for ${guild.name} (${guild.id}): ${err}`);
+		}
+
+		const defaultChannel = guild.channels.cache
+			.filter(
+				(c) =>
+					(c.type === 0 || c.type === 5 || c.type === 10) &&
+					c.permissionsFor(guild.members.me!).has(['SendMessages', 'ViewChannel']),
+			)
+			.first() as TextChannel | undefined;
+
+		if (defaultChannel) {
+			try {
+				await client.prisma.guildConfig.upsert({
+					where: { guildId: guild.id },
+					update: { broadcastChannelId: defaultChannel.id },
+					create: { guildId: guild.id, broadcastChannelId: defaultChannel.id },
+				});
+
+				logger.info(`✅ Broadcast channel automatically set to #${defaultChannel.name} in ${guild.name}`);
+			} catch (err) {
+				logger.error(`❌ Failed to set broadcast channel for ${guild.name}: ${err}`);
+			}
 		}
 
 		const welcomeMessage = [
@@ -28,17 +50,11 @@ const event: EventInterface = {
 			await t(guild.id, 'events.newGuild._7', { client_kofi_link: 'https://ko-fi.com/duckodas' }),
 			' ',
 			await t(guild.id, 'events.newGuild._8'),
+			' ',
+			await t(guild.id, 'events.newGuild._9'),
 		].join('\n');
 
-		const channel = guild.channels.cache
-			.filter(
-				(c) =>
-					(c.type === 0 || c.type === 5 || c.type === 10) &&
-					c.permissionsFor(guild.members.me!).has(['SendMessages', 'ViewChannel']),
-			)
-			.first() as TextChannel | undefined;
-
-		if (!channel) {
+		if (!defaultChannel) {
 			logger.warn({
 				labels: { event: 'guildCreate' },
 				message: `No channel to send welcome in ${guild.name}`,
@@ -47,10 +63,10 @@ const event: EventInterface = {
 		}
 
 		try {
-			await channel.send(welcomeMessage);
+			await defaultChannel.send(welcomeMessage);
 			logger.info({
 				labels: { event: 'guildCreate' },
-				message: `Sent welcome message in ${guild.name} (#${channel.id})`,
+				message: `Sent welcome message in ${guild.name} (#${defaultChannel.id})`,
 			});
 		} catch (err) {
 			logger.error({

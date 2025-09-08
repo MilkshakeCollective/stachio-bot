@@ -50,7 +50,9 @@ const command: CommandInterface = {
 				)
 				.addRoleOption((opt) => opt.setName('role').setDescription('Role to ignore'))
 				.addUserOption((opt) => opt.setName('user').setDescription('User to ignore'))
-				.addChannelOption((opt) => opt.setName('channel').setDescription('Channel to ignore')),
+				.addChannelOption((opt) =>
+					opt.setName('channel').setDescription('Channel to ignore').addChannelTypes(ChannelType.GuildText),
+				),
 		)
 		.addSubcommand((sub) =>
 			sub
@@ -69,7 +71,9 @@ const command: CommandInterface = {
 				)
 				.addRoleOption((opt) => opt.setName('role').setDescription('Role to remove'))
 				.addUserOption((opt) => opt.setName('user').setDescription('User to remove'))
-				.addChannelOption((opt) => opt.setName('channel').setDescription('Channel to remove')),
+				.addChannelOption((opt) =>
+					opt.setName('channel').setDescription('Channel to remove').addChannelTypes(ChannelType.GuildText),
+				),
 		)
 		.addSubcommand((sub) => sub.setName('toggle').setDescription('Enable or disable Anti-Phish')),
 

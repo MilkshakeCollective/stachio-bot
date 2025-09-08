@@ -3,88 +3,24 @@ import { MilkshakeClient, t } from '../../index.js';
 import { logger } from '../exports.js';
 
 /**
- * @param client
- * @returns
- */
-export async function sendWatchdogReport(client: MilkshakeClient) {
-	const reportChannel = client.channels.cache.get(client.config.channels[0].id) as TextChannel;
-	if (!reportChannel) {
-		logger.warn('[WATCHDOG REPORT] Report channel not found.');
-		return;
-	}
-
-	const totalFlagged = await client.prisma.users.count({
-		where: { status: 'FLAGGED' },
-	});
-	const totalAutoFlagged = await client.prisma.users.count({
-		where: { status: 'AUTO_FLAGGED' },
-	});
-	const totalPermFlagged = await client.prisma.users.count({
-		where: { status: 'PERM_FLAGGED' },
-	});
-	const totalAppealed = await client.prisma.appeal.count();
-	const totalApprovedAppeals = await client.prisma.appeal.count({
-		where: { status: 'APPROVED' },
-	});
-	const totalDeniedAppeals = await client.prisma.appeal.count({
-		where: { status: 'DENIED' },
-	});
-	const totalPendingAppeals = await client.prisma.appeal.count({
-		where: { status: 'PENDING' },
-	});
-
-	const embed = new EmbedBuilder()
-		.setTitle(await t(reportChannel.guildId, 'helpers.watchdog.weekly_report.title'))
-		.setColor(client.config.colors.primary)
-		.setDescription(
-			[
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._1'),
-				'',
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._2'),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._3', { total_flagged: totalFlagged }),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._4', { total_auto_flagged: totalAutoFlagged }),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._5', { total_perm_flagged: totalPermFlagged }),
-				'',
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._6'),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._7', { total_appealed: totalAppealed }),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._8', {
-					total_approved_appeals: totalApprovedAppeals,
-				}),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._9', {
-					total_denied_appeals: totalDeniedAppeals,
-				}),
-				await t(reportChannel.guildId, 'helpers.watchdog.weekly_report._10', {
-					total_pending_appeals: totalPendingAppeals,
-				}),
-			].join('\n'),
-		)
-		.setFooter({ text: await t(reportChannel.guildId, 'helpers.watchdog.weekly_report.footer') })
-		.setTimestamp();
-
-	await reportChannel.send({ embeds: [embed] });
-	logger.info('[WATCHDOG REPORT] Weekly report sent.');
-}
-
-/**
  * @param member
  * @param client
  * @param action
- * @param flaggedUser
- * @param flaggedSettings
+ * @param blockedUser
+ * @param watchdogConfig
  * @returns
  */
 export async function actionUser(
 	member: GuildMember,
 	client: MilkshakeClient,
 	action: string,
-	flaggedUser: any,
-	flaggedSettings: any,
+	blockedUser: any,
+	watchdogConfig: any,
 ): Promise<void> {
-	const latestAppeal = await client.prisma.appeal.findFirst({
-		where: { userId: flaggedUser.userId },
-		orderBy: { createdAt: 'desc' },
+	const isUserApproved = await client.prisma.users.findUnique({
+		where: { userId: blockedUser.userId },
 	});
-	if (latestAppeal?.status === 'APPROVED') {
+	if (isUserApproved?.status === "APPEALED") {
 		logger.info(`[WATCHDOG] ${member.user.username} has an approved appeal. Ignoring flag.`);
 		return;
 	}
@@ -107,7 +43,7 @@ export async function actionUser(
 				'',
 				(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._1')) +
 					' ' +
-					`${flaggedUser.reason ? flaggedUser.reason : await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2')}`,
+					`${blockedUser.reason ? blockedUser.reason : await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2')}`,
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._1', { action_taken: actionText }),
 				'',
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._4'),
@@ -131,18 +67,18 @@ export async function actionUser(
 
 	switch (action) {
 		case 'BAN':
-			await member.ban({ reason: flaggedUser.reason ?? `Flagged by ${client.user?.username}` });
+			await member.ban({ reason: blockedUser.reason ?? `Blocked by ${client.user?.username}` });
 			actionTaken = 'BANNED';
 			break;
 
 		case 'KICK':
-			await member.kick(flaggedUser.reason ?? `Flagged by ${client.user?.username}`);
+			await member.kick(blockedUser.reason ?? `Blocked by ${client.user?.username}`);
 			actionTaken = 'KICKED';
 			break;
 
 		case 'ROLE':
-			if (flaggedSettings.roleId) {
-				const role: Role | undefined = member.guild.roles.cache.get(flaggedSettings.roleId);
+			if (watchdogConfig.roleId) {
+				const role: Role | undefined = member.guild.roles.cache.get(watchdogConfig.roleId);
 				if (role) {
 					await member.roles.add(role).catch((err) => logger.warn(`[WATCHDOG] Could not assign role: ${err.message}`));
 					actionTaken = `ROLE_ADDED (${role.name})`;
@@ -163,8 +99,8 @@ export async function actionUser(
 			actionTaken = `UNKNOWN ACTION: ${action}`;
 	}
 
-	if (flaggedSettings.logChannelId) {
-		const logChannel = member.guild.channels.cache.get(flaggedSettings.logChannelId) as TextChannel;
+	if (watchdogConfig.logChannelId) {
+		const logChannel = member.guild.channels.cache.get(watchdogConfig.logChannelId) as TextChannel;
 		if (logChannel) {
 			const logEmbed = new EmbedBuilder()
 				.setTitle(await t(member.guild.id, 'helpers.watchdog.action.logEmbed.title'))
@@ -175,12 +111,12 @@ export async function actionUser(
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._1', { member_guild_name: member.guild.name }),
 						'',
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._2', {
-							member_user_tag: member.user,
+							member_user_name: member.user.username,
 							member_id: member.user.id,
 						}),
-						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._3', { flaggedUser_status: flaggedUser.status }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._3', { blockedUser_status: blockedUser.status }),
 						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._4', { action_taken: actionTaken }),
-						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._5', { flaggedUser_reason: flaggedUser.reason }),
+						await t(member.guild.id, 'helpers.watchdog.action.logEmbed._5', { blockedUser_reason: blockedUser.reason }),
 					].join('\n'),
 				)
 				.setTimestamp();

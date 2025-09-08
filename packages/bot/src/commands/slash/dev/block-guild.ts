@@ -8,82 +8,70 @@ import {
 	TextChannel,
 } from 'discord.js';
 
+const GUILD_TYPES = [
+	{ name: 'Community', value: 'COMMUNITY' },
+	{ name: 'Bot Farm', value: 'BOT_FARM' },
+	{ name: 'Partner', value: 'PARTNER' },
+	{ name: 'Leaks', value: 'LEAKS' },
+	{ name: 'Cheats', value: 'CHEATS' },
+	{ name: 'Marketplace', value: 'MARKETPLACE' },
+	{ name: 'RMT', value: 'RMT' },
+	{ name: 'Exploits', value: 'EXPLOITS' },
+	{ name: 'Gambling', value: 'GAMBLING' },
+	{ name: 'Malware', value: 'MALWARE' },
+	{ name: 'NSFW', value: 'NSFW' },
+	{ name: 'Copycat', value: 'COPYCAT' },
+	{ name: 'Extremism', value: 'EXTREMISM' },
+];
+
 const command: CommandInterface = {
 	cooldown: 2,
 	isDeveloperOnly: true,
 	data: new SlashCommandBuilder()
-		.setName('flag-guild')
-		.setDescription('Manage flagged guilds')
+		.setName('blacklist-guild')
+		.setDescription('Manage blacklisted guilds')
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.addSubcommand((sub) =>
 			sub
 				.setName('add')
-				.setDescription('Flag a guild')
+				.setDescription('Blacklist a guild')
 				.addStringOption((opt) => opt.setName('guild').setDescription('Guild ID').setRequired(true))
 				.addStringOption((opt) =>
 					opt
 						.setName('type')
 						.setDescription('Type of guild')
 						.setRequired(true)
-						.addChoices(
-							{ name: 'Community', value: 'COMMUNITY' },
-							{ name: 'Bot Farm', value: 'BOT_FARM' },
-							{ name: 'Partner', value: 'PARTNER' },
-							{ name: 'Leaks', value: 'LEAKS' },
-							{ name: 'Cheats', value: 'CHEATS' },
-							{ name: 'Marketplace', value: 'MARKETPLACE' },
-							{ name: 'RMT', value: 'RMT' },
-							{ name: 'Exploits', value: 'EXPLOITS' },
-							{ name: 'Gambling', value: 'GAMBLING' },
-							{ name: 'Malware', value: 'MALWARE' },
-							{ name: 'NSFW', value: 'NSFW' },
-							{ name: 'Copycat', value: 'COPYCAT' },
-							{ name: 'Extremism', value: 'EXTREMISM' },
-						),
+						.addChoices(...GUILD_TYPES),
 				)
 				.addStringOption((opt) =>
 					opt.setName('name').setDescription('Custom guild name (optional if bot not in guild)'),
 				)
-				.addStringOption((opt) => opt.setName('reason').setDescription('Reason for flagging')),
+				.addStringOption((opt) => opt.setName('reason').setDescription('Reason for blacklisting')),
 		)
 		.addSubcommand((sub) =>
 			sub
 				.setName('update')
-				.setDescription('Update a flagged guild')
+				.setDescription('Update a blacklisted guild')
 				.addStringOption((opt) => opt.setName('guild').setDescription('Guild ID').setRequired(true))
 				.addStringOption((opt) =>
 					opt
 						.setName('type')
 						.setDescription('New guild type')
 						.setRequired(false)
-						.addChoices(
-							{ name: 'Community', value: 'COMMUNITY' },
-							{ name: 'Bot Farm', value: 'BOT_FARM' },
-							{ name: 'Partner', value: 'PARTNER' },
-							{ name: 'Leaks', value: 'LEAKS' },
-							{ name: 'Cheats', value: 'CHEATS' },
-							{ name: 'Marketplace', value: 'MARKETPLACE' },
-							{ name: 'RMT', value: 'RMT' },
-							{ name: 'Exploits', value: 'EXPLOITS' },
-							{ name: 'Gambling', value: 'GAMBLING' },
-							{ name: 'Malware', value: 'MALWARE' },
-							{ name: 'NSFW', value: 'NSFW' },
-							{ name: 'Copycat', value: 'COPYCAT' },
-							{ name: 'Extremism', value: 'EXTREMISM' },
-						),
+						.addChoices(...GUILD_TYPES),
 				)
 				.addStringOption((opt) => opt.setName('reason').setDescription('New reason')),
 		)
 		.addSubcommand((sub) =>
 			sub
 				.setName('remove')
-				.setDescription('Unflag a guild')
+				.setDescription('Unblacklist a guild')
 				.addStringOption((opt) => opt.setName('guild').setDescription('Guild ID').setRequired(true)),
 		)
 		.addSubcommand((sub) =>
 			sub
 				.setName('info')
-				.setDescription('Get info about a flagged guild')
+				.setDescription('Get info about a blacklisted guild')
 				.addStringOption((opt) => opt.setName('guild').setDescription('Guild ID').setRequired(true)),
 		),
 
@@ -97,11 +85,7 @@ const command: CommandInterface = {
 		switch (subcommand) {
 			case 'add': {
 				const existing = await client.prisma.guilds.findUnique({ where: { guildId } });
-				if (existing)
-					return interaction.reply({
-						content: '`⚠️` This guild is already flagged.',
-						flags: ['Ephemeral'],
-					});
+				if (existing) return interaction.reply({ content: '⚠️ This guild is already blacklisted.', ephemeral: true });
 
 				let name: string | null = customName ?? null;
 				let icon: string | null = null;
@@ -110,77 +94,72 @@ const command: CommandInterface = {
 					try {
 						const guild = await client.guilds.fetch(guildId);
 						name = guild.name;
-						icon = guild.iconURL();
+						icon = guild.iconURL() ?? null;
 					} catch {
+						name = name ?? 'Unknown';
 					}
 				}
 
 				await client.prisma.guilds.create({
-					data: {
-						guildId,
-						name,
-						icon,
-						type,
-						reason,
-					},
+					data: { guildId, name, icon, type, reason },
 				});
 
 				const logEmbed = new EmbedBuilder()
-					.setColor(client.config.colors.error)
-					.setTitle('🚩 Guild Flagged')
-					.setThumbnail(icon)
 					.setColor(client.config.colors.primary)
+					.setTitle('🚫 Guild Blacklisted')
+					.setThumbnail(icon)
 					.setDescription(
 						[
-							`**Guild:** ${name ?? 'Unknown'} (\`${guildId}\`)`,
+							`**Guild:** ${name} (\`${guildId}\`)`,
 							`**Type:** ${type}`,
 							`**Reason:** ${reason}`,
-							`**Flagged by:** ${interaction.user.tag}`,
+							`**Blacklisted by:** ${interaction.user.tag}`,
 						].join('\n'),
 					)
 					.setTimestamp();
 
 				const guildLogChannel = client.channels.cache.get(client.config.channels[4].id) as TextChannel;
-				if (guildLogChannel) guildLogChannel.send({ embeds: [logEmbed] });
+				if (guildLogChannel) await guildLogChannel.send({ embeds: [logEmbed] });
 
 				return interaction.reply({
-					content: `\`✅\` Guild \`${guildId}\` has been flagged as **${type}**.`,
-					flags: ['Ephemeral'],
+					content: `✅ Guild \`${guildId}\` has been blacklisted as **${type}**.`,
+					ephemeral: true,
 				});
 			}
 
 			case 'update': {
 				const existing = await client.prisma.guilds.findUnique({ where: { guildId } });
-				if (!existing) return interaction.reply({ content: '`⚠️` This guild is not flagged.', flags: ['Ephemeral'] });
+				if (!existing) return interaction.reply({ content: '⚠️ This guild is not blacklisted.', ephemeral: true });
 
 				await client.prisma.guilds.update({
 					where: { guildId },
-					data: {
-						type: type ?? existing.type,
-						reason: reason ?? existing.reason,
-					},
+					data: { type: type ?? existing.type, reason: reason ?? existing.reason },
 				});
 
 				return interaction.reply({
-					content: `\`✏️\` Updated flagged guild \`${guildId}\`.`,
-					flags: ['Ephemeral'],
+					content: `✏️ Updated blacklisted guild \`${guildId}\`.`,
+					ephemeral: true,
 				});
 			}
 
 			case 'remove': {
 				const existing = await client.prisma.guilds.findUnique({ where: { guildId } });
-				if (!existing) return interaction.reply({ content: '`⚠️` This guild is not flagged.', flags: ['Ephemeral'] });
+				if (!existing) return interaction.reply({ content: '⚠️ This guild is not blacklisted.', ephemeral: true });
 
 				await client.prisma.guilds.delete({ where: { guildId } });
-				return interaction.reply({ content: `\`🗑️\` Guild \`${guildId}\` has been unflagged.`, flags: ['Ephemeral'] });
+
+				return interaction.reply({
+					content: `🗑️ Guild \`${guildId}\` has been removed from blacklist.`,
+					ephemeral: true,
+				});
 			}
 
 			case 'info': {
 				const existing = await client.prisma.guilds.findUnique({ where: { guildId } });
-				if (!existing) return interaction.reply({ content: '`⚠️` This guild is not flagged.', flags: ['Ephemeral'] });
+				if (!existing) return interaction.reply({ content: '⚠️ This guild is not blacklisted.', ephemeral: true });
 
 				const embed = new EmbedBuilder()
-					.setTitle(`🚩 Flag Info: ${existing.name ?? guildId}`)
+					.setTitle(`🚫 Blacklist Info: ${existing.name ?? guildId}`)
 					.addFields(
 						{ name: 'Status', value: existing.status, inline: true },
 						{ name: 'Type', value: existing.type, inline: true },
@@ -192,7 +171,7 @@ const command: CommandInterface = {
 
 				if (existing.icon) embed.setThumbnail(existing.icon);
 
-				return interaction.reply({ embeds: [embed], flags: ['Ephemeral'] });
+				return interaction.reply({ embeds: [embed], ephemeral: true });
 			}
 		}
 	},

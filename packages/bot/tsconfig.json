@@ -2,7 +2,13 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "./dist",
+		"rootDir": "./src",
+		"declaration": true,
+		"declarationMap": true,
+		"composite": true,
+		"emitDeclarationOnly": false
 	},
+	"references": [{ "path": "../helper" }],
 	"include": ["./src/**/*.ts"],
 	"exclude": ["./**/__tests__"]
 }
