@@ -129,3 +129,5 @@ dist
 package-lock.json
 .turbo
 /packages/import
+/transcripts
+/prisma/migrations
