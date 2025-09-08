@@ -15,13 +15,14 @@
 	"homepage": "https://github.com/MilkshakeCollective/stachio-bot#readme",
 	"scripts": {
 		"lint": "prettier --check --plugin-search-dir=. .",
-		"build": "turbo run build",
+		"build": "turbo run build --force",
 		"format": "prettier --write --plugin-search-dir=. .",
 		"prisma": "npx prisma generate --no-engine",
 		"migrate": "npx prisma migrate dev --name init",
 		"migrate-reset": "npx prisma migrate reset --force",
 		"deploy-migrate": "npx prisma migrate deploy",
 		"start-bot": "node ./packages/bot/dist/index.js",
+		"start-helper": "node ./packages/helper/dist/index.js",
 		"start-import": "node ./packages/import/dist/index.js"
 	},
 	"devDependencies": {
