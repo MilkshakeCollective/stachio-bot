@@ -299,9 +299,9 @@
 					"title": "🚨 Identified User Alert",
 					"_1": "An identified user has joined **{{member_guild_name}}**.",
 					"_2": "**User:** {{member_user_name}} ({{member_id}})",
-					"_3": "**Status:** {{flaggedUser_status}}",
+					"_3": "**Status:** {{blockedUser_status}}",
 					"_4": "**Action Taken:** {{action_taken}}",
-					"_5": "**Reason:** {{flaggedUser_reason}}"
+					"_5": "**Reason:** {{blockedUser_reason}}"
 				}
 			}
 		}
