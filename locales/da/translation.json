@@ -302,9 +302,9 @@
 					"title": "🚨 Identificeret Brugeradvarsel",
 					"_1": "En identificeret bruger har tilsluttet sig **{{member_guild_name}}**.",
 					"_2": "**Bruger:** {{member_user_name}} ({{member_id}})",
-					"_3": "**Status:** {{flaggedUser_status}}",
+					"_3": "**Status:** {{blockedUser_status}}",
 					"_4": "**Handling taget:** {{action_taken}}",
-					"_5": "**Begrundelse:** {{flaggedUser_reason}}"
+					"_5": "**Begrundelse:** {{blockedUser_reason}}"
 				}
 			}
 		}
