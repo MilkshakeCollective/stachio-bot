@@ -40,6 +40,10 @@ export const config: ConfigInterface = {
 			id: '1413898198266941522',
 		},
 		{
+			name: 'Stachio - Development',
+			id: '1415312628175339553',
+		},
+		{
 			name: 'Milkshake Collective',
 			id: '1396235829579485214',
 		},

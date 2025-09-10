@@ -17,14 +17,16 @@ export async function actionUser(
 	blockedUser: any,
 	watchdogConfig: any,
 ): Promise<void> {
+	// Check if user has approved appeal
 	const isUserApproved = await client.prisma.users.findUnique({
 		where: { userId: blockedUser.userId },
 	});
-	if (isUserApproved?.status === "APPEALED") {
+	if (isUserApproved?.status === 'APPEALED') {
 		logger.info(`[WATCHDOG] ${member.user.username} has an approved appeal. Ignoring flag.`);
 		return;
 	}
 
+	// Determine action text
 	const actionText =
 		action === 'ROLE'
 			? await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._2')
@@ -34,6 +36,7 @@ export async function actionUser(
 					? await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._4')
 					: await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._5');
 
+	// Main DM Embed
 	const dmEmbed = new EmbedBuilder()
 		.setTitle(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.title'))
 		.setColor(client.config.colors.warning)
@@ -43,7 +46,7 @@ export async function actionUser(
 				'',
 				(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._1')) +
 					' ' +
-					`${blockedUser.reason ? blockedUser.reason : await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2')}`,
+					`${blockedUser.reason ?? (await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._2._2'))}`,
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._3._1', { action_taken: actionText }),
 				'',
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._4'),
@@ -56,15 +59,42 @@ export async function actionUser(
 		.setFooter({ text: await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.footer') })
 		.setTimestamp();
 
+	// Safe handling of foundAt
+	let foundAtEmbed: EmbedBuilder | undefined;
+	const foundAtArray = Array.isArray(blockedUser.foundAt) ? blockedUser.foundAt : [];
+
+	if (foundAtArray.length > 0) {
+		const formattedFoundAtLines = foundAtArray
+			.map((entry: any) => {
+				const icon = entry.type === 'owner' ? '👑' : entry.type === 'staff' ? '🛡️' : '👤';
+				const typeName = entry.type.charAt(0).toUpperCase() + entry.type.slice(1);
+				const rolesText = entry.roles && entry.roles.length > 0 ? `\n> **Roles:** ${entry.roles.join(', ')}` : '';
+				return `> ${icon} **${typeName}** at **${entry.guildName}** (\`${entry.guildId}\`)` + rolesText;
+			})
+			.join('\n');
+
+		foundAtEmbed = new EmbedBuilder()
+			.setTitle(await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.foundAtTitle'))
+			.setDescription(formattedFoundAtLines)
+			.setColor(client.config.colors.warning)
+			.setFooter({ text: await t(member.guild.id, 'helpers.watchdog.action.dmEmbed.footer') })
+			.setTimestamp();
+	}
+
+	// Send DM
 	try {
-		await member.send({ embeds: [dmEmbed] });
+		if (foundAtEmbed) {
+			await member.send({ embeds: [dmEmbed, foundAtEmbed] });
+		} else {
+			await member.send({ embeds: [dmEmbed] });
+		}
 		logger.info(`[WATCHDOG] Sent DM to ${member.user.tag}`);
 	} catch {
 		logger.warn(`[WATCHDOG] Could not DM ${member.user.tag}`);
 	}
 
+	// Apply action
 	let actionTaken = 'NONE';
-
 	switch (action) {
 		case 'BAN':
 			await member.ban({ reason: blockedUser.reason ?? `Blocked by ${client.user?.username}` });
@@ -99,6 +129,7 @@ export async function actionUser(
 			actionTaken = `UNKNOWN ACTION: ${action}`;
 	}
 
+	// Log to channel
 	if (watchdogConfig.logChannelId) {
 		const logChannel = member.guild.channels.cache.get(watchdogConfig.logChannelId) as TextChannel;
 		if (logChannel) {

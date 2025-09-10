@@ -60,6 +60,7 @@ model Users {
   last_avatar   String?
   status        WatchdogStatus @default(BLOCKED)
   reason        String         @default("No reason provided")
+  foundAt       Json           @default("[]")
   evidence      Json
   logged        Boolean        @default(false)
   createdAt     DateTime       @default(now())

@@ -16,11 +16,11 @@ const event: EventInterface = {
 			pollRunning = true;
 
 			try {
-				// Poll blocked users
-				await pollNewBlockedUsers(client);
-
 				// Poll blacklisted guilds
 				await pollNewBlacklistedGuilds(client);
+
+				// Poll blocked users
+				await pollNewBlockedUsers(client);
 			} catch (err) {
 				console.error('❌ Polling error:', err);
 			} finally {
