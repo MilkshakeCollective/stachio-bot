@@ -262,44 +262,44 @@
 						}
 					},
 					"foundAtEmbed": {
-						"title": "{{user_name}} was found in (Page {{pageNumber}})"
+						"title": "{{user_name}} blev fundet i (Page {{pageNumber}})"
 					},
 					"buttons": {
-						"prev": "◀ Previous",
-						"next": "Next ▶"
+						"prev": "< Tilbage",
+						"next": "Næste ▶"
 					}
 				},
 				"guild": {
-					"noData": "No Watchdog data found for guild **{{guild_id}}**",
+					"noData": "Ingen watchdog data fundet for **{{guild_id}}**",
 					"embed": {
-						"title": "📌 Watchdog Guild Check: {{guild_name}}",
+						"title": "📌 Watchdog Guild Tjek: {{guild_name}}",
 						"_1": {
 							"_1": "**Guild Status:**",
-							"_2": "Unknown"
+							"_2": "Ukendt"
 						},
 						"_2": {
 							"_1": "**Type:**",
-							"_2": "Unknown"
+							"_2": "Ukendt"
 						},
 						"_3": {
-							"_1": "**Reason:**",
-							"_2": "No reason provided"
+							"_1": "**Begrundelse:**",
+							"_2": "Ingen begrundelse givet"
 						}
 					}
 				},
 				"stats": {
 					"embed": {
-						"title": "📊 Watchdog Stats",
-						"users": "**Users:**",
-						"total": "> Total: {{totalUsers}}",
-						"autoBlocked": "> Auto Blocked: {{autoBlockedUsers}}",
-						"blocked": "> Blocked: {{blockedUsers}}",
-						"permBlocked": "> Permanently Blocked: {{permBlockedUsers}}",
+						"title": "📊 Watchdog Statistikker",
+						"users": "**Brugere:**",
+						"total": "> I Alt: {{totalUsers}}",
+						"autoBlocked": "> Automatisk Blokeret: {{autoBlockedUsers}}",
+						"blocked": "> Blokeret: {{blockedUsers}}",
+						"permBlocked": "> Permanent Blokeret: {{permBlockedUsers}}",
 						"appealed": "> Appealed: {{appealedUsers}}",
 						"guilds": "**Guilds:**",
-						"totalGuilds": "> Total: {{totalGuilds}}",
+						"totalGuilds": "> I Alt: {{totalGuilds}}",
 						"blacklistedGuilds": "> Blacklisted: {{blacklistedGuilds}}",
-						"watchdogEnabled": "> Watchdog Enabled: {{watchdogEnabled}}"
+						"watchdogEnabled": "> Watchdog Aktiveret: {{watchdogEnabled}}"
 					}
 				}
 			}
@@ -332,8 +332,8 @@
 					"_4": "**Næste Trin:**",
 					"_5": "Tilmeld dig **Stachio Discord** for at appellere eller lære mere.",
 					"_6": "👉 [Tilmeld dig Stachio Discord]({{client_support_server}})",
-					"foundAtTitle": "📌 Found At",
-					"foundAt": "The following guilds and roles have been detected:\n{{found_at_entries}}",
+					"foundAtTitle": "📌 Fundet På",
+					"foundAt": "Følgende guilds og roller er blevet opdaget:\n{{found_at_entries}}",
 					"footer": "Dette er en automatisk systemmeddelelse."
 				},
 				"logEmbed": {
