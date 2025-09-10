@@ -189,7 +189,7 @@
 			},
 			"help": {
 				"tips": {
-					"_1": "`💡` Use `/report` to quickly alert Watchdog staff about potential risks.",
+					"_1": "`💡` You can now report suspicious users or servers only via our official Stachio Discord.",
 					"_2": "`💡` Stachio automatically blocks known phishing links.",
 					"_3": "`💡` Support Stachio on Ko-fi to help fund hosting, development, and new features.",
 					"_4": "`💡` Keep your moderation logs channel private to ensure sensitive data stays secure.",
@@ -199,20 +199,20 @@
 					"title": "📖 Stachio Help Menu",
 					"_1": "Welcome to **Stachio** — your all-in-one community guardian.",
 					"_2": "Use the commands below to get started and explore what Stachio can do for your server.",
-					"_3": "`⚙️` General",
-					"_4": "🔹 **/invite** - Invite Stachio to your server",
-					"_5": "🔹 **/donate** - Support development on Ko-fi",
-					"_6": "`🛡️` Safety & Moderation",
-					"_7": "🔹 **/report** - Submit a safety or moderation report",
-					"_8": "`🗂️` Management",
+					"_3": "### `⚙️` General",
+					"_4": "🔹 **/wd stats/check user/guild** - Check a guild or a user if they're blacklisted & just view stats",
+					"_5": "🔹 **/invite** - Invite Stachio to your server",
+					"_6": "🔹 **/donate** - Support development on Ko-fi",
+					"_7": "🔹 **/vote** - Support Stachio by voting on our botlists",
+					"_8": "### `🗂️` Management",
 					"_9": "🔹 **/antiphishing** - Manage phishing protection",
 					"_10": "🔹 **/guild** - View and configure server settings",
 					"_11": "🔹 **/verification** - Configure verification settings",
 					"_12": "🔹 **/warnings** - Manage member warnings",
 					"_13": "🔹 **/watchdog** - Configure and view Watchdog settings",
-					"_14": "`📢` Support & Appeals",
-					"_15": "If your account is identified and you wish to appeal, please visit our official Discord server:",
-					"_16": "`🧾` Version & Info",
+					"_14": "### `📢` Support & Appeals",
+					"_15": "If your account is identified and you wish to appeal, please visit our official Discord server: [Join Discord]({{client_support_server}})",
+					"_16": "### `🧾` Version & Info",
 					"_17": "🔹 **Version:**",
 					"_18": "🔹 **Developer:**",
 					"footer": "Stachio • Protecting communities since 2025"
@@ -239,32 +239,68 @@
 					"button": "Invite Stachio"
 				}
 			},
-			"report": {
-				"embed": {
-					"title": "🚨 New Report Submitted",
-					"_1": "**Reporter:**",
-					"_2": "**Reported User:**",
-					"_3": "**Reason:**",
-					"_4": "**Evidence:**",
-					"_5": "No additional details provided",
-					"_6": "**Screenshots:**",
-					"_7": "Screenshot",
-					"_8": "No screenshots provided",
-					"button_1": "Under Review",
-					"button_2": "Resolve",
-					"button_3": "Reject"
-				},
-				"reply": {
-					"success": "`✅` Your report against **{{reported_username}}** has been submitted with **{{screenshots_length}}** screenshot(s). Staff will review it shortly.",
-					"error": "`❌` Something went wrong while submitting your report. Please try again later."
-				}
-			},
 			"vote": {
 				"embed": {
 					"title": "🗳️ Vote for Stachio",
 					"_1": "Help **Stachio** grow by upvoting us on the bot lists below!",
 					"_2": "Every vote helps us reach more communities 💙",
 					"footer": "Thank you for supporting Stachio!"
+				}
+			},
+			"wd": {
+				"user": {
+					"noData": "No Watchdog data found for **{{user_name}}**",
+					"embed": {
+						"title": "📌 Watchdog Check for {{user_name}}",
+						"_1": {
+							"_1": "**Status:**",
+							"_2": "None"
+						},
+						"_2": {
+							"_1": "**Reason:**",
+							"_2": "No reason provided"
+						}
+					},
+					"foundAtEmbed": {
+						"title": "{{user_name}} was found in (Page {{pageNumber}})"
+					},
+					"buttons": {
+						"prev": "◀ Previous",
+						"next": "Next ▶"
+					}
+				},
+				"guild": {
+					"noData": "No Watchdog data found for guild **{{guild_id}}**",
+					"embed": {
+						"title": "📌 Watchdog Guild Check: {{guild_name}}",
+						"_1": {
+							"_1": "**Guild Status:**",
+							"_2": "Unknown"
+						},
+						"_2": {
+							"_1": "**Type:**",
+							"_2": "Unknown"
+						},
+						"_3": {
+							"_1": "**Reason:**",
+							"_2": "No reason provided"
+						}
+					}
+				},
+				"stats": {
+					"embed": {
+						"title": "📊 Watchdog Stats",
+						"users": "**Users:**",
+						"total": "> Total: {{totalUsers}}",
+						"autoBlocked": "> Auto Blocked: {{autoBlockedUsers}}",
+						"blocked": "> Blocked: {{blockedUsers}}",
+						"permBlocked": "> Permanently Blocked: {{permBlockedUsers}}",
+						"appealed": "> Appealed: {{appealedUsers}}",
+						"guilds": "**Guilds:**",
+						"totalGuilds": "> Total: {{totalGuilds}}",
+						"blacklistedGuilds": "> Blacklisted: {{blacklistedGuilds}}",
+						"watchdogEnabled": "> Watchdog Enabled: {{watchdogEnabled}}"
+					}
 				}
 			}
 		}
@@ -282,7 +318,10 @@
 				"dmEmbed": {
 					"title": "⚠️ You have been Identified",
 					"_1": "You have been identified in **{{member_guild_name}}** by **Stachio**.",
-					"_2": { "_1": "**Reason:**", "_2": "No reason provided" },
+					"_2": {
+						"_1": "**Reason:**",
+						"_2": "No reason provided"
+					},
 					"_3": {
 						"_1": "**What This Means:** {{action_taken}}",
 						"_2": "You've been automatically assigned a restricted role.",
@@ -293,6 +332,8 @@
 					"_4": "**Next Steps:**",
 					"_5": "Join the **Stachio Discord** to appeal or learn more.",
 					"_6": "👉 [Join Stachio Discord]({{client_support_server}})",
+					"foundAtTitle": "📌 Found At",
+					"foundAt": "The following guilds and roles have been detected:\n{{found_at_entries}}",
 					"footer": "This is an automated system message."
 				},
 				"logEmbed": {
