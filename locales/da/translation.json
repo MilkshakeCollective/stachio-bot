@@ -189,7 +189,7 @@
 			},
 			"help": {
 				"tips": {
-					"_1": "`💡` Brug `/report` for hurtigt at advare Watchdog personale om potentielle risici.",
+					"_1": "`💡` Du kan nu kun rapportere mistænkelige brugere eller servere via vores officielle Stachio Discord.",
 					"_2": "`💡` Stachio blokerer automatisk kendte phishing-links.",
 					"_3": "`💡` Support Stachio på Ko-fi at hjælpe med at finansiere hosting, udvikling og nye funktioner.",
 					"_4": "`💡` Hold dine moderation logfiler kanal privat for at sikre, at følsomme data forbliver sikre.",
@@ -199,20 +199,20 @@
 					"title": "📖 Stachio Hjælp Menu",
 					"_1": "Velkommen til **Stachio** — din alt-i-én fællesskabs watchdog.",
 					"_2": "Brug kommandoerne nedenfor for at komme i gang og udforske hvad Stachio kan gøre for din server.",
-					"_3": "`⚙️` Generelt",
-					"_4": "🔹 **/invite** - Inviter Stachio til din server",
-					"_5": "🔹 **/donate** - Støtte udvikling på Ko-fi",
-					"_6": "`🛡️` Sikkerhed & Moderation",
-					"_7": "🔹 **/report** - Indsend en sikkerheds- eller moderationsrapport",
-					"_8": "`🗂️` Administration",
+					"_3": "### `⚙️` Generelt",
+					"_4": "🔹 **/wd stats/check user/guild** - Tjek en guild eller en bruger, hvis de er sortlistede og bare se statistik",
+					"_5": "🔹 **/invite** - Inviter Stachio til din server",
+					"_6": "🔹 **/donate** - Støt udvikling på Ko-fi",
+					"_7": "🔹 **/vote** - Støt Stachio ved at stemme på vores botlister",
+					"_8": "### `🗂️` Administration",
 					"_9": "🔹 **/antiphishing** - Administrer phishing-beskyttelse",
 					"_10": "🔹 **/guild** - Vis og konfigurer serverindstillinger",
 					"_11": "🔹 **/verification** - Konfigurér verifikationsindstillinger",
 					"_12": "🔹 **/warnings** - Administrer medlems advarsler",
 					"_13": "🔹 **/watchdog** - Konfigurer og vis Watchdog indstillinger",
-					"_14": "`📢` Support & Appeals",
-					"_15": "Hvis din konto er identificeret, og du ønsker at appellere, kan du besøge vores officielle Discord server:",
-					"_16": "`🧾` Version & Info",
+					"_14": "### `📢` Support & Appeals",
+					"_15": "Hvis din konto er identificeret, og du ønsker at appellere, bedes du besøge vores officielle Discord server: [Tilmeld dig Discord]({{client_support_server}})",
+					"_16": "### `🧾` Version & Info",
 					"_17": "🔹 **Version:**",
 					"_18": "🔹 **Udvikler:**",
 					"footer": "Stachio • Beskytter fællesskaber siden 2025"
@@ -239,32 +239,68 @@
 					"button": "Invitér Stachio"
 				}
 			},
-			"report": {
-				"embed": {
-					"title": "🚨 Ny Rapport Indsendt",
-					"_1": "**Rapporter:**",
-					"_2": "**Rapporteret Bruger:**",
-					"_3": "**Begrundelse:**",
-					"_4": "**Beviser:**",
-					"_5": "Ingen yderligere oplysninger angivet",
-					"_6": "**Skærmbilleder:**",
-					"_7": "Skærmbillede",
-					"_8": "Ingen skærmbilleder angivet",
-					"button_1": "Under Gennemgangen",
-					"button_2": "Løs",
-					"button_3": "Afvis"
-				},
-				"reply": {
-					"success": "`✅` Din rapport mod **{{reported_username}}** er blevet indsendt med **{{screenshots_length}}** screenshot(s). Personalet vil gennemgå det snarest.",
-					"error": "`❌` Noget gik galt under indsendelse af din rapport. Prøv igen senere."
-				}
-			},
 			"vote": {
 				"embed": {
 					"title": "🗳️ Stem på Stachio",
 					"_1": "Hjælp **Stachio** vokse ved at opstemme os på bot listerne nedenfor!",
 					"_2": "Hver stemme hjælper os med at nå flere fællesskaber 💙",
 					"footer": "Tak fordi du støtter Stachio!"
+				}
+			},
+			"wd": {
+				"user": {
+					"noData": "Ingen overvågningsdata fundet for **{{user_name}}**",
+					"embed": {
+						"title": "📌 Watchdog Tjek for {{user_name}}",
+						"_1": {
+							"_1": "**Status:**",
+							"_2": "Ingen"
+						},
+						"_2": {
+							"_1": "**Begrundelse:**",
+							"_2": "Ingen begrundelse givet"
+						}
+					},
+					"foundAtEmbed": {
+						"title": "{{user_name}} was found in (Page {{pageNumber}})"
+					},
+					"buttons": {
+						"prev": "◀ Previous",
+						"next": "Next ▶"
+					}
+				},
+				"guild": {
+					"noData": "No Watchdog data found for guild **{{guild_id}}**",
+					"embed": {
+						"title": "📌 Watchdog Guild Check: {{guild_name}}",
+						"_1": {
+							"_1": "**Guild Status:**",
+							"_2": "Unknown"
+						},
+						"_2": {
+							"_1": "**Type:**",
+							"_2": "Unknown"
+						},
+						"_3": {
+							"_1": "**Reason:**",
+							"_2": "No reason provided"
+						}
+					}
+				},
+				"stats": {
+					"embed": {
+						"title": "📊 Watchdog Stats",
+						"users": "**Users:**",
+						"total": "> Total: {{totalUsers}}",
+						"autoBlocked": "> Auto Blocked: {{autoBlockedUsers}}",
+						"blocked": "> Blocked: {{blockedUsers}}",
+						"permBlocked": "> Permanently Blocked: {{permBlockedUsers}}",
+						"appealed": "> Appealed: {{appealedUsers}}",
+						"guilds": "**Guilds:**",
+						"totalGuilds": "> Total: {{totalGuilds}}",
+						"blacklistedGuilds": "> Blacklisted: {{blacklistedGuilds}}",
+						"watchdogEnabled": "> Watchdog Enabled: {{watchdogEnabled}}"
+					}
 				}
 			}
 		}
@@ -296,6 +332,8 @@
 					"_4": "**Næste Trin:**",
 					"_5": "Tilmeld dig **Stachio Discord** for at appellere eller lære mere.",
 					"_6": "👉 [Tilmeld dig Stachio Discord]({{client_support_server}})",
+					"foundAtTitle": "📌 Found At",
+					"foundAt": "The following guilds and roles have been detected:\n{{found_at_entries}}",
 					"footer": "Dette er en automatisk systemmeddelelse."
 				},
 				"logEmbed": {
