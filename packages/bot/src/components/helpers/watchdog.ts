@@ -49,7 +49,7 @@ export async function actionUser(
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._4'),
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._5'),
 				await t(member.guild.id, 'helpers.watchdog.action.dmEmbed._6', {
-					client_support_server: 'https://discord.gg/wSAkewmzAM',
+					client_support_server: 'https://stachio.dk/discord',
 				}),
 			].join('\n'),
 		)
