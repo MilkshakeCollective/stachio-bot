@@ -50,7 +50,7 @@ export async function pollNewBlacklistedGuilds(client: HelperClient) {
 
 			try {
 				await client.prisma.guilds.update({
-					where: { guildId: guild.guildId },
+					where: { id: guild.id }, // ✅ use primary key
 					data: { logged: true },
 				});
 
@@ -85,10 +85,18 @@ export async function newBlacklistedGuild(client: HelperClient, guild: Guild, re
 			msg.crosspost();
 		});
 
-		await client.prisma.guilds.update({
+		// ✅ safer: update by id (lookup first)
+		const dbGuild = await client.prisma.guilds.findUnique({
 			where: { guildId: guild.id },
-			data: { logged: true },
+			select: { id: true },
 		});
+
+		if (dbGuild) {
+			await client.prisma.guilds.update({
+				where: { id: dbGuild.id },
+				data: { logged: true },
+			});
+		}
 	} catch (err) {
 		console.error('❌ Failed to send single blacklisted guild message:', err);
 	}
@@ -133,7 +141,7 @@ export async function pollNewBlockedUsers(client: HelperClient) {
 
 			try {
 				await client.prisma.users.update({
-					where: { userId: user.userId },
+					where: { id: user.id }, // ✅ use primary key
 					data: { logged: true },
 				});
 
@@ -167,10 +175,18 @@ export async function newBlockedUser(client: HelperClient, user: User, reason: s
 			msg.crosspost();
 		});
 
-		await client.prisma.users.update({
+		// ✅ safer: update by id (lookup first)
+		const dbUser = await client.prisma.users.findUnique({
 			where: { userId: user.id },
-			data: { logged: true },
+			select: { id: true },
 		});
+
+		if (dbUser) {
+			await client.prisma.users.update({
+				where: { id: dbUser.id },
+				data: { logged: true },
+			});
+		}
 	} catch (err) {
 		console.error('❌ Failed to send single blocked user message:', err);
 	}
