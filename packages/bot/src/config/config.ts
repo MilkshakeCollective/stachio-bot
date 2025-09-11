@@ -21,9 +21,6 @@ export interface ConfigInterface {
 		secondary: number;
 		primary: number;
 	};
-	emojis: {
-		stachio: string;
-	};
 }
 
 export const defaultLanguage: string = process.env.DEFAULT_LANGUAGE as string;
@@ -80,10 +77,7 @@ export const config: ConfigInterface = {
 		error: 0xed4245,
 		warning: 0xfaa61a,
 		info: 0x5865f2,
-		secondary: 0x2b2d31,
+		secondary: 0x37373d,
 		primary: 0xaac49b,
-	},
-	emojis: {
-		stachio: '<:stachio:1414334752579653653>',
 	},
 };
