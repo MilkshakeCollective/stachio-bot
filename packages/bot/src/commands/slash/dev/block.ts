@@ -12,6 +12,14 @@ import {
 import { Prisma } from '@prisma/client';
 import { logger, actionUser, hasRoles } from '../../../components/exports.js';
 
+function chunkArray<T>(arr: T[], chunkSize: number): T[][] {
+	const chunks: T[][] = [];
+	for (let i = 0; i < arr.length; i += chunkSize) {
+		chunks.push(arr.slice(i, i + chunkSize));
+	}
+	return chunks;
+}
+
 const command: CommandInterface = {
 	cooldown: 2,
 	isDeveloperOnly: true,
@@ -256,11 +264,12 @@ const command: CommandInterface = {
 				}
 
 				const watchdogConfig = await client.prisma.watchdogConfig.findUnique({ where: { guildId: guild.id } });
-				if (!watchdogConfig || !watchdogConfig.enabled)
+				if (!watchdogConfig || !watchdogConfig.enabled) {
 					return interaction.reply({
 						content: '`⚠️` Watchdog system is disabled for this guild.',
 						flags: ['Ephemeral'],
 					});
+				}
 
 				await interaction.deferReply({ flags: ['Ephemeral'] });
 
@@ -286,39 +295,57 @@ const command: CommandInterface = {
 					return interaction.editReply({ content: '`✅` No blocked users found in this guild.' });
 				}
 
-				// Build preview
-				const preview = affected
-					.slice(0, 10) // limit preview to avoid huge embeds
-					.map((a) => `• ${a.member.user.tag} (\`${a.member.id}\`) → **${a.dbUser.status}** → Action: *${a.action}*`)
-					.join('\n');
+				// --- Pagination setup ---
+				const chunks = chunkArray(affected, 10);
+				let page = 0;
 
-				const embed = new EmbedBuilder()
-					.setTitle(`🚨 Scan Preview for ${guild.name}`)
-					.setDescription(
-						`${affected.length} member(s) will be affected.\n\n` +
-							preview +
-							(affected.length > 10 ? `\n...and ${affected.length - 10} more.` : ''),
-					)
-					.setColor('Red')
-					.setTimestamp();
+				const buildEmbed = () => {
+					const list = chunks[page]
+						.map((a) => `• ${a.member.user.tag} (\`${a.member.id}\`) → **${a.dbUser.status}** → Action: *${a.action}*`)
+						.join('\n');
 
-				const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder().setCustomId('scan_confirm').setLabel('✅ Approve').setStyle(ButtonStyle.Success),
-					new ButtonBuilder().setCustomId('scan_cancel').setLabel('❌ Cancel').setStyle(ButtonStyle.Danger),
-				);
+					return new EmbedBuilder()
+						.setTitle(`🚨 Scan Preview for ${guild.name}`)
+						.setDescription(`${affected.length} member(s) will be affected.\n\n${list}`)
+						.setFooter({ text: `Page ${page + 1} / ${chunks.length}` })
+						.setColor('Red')
+						.setTimestamp();
+				};
 
-				await interaction.editReply({ embeds: [embed], components: [row] });
+				const buildRow = () =>
+					new ActionRowBuilder<ButtonBuilder>().addComponents(
+						new ButtonBuilder()
+							.setCustomId('scan_prev')
+							.setEmoji('⬅️')
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(page === 0),
+						new ButtonBuilder()
+							.setCustomId('scan_next')
+							.setEmoji('➡️')
+							.setStyle(ButtonStyle.Secondary)
+							.setDisabled(page === chunks.length - 1),
+						new ButtonBuilder().setCustomId('scan_confirm').setLabel('✅ Approve').setStyle(ButtonStyle.Success),
+						new ButtonBuilder().setCustomId('scan_cancel').setLabel('❌ Cancel').setStyle(ButtonStyle.Danger),
+					);
 
-				// Create a collector for confirmation
+				await interaction.editReply({ embeds: [buildEmbed()], components: [buildRow()] });
+
+				// Collector
 				const msg = await interaction.fetchReply();
-				const collector = msg.createMessageComponentCollector({ time: 60_000, max: 1 });
+				const collector = msg.createMessageComponentCollector({ time: 60_000 });
 
 				collector.on('collect', async (i) => {
 					if (i.user.id !== interaction.user.id) {
 						return i.reply({ content: 'You are not authorized to respond to this.', ephemeral: true });
 					}
 
-					if (i.customId === 'scan_confirm') {
+					if (i.customId === 'scan_prev') {
+						page--;
+						await i.update({ embeds: [buildEmbed()], components: [buildRow()] });
+					} else if (i.customId === 'scan_next') {
+						page++;
+						await i.update({ embeds: [buildEmbed()], components: [buildRow()] });
+					} else if (i.customId === 'scan_confirm') {
 						let success = 0;
 						for (const a of affected) {
 							try {
@@ -328,21 +355,28 @@ const command: CommandInterface = {
 								logger.warn(`Failed to apply action on ${a.member.id}: ${err}`);
 							}
 						}
+						collector.stop();
 						await i.update({
 							content: `\`✅\` Scan complete. Applied actions to **${success}** member(s).`,
 							embeds: [],
 							components: [],
 						});
-					} else {
+					} else if (i.customId === 'scan_cancel') {
+						collector.stop();
 						await i.update({ content: '`❌` Scan canceled.', embeds: [], components: [] });
 					}
 				});
 
-				collector.on('end', async (collected) => {
-					if (collected.size === 0) {
-						await interaction.editReply({ content: '`⌛` Scan expired without approval.', embeds: [], components: [] });
+				collector.on('end', async (_, reason) => {
+					if (reason === 'time') {
+						await interaction.editReply({
+							content: '`⌛` Scan expired without approval.',
+							embeds: [],
+							components: [],
+						});
 					}
 				});
+				break;
 			}
 		}
 	},
