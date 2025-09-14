@@ -241,36 +241,86 @@ const command: CommandInterface = {
 						flags: ['Ephemeral'],
 					});
 
-				// Defer the reply to avoid interaction timeout
-				await interaction.deferReply({ ephemeral: true });
+				await interaction.deferReply({ flags: ['Ephemeral'] });
 
 				const members = await guild.members.fetch();
-				let affected = 0;
+				const affected: { member: any; dbUser: any; action: string }[] = [];
 
 				for (const [, member] of members) {
-					try {
-						if (member.user.bot) continue;
+					if (member.user.bot) continue;
+					const dbUser = await client.prisma.users.findUnique({ where: { userId: member.id } });
+					if (!dbUser) continue;
 
-						const dbUser = await client.prisma.users.findUnique({ where: { userId: member.id } });
-						if (!dbUser) continue;
+					const action =
+						dbUser.status === 'PERM_BLOCKED'
+							? watchdogConfig.actionOnPermBlocked
+							: dbUser.status === 'AUTO_BLOCKED'
+								? watchdogConfig.actionOnAutoBlocked
+								: watchdogConfig.actionOnBlocked;
 
-						const action =
-							dbUser.status === 'PERM_BLOCKED'
-								? watchdogConfig.actionOnPermBlocked
-								: dbUser.status === 'AUTO_BLOCKED'
-									? watchdogConfig.actionOnAutoBlocked
-									: watchdogConfig.actionOnBlocked;
-
-						await actionUser(member, client, action, dbUser, watchdogConfig);
-						affected++;
-					} catch (err) {
-						logger.warn(`Failed to apply action on ${member.id}: ${err}`);
-					}
+					affected.push({ member, dbUser, action });
 				}
 
-				// Edit the deferred reply instead of sending a new message
-				return interaction.editReply({
-					content: `\`✅\` Scan complete. Applied actions to **${affected}** blocked member(s).`,
+				if (!affected.length) {
+					return interaction.editReply({ content: '`✅` No blocked users found in this guild.' });
+				}
+
+				// Build preview
+				const preview = affected
+					.slice(0, 10) // limit preview to avoid huge embeds
+					.map((a) => `• ${a.member.user.tag} (\`${a.member.id}\`) → **${a.dbUser.status}** → Action: *${a.action}*`)
+					.join('\n');
+
+				const embed = new EmbedBuilder()
+					.setTitle(`🚨 Scan Preview for ${guild.name}`)
+					.setDescription(
+						`${affected.length} member(s) will be affected.\n\n` +
+							preview +
+							(affected.length > 10 ? `\n...and ${affected.length - 10} more.` : ''),
+					)
+					.setColor('Red')
+					.setTimestamp();
+
+				const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+					new ButtonBuilder().setCustomId('scan_confirm').setLabel('✅ Approve').setStyle(ButtonStyle.Success),
+					new ButtonBuilder().setCustomId('scan_cancel').setLabel('❌ Cancel').setStyle(ButtonStyle.Danger),
+				);
+
+				await interaction.editReply({ embeds: [embed], components: [row] });
+
+				// Create a collector for confirmation
+				const msg = await interaction.fetchReply();
+				const collector = msg.createMessageComponentCollector({ time: 60_000, max: 1 });
+
+				collector.on('collect', async (i) => {
+					if (i.user.id !== interaction.user.id) {
+						return i.reply({ content: 'You are not authorized to respond to this.', ephemeral: true });
+					}
+
+					if (i.customId === 'scan_confirm') {
+						let success = 0;
+						for (const a of affected) {
+							try {
+								await actionUser(a.member, client, a.action, a.dbUser, watchdogConfig);
+								success++;
+							} catch (err) {
+								logger.warn(`Failed to apply action on ${a.member.id}: ${err}`);
+							}
+						}
+						await i.update({
+							content: `\`✅\` Scan complete. Applied actions to **${success}** member(s).`,
+							embeds: [],
+							components: [],
+						});
+					} else {
+						await i.update({ content: '`❌` Scan canceled.', embeds: [], components: [] });
+					}
+				});
+
+				collector.on('end', async (collected) => {
+					if (collected.size === 0) {
+						await interaction.editReply({ content: '`⌛` Scan expired without approval.', embeds: [], components: [] });
+					}
 				});
 			}
 		}
