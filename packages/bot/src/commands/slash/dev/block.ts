@@ -8,10 +8,9 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ActionRowBuilder,
-	TextChannel,
 } from 'discord.js';
 import { Prisma } from '@prisma/client';
-import { logger, actionUser } from '../../../components/exports.js';
+import { logger, actionUser, hasRoles } from '../../../components/exports.js';
 
 const command: CommandInterface = {
 	cooldown: 2,
@@ -19,7 +18,7 @@ const command: CommandInterface = {
 	data: new SlashCommandBuilder()
 		.setName('block')
 		.setDescription('Manage blocked users')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+		.setDefaultMemberPermissions(PermissionFlagsBits.ViewAuditLog)
 		.addSubcommand((sub) =>
 			sub
 				.setName('add')
@@ -77,12 +76,12 @@ const command: CommandInterface = {
 				.setDescription('Unblock a user')
 				.addUserOption((opt) => opt.setName('user').setDescription('The blocked user').setRequired(true)),
 		)
-		.addSubcommand((sub) =>
-			sub
-				.setName('info')
-				.setDescription('Get info about a blocked user')
-				.addUserOption((opt) => opt.setName('user').setDescription('The blocked user').setRequired(true)),
-		)
+		// .addSubcommand((sub) =>
+		// 	sub
+		// 		.setName('info')
+		// 		.setDescription('Get info about a blocked user')
+		// 		.addUserOption((opt) => opt.setName('user').setDescription('The blocked user').setRequired(true)),
+		// )
 		.addSubcommand((sub) =>
 			sub
 				.setName('scan')
@@ -92,6 +91,28 @@ const command: CommandInterface = {
 	execute: async (interaction: ChatInputCommandInteraction, client: MilkshakeClient) => {
 		const subcommandGroup = interaction.options.getSubcommandGroup(false);
 		const subcommand = interaction.options.getSubcommand();
+
+		const ROLE_REQUIREMENTS: Record<string, string[]> = {
+			add: process.env.STAFF_ROLE_REQUIREMENTS_ADD!.split(','),
+			'add-multiple': process.env.STAFF_ROLE_REQUIREMENTS_ADD_MULTIPLE!.split(','),
+			update: process.env.STAFF_ROLE_REQUIREMENTS_UPDATE!.split(','),
+			remove: process.env.STAFF_ROLE_REQUIREMENTS_REMOVE!.split(','),
+			info: process.env.STAFF_ROLE_REQUIREMENTS_INFO?.split(',') ?? [],
+			scan: process.env.STAFF_ROLE_REQUIREMENTS_SCAN!.split(','),
+		};
+
+		const requiredRoles = ROLE_REQUIREMENTS[subcommand];
+		if (requiredRoles.length > 0) {
+			const guildId = client.config.guilds[0].id;
+			const userId = interaction.user.id;
+
+			if (!(await hasRoles(client, guildId, userId, requiredRoles))) {
+				return interaction.reply({
+					content: `\`❌\` You need one of these roles to use \`${subcommand}\`: ${requiredRoles.map((r) => `<@&${r}>`).join(', ')}`,
+					ephemeral: true,
+				});
+			}
+		}
 
 		const user = interaction.options.getUser('user')!;
 		const reason = interaction.options.getString('reason') ?? 'No reason provided';
