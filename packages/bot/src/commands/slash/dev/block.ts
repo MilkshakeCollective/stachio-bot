@@ -332,7 +332,7 @@ const command: CommandInterface = {
 
 				// Collector
 				const msg = await interaction.fetchReply();
-				const collector = msg.createMessageComponentCollector({ time: 60_000 });
+				const collector = msg.createMessageComponentCollector({ time: 300_000 });
 
 				collector.on('collect', async (i) => {
 					if (i.user.id !== interaction.user.id) {
