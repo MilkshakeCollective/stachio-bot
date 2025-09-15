@@ -54,7 +54,6 @@ const event: EventInterface = {
 			try {
 				const installedGuild = await installGuild(client, guild.id, 'en-US');
 				await setGuildLanguage(guild.id, installedGuild.language);
-				logger.info(`✅ Guild config ensured for ${guild.name} (${guild.id})`);
 			} catch (err) {
 				logger.error(`❌ Failed to ensure guild config for ${guild.name} (${guild.id}): ${err}`);
 			}

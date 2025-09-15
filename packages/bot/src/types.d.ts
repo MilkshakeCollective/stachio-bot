@@ -3,7 +3,7 @@ import { ClientEvents, SlashCommandBuilder } from 'discord.js';
 export type ObjectNameIDArray = Array[{ name: string; id: string }];
 
 export interface EventInterface {
-	name: keyof ClientEvents;
+	name: keyof ClientEvents | string;
 	options: { rest: boolean; once: boolean };
 	execute: (...args: any[]) => any;
 }

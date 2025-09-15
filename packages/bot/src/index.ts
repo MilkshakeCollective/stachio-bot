@@ -16,6 +16,7 @@ import { loadCommands } from './handlers/commands.js';
 import { startKoFiWebhookServer } from './kofi.js';
 import { loadEvents } from './handlers/events.js';
 import { logger } from './components/exports.js';
+import InviteManager from 'discord-invite';
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -26,6 +27,7 @@ export class MilkshakeClient extends Client {
 	public context: Collection<string, CommandInterface> = new Collection();
 	public prisma: typeof prisma;
 	public config: ConfigInterface;
+	public inviteManager: InviteManager;
 	constructor() {
 		super({
 			intents: [
@@ -65,6 +67,7 @@ export class MilkshakeClient extends Client {
 		});
 		this.prisma = prisma;
 		this.config = config;
+		this.inviteManager = new InviteManager(this);
 	}
 
 	public async InitializeClient() {

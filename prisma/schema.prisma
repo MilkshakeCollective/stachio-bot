@@ -14,7 +14,7 @@ model GuildConfig {
   watchdog           WatchdogConfig?
   AntiPhishing       AntiPhishingConfig?
   verification       VerificationConfig?
-  WarningConfig      WarningConfig?
+  InviteConfig       InviteConfig?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }
@@ -155,22 +155,13 @@ model VerificationAttempt {
   @@unique([guildId, userId])
 }
 
-model Warnings {
-  id        Int      @id @default(autoincrement())
-  guildId   String
-  userId    String
-  moderator String
-  points    Int
-  reason    String
-  createdAt DateTime @default(now())
-}
-
-model WarningConfig {
+model InviteConfig {
   id         Int      @id @default(autoincrement())
   guildId    String   @unique
-  decayDays  Int      @default(90)
-  thresholds Json
+  enabled    Boolean  @default(false)
+  logChannel String?
   updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
 
   guild GuildConfig @relation(fields: [guildId], references: [guildId], onDelete: Cascade)
 }
