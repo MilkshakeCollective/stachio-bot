@@ -330,7 +330,6 @@ const command: CommandInterface = {
 
 				await interaction.editReply({ embeds: [buildEmbed()], components: [buildRow()] });
 
-				// Collector
 				const msg = await interaction.fetchReply();
 				const collector = msg.createMessageComponentCollector({ time: 300_000 });
 
