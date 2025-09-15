@@ -90,6 +90,26 @@
 					"error": "`⚠️` An error occurred while changing the broadcast channel."
 				}
 			},
+			"invite": {
+				"setup": {
+					"embed": {
+						"title": "📩 Invite Tracking Setup Complete",
+						"_1": "**Log Channel:** <#{{channelId}}>",
+						"_2": "**Status:** Enabled",
+						"footer": "Invite tracking is now active in this server."
+					}
+				},
+				"toggle": {
+					"noConfig": "`⚠️` No invite tracking configuration found. Run `/invite setup` first.",
+					"enabled": "`✅` Invite tracking is now **enabled**.",
+					"disabled": "`✅` Invite tracking is now **disabled**."
+				},
+				"log": {
+					"noConfig": "`⚠️` No invite tracking configuration found. Run `/invite setup` first.",
+					"current": "Current invite log channel: <#{{channelId}}>",
+					"updated": "`✅` Invite log channel updated to <#{{channelId}}>."
+				}
+			},
 			"verification": {
 				"setup": {
 					"success": "`✅` Verification message posted with buttons.",
@@ -181,7 +201,7 @@
 				"embed": {
 					"title": "🫂 Support Stachio",
 					"_1": "Stachio is built to keep your community safe and thriving! 💚",
-					"_2": "If you’d like to support ongoing development, consider donating via Ko-fi:",
+					"_2": "If you'd like to support ongoing development, consider donating via Ko-fi:",
 					"_3": "Click below to donate",
 					"footer": "Thank you for supporting Stachio!",
 					"button": "Donate via Ko-fi"
@@ -306,13 +326,6 @@
 		}
 	},
 	"helpers": {
-		"warn": {
-			"sanctions": {
-				"mute": "Auto-mute applied due to too many warning points",
-				"kick": "Auto-kick applied due to too many warning points",
-				"ban": "Auto-ban applied due to too many warning points"
-			}
-		},
 		"watchdog": {
 			"action": {
 				"dmEmbed": {
