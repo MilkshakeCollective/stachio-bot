@@ -131,3 +131,4 @@ package-lock.json
 /packages/import
 /transcripts
 /prisma/migrations
+discord-invite.yml
