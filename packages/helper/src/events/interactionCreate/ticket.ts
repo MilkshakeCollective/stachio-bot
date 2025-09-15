@@ -83,6 +83,23 @@ const event: EventInterface = {
 				],
 			})) as TextChannel;
 
+			const filter = (m: Message) => m.author.id === user.id;
+			const collector = ticketChannel.createMessageCollector({ filter, time: 30 * 60 * 1000, max: 1 });
+
+			collector.on('end', async (collected) => {
+				if (collected.size === 0) {
+					try {
+						await ticketChannel.send(
+							'`⏰` This ticket has been automatically closed due to inactivity (the creator did not send a first message within 30 minutes).',
+						);
+						await delay(2000);
+						await ticketChannel.delete();
+					} catch (err) {
+						console.error('Failed to close ticket due to inactivity:', err);
+					}
+				}
+			});
+
 			const messages: Record<string, string> = {
 				apply: [
 					`## **\`📝 Staff Application\`**`,
