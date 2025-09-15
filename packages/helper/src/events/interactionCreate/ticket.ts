@@ -92,8 +92,54 @@ const event: EventInterface = {
 						await ticketChannel.send(
 							'`⏰` This ticket has been automatically closed due to inactivity (the creator did not send a first message within 30 minutes).',
 						);
-						await delay(2000);
-						await ticketChannel.delete();
+
+						// === Create transcript (same as manual close) ===
+						try {
+							const transcript = await createTranscript(ticketChannel, {
+								filename: `${ticketChannel.name}-transcript.html`,
+								poweredBy: false,
+							});
+
+							const __filename = fileURLToPath(import.meta.url);
+							const __dirname = path.dirname(__filename);
+
+							const rootDir = path.resolve(__dirname, '../../../../../');
+							const transcriptsDir = path.join(rootDir, 'transcripts');
+							if (!fs.existsSync(transcriptsDir)) fs.mkdirSync(transcriptsDir, { recursive: true });
+
+							const fileName = `${ticketChannel.name}-${Date.now()}.html`;
+							const filePath = path.join(transcriptsDir, fileName);
+							fs.writeFileSync(filePath, Buffer.from(transcript.attachment as Buffer));
+
+							const transcriptUrl = `${client.config.baseUrl}/transcripts/${fileName}`;
+
+							const logChannels: Record<string, string> = {
+								report: client.config.channels[7].id,
+								appeal: client.config.channels[8].id,
+							};
+
+							const topic = ticketChannel.topic ?? '';
+							const ticketType = ['apply', 'report', 'staff', 'appeal'].find((t) => topic.includes(`type:${t}`));
+							const logChannelId = logChannels[ticketType ?? ''] ?? client.config.channels[9].id;
+
+							const logChannel = guild.channels.cache.get(logChannelId) as TextChannel;
+							if (logChannel) {
+								await logChannel.send({
+									content: [
+										`## **\`📄 Ticket Transcript\`**`,
+										`**Ticket:** ${ticketChannel.name}`,
+										`**Closed automatically** (inactive)`,
+										`**Transcript URL:** [Link](${transcriptUrl})`,
+										'',
+										`\`📌\` Keep this transcript for record-keeping or review purposes.`,
+									].join('\n'),
+								});
+							}
+						} catch (err) {
+							console.error('Failed to create/send transcript (auto close):', err);
+						}
+
+						setTimeout(() => ticketChannel.delete(), 2000);
 					} catch (err) {
 						console.error('Failed to close ticket due to inactivity:', err);
 					}
