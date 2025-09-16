@@ -159,7 +159,7 @@ export async function newBlockedUser(client: HelperClient, user: User, reason: s
 		where: { status: { in: [WatchdogStatus.BLOCKED, WatchdogStatus.PERM_BLOCKED, WatchdogStatus.AUTO_BLOCKED] } },
 	});
 
-	const message = `${totalBlocked}. @${user.username} : ${user.id} (${reason})`;
+	const message = `${totalBlocked}. ${user.username} : ${user.id} (${reason})`;
 
 	try {
 		await channel.send(message).then(async (msg: Message) => {
