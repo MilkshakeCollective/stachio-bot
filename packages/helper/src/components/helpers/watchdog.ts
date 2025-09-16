@@ -127,7 +127,7 @@ export async function pollNewBlockedUsers(client: HelperClient) {
 		}
 
 		for (const user of blockedUsers) {
-			const message = `${user.id}. @${user.last_username ?? 'Unknown'} : ${user.userId} (${user.reason})`;
+			const message = `${user.id}. ${user.last_username ?? 'Unknown'} : ${user.userId} (${user.reason})`;
 
 			try {
 				await client.prisma.users.update({
