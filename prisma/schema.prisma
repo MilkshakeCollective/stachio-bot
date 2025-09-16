@@ -51,6 +51,7 @@ enum GuildType {
   NSFW
   COPYCAT
   EXTREMISM
+  BREACH_OF_TOS
 }
 
 model Users {
