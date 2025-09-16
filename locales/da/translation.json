@@ -74,7 +74,8 @@
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
 						"_4": "**Verifikation:**",
-						"_5": "**Advarsler:**"
+						"_5": "**invite Tracker:**",
+						"_6": "**Broadcast Kanal:**"
 					}
 				},
 				"language": {
@@ -88,6 +89,26 @@
 				"broadcast_channel": {
 					"success": "`📫` Broadcast-kanal sat til **<#{{channelId}}>**",
 					"error": "`⚠️` Der opstod en fejl under ændring af broadcast kanalen."
+				}
+			},
+			"invite": {
+				"setup": {
+					"embed": {
+						"title": "📩 Invitér Sporingsopsætning Komplet",
+						"_1": "**Log Kanal:** <#{{channelId}}>",
+						"_2": "**Status:** Aktiveret",
+						"footer": "Invitationssporing er nu aktiv på denne server."
+					}
+				},
+				"toggle": {
+					"noConfig": "`⚠️` Ingen invitation tracking konfiguration fundet. Kør `/invitetracker setup` først.",
+					"enabled": "`✅` Invitationssporing er nu **aktiveret**.",
+					"disabled": "`✅` Invitation tracking er nu **deaktiveret**."
+				},
+				"log": {
+					"noConfig": "`⚠️` Ingen invitation tracking konfiguration fundet. Kør `/invitetracker setup` først.",
+					"current": "Nuværende invitations log kanal: <#{{channelId}}>",
+					"updated": "`✅` Inviter logkanal opdateret til <#{{channelId}}>."
 				}
 			},
 			"verification": {
@@ -306,13 +327,6 @@
 		}
 	},
 	"helpers": {
-		"warn": {
-			"sanctions": {
-				"mute": "Auto-mute anvendt på grund af for mange advarselspunkter",
-				"kick": "Auto-kick anvendt på grund af for mange advarselspunkter",
-				"ban": "Auto-ban anvendt på grund af for mange advarselspunkter"
-			}
-		},
 		"watchdog": {
 			"action": {
 				"dmEmbed": {
