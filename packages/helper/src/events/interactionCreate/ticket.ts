@@ -72,6 +72,7 @@ const event: EventInterface = {
 							PermissionFlagsBits.ReadMessageHistory,
 							PermissionFlagsBits.AttachFiles,
 							PermissionFlagsBits.EmbedLinks,
+							PermissionFlagsBits.UseApplicationCommands,
 						],
 					},
 					{
@@ -82,6 +83,7 @@ const event: EventInterface = {
 							PermissionFlagsBits.ReadMessageHistory,
 							PermissionFlagsBits.AttachFiles,
 							PermissionFlagsBits.EmbedLinks,
+							PermissionFlagsBits.UseApplicationCommands,
 						],
 					},
 				],
