@@ -74,8 +74,8 @@
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
 						"_4": "**Verifikation:**",
-						"_5": "**Invite Tracker:**",
-						"_6": "**Broadcast Channel:**"
+						"_5": "**invite Tracker:**",
+						"_6": "**Broadcast Kanal:**"
 					}
 				},
 				"language": {
@@ -94,21 +94,21 @@
 			"invite": {
 				"setup": {
 					"embed": {
-						"title": "📩 Invite Tracking Setup Complete",
-						"_1": "**Log Channel:** <#{{channelId}}>",
-						"_2": "**Status:** Enabled",
-						"footer": "Invite tracking is now active in this server."
+						"title": "📩 Invitér Sporingsopsætning Komplet",
+						"_1": "**Log Kanal:** <#{{channelId}}>",
+						"_2": "**Status:** Aktiveret",
+						"footer": "Invitationssporing er nu aktiv på denne server."
 					}
 				},
 				"toggle": {
-					"noConfig": "`⚠️` No invite tracking configuration found. Run `/invite setup` first.",
-					"enabled": "`✅` Invite tracking is now **enabled**.",
-					"disabled": "`✅` Invite tracking is now **disabled**."
+					"noConfig": "`⚠️` Ingen invitation tracking konfiguration fundet. Kør `/invitetracker setup` først.",
+					"enabled": "`✅` Invitationssporing er nu **aktiveret**.",
+					"disabled": "`✅` Invitation tracking er nu **deaktiveret**."
 				},
 				"log": {
-					"noConfig": "`⚠️` No invite tracking configuration found. Run `/invite setup` first.",
-					"current": "Current invite log channel: <#{{channelId}}>",
-					"updated": "`✅` Invite log channel updated to <#{{channelId}}>."
+					"noConfig": "`⚠️` Ingen invitation tracking konfiguration fundet. Kør `/invitetracker setup` først.",
+					"current": "Nuværende invitations log kanal: <#{{channelId}}>",
+					"updated": "`✅` Inviter logkanal opdateret til <#{{channelId}}>."
 				}
 			},
 			"verification": {
@@ -202,7 +202,7 @@
 				"embed": {
 					"title": "🫂 Støt Stachio",
 					"_1": "Stachio er bygget til at holde dit samfund sikkert og blomstrende! 💚",
-					"_2": "If you'd like to support ongoing development, consider donating via Ko-fi:",
+					"_2": "Hvis du gerne vil støtte igangværende udvikling, overveje at donere via Ko-fi:",
 					"_3": "Klik nedenfor for at donere",
 					"footer": "Tak fordi du støttede Stachio!",
 					"button": "Donér via Ko- fi"
