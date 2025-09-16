@@ -88,7 +88,7 @@ const command: CommandInterface = {
 						watchdog: true,
 						AntiPhishing: true,
 						verification: true,
-						WarningConfig: true,
+						InviteConfig: true,
 					},
 				});
 
@@ -104,7 +104,7 @@ const command: CommandInterface = {
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._2')} ${guildConfig.watchdog?.enabled ? '`✅`' : '`❌`'}`,
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._3')} ${guildConfig.AntiPhishing?.enabled ? '`✅`' : '`❌`'}`,
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._4')} ${guildConfig.verification?.enabled ? '`✅`' : '`❌`'}`,
-							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._5')} ${guildConfig.WarningConfig ? '`✅`' : '`❌`'}`,
+							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._5')} ${guildConfig.InviteConfig ? '`✅`' : '`❌`'}`,
 							`${await t(interaction.guild!.id, 'commands.management.guild.settings.embed._6')} ${guildConfig.broadcastChannelId ? `<#${guildConfig.broadcastChannelId}>` : '`❌`'}`,
 						].join('\n'),
 					)
