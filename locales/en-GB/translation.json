@@ -74,7 +74,7 @@
 						"_2": "**Watchdog:**",
 						"_3": "**Anti-Phishing:**",
 						"_4": "**Verification:**",
-						"_5": "**Invite Tracker:**",
+						"_5": "**Warnings:**",
 						"_6": "**Broadcast Channel:**"
 					}
 				},
@@ -202,7 +202,7 @@
 				"embed": {
 					"title": "🫂 Support Stachio",
 					"_1": "Stachio is built to keep your community safe and thriving! 💚",
-					"_2": "If you'd like to support ongoing development, consider donating via Ko-fi:",
+					"_2": "If you’d like to support ongoing development, consider donating via Ko-fi:",
 					"_3": "Click below to donate",
 					"footer": "Thank you for supporting Stachio!",
 					"button": "Donate via Ko-fi"
